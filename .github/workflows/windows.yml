@@ -38,7 +38,8 @@ jobs:
         run: |
           $env:TIETIE_HOME = "$env:RUNNER_TEMP\tt-self"
           $p = Start-Process out\Tietie.exe -ArgumentList '--selftest' -Wait -PassThru
-          Get-Content "$env:TIETIE_HOME\selftest.txt" -Encoding UTF8
+          Get-Content "$env:TIETIE_HOME\selftest.txt" -Encoding UTF8 -ErrorAction SilentlyContinue
+          Get-Content "$env:TIETIE_HOME\error.log" -Encoding UTF8 -ErrorAction SilentlyContinue
           if ($p.ExitCode -ne 0) { exit 1 }
 
       - name: 版面截圖
@@ -90,3 +91,4 @@ jobs:
             ${{ runner.temp }}/tt-self/selftest.txt
             ${{ runner.temp }}/tt-ui/render.txt
             ${{ runner.temp }}/tt-e2e/e2e.txt
+            ${{ runner.temp }}/tt-*/error.log

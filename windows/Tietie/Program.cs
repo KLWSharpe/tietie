@@ -10,10 +10,11 @@ static class Program
         Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
-        SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
+        // 這三行必須在建立任何視窗之前設定
         Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
         Application.ThreadException += (_, e) => Report(e.Exception);
         AppDomain.CurrentDomain.UnhandledException += (_, e) => { if (e.ExceptionObject is Exception ex) Log(ex); };
+        SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
 
         if (args.Contains("--version"))
         {
