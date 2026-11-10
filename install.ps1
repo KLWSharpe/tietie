@@ -43,14 +43,21 @@ if (-not $copied) { throw '舊版的貼貼還在執行，請在工作列的貼�
 Unblock-File (Join-Path $dest 'Tietie.exe') -ErrorAction SilentlyContinue
 
 # 開始功能表捷徑，之後搜尋「貼貼」就找得到
+# 捷徑先用英文檔名存（有些語言的 Windows 不能直接存中文檔名），再改成中文名
 try {
     $programs = [Environment]::GetFolderPath('Programs')
+    $ascii = Join-Path $programs 'Tietie.lnk'
+    $final = Join-Path $programs '貼貼 Tietie.lnk'
     $shell = New-Object -ComObject WScript.Shell
-    $link = $shell.CreateShortcut((Join-Path $programs '貼貼 Tietie.lnk'))
+    $link = $shell.CreateShortcut($ascii)
     $link.TargetPath = Join-Path $dest 'Tietie.exe'
-    $link.Description = '貼貼 Tietie 剪貼簿小工具'
+    $link.WorkingDirectory = $dest
     $link.Save()
-} catch { }
+    if (Test-Path -LiteralPath $final) { Remove-Item -LiteralPath $final -Force }
+    try { Rename-Item -LiteralPath $ascii -NewName '貼貼 Tietie.lnk' } catch { }
+} catch {
+    Write-Host '（開始功能表的捷徑沒有建立成功，貼貼本身已經裝好）'
+}
 
 Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue
 

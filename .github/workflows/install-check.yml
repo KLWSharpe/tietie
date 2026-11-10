@@ -20,7 +20,7 @@ jobs:
           Start-Process $exe -ArgumentList '--version' -Wait -RedirectStandardOutput $out
           Get-Content $out
           $lnk = Get-ChildItem ([Environment]::GetFolderPath('Programs')) -Filter '*Tietie.lnk' | Select-Object -First 1 -ExpandProperty FullName
-          Write-Host "Start menu shortcut: $(Test-Path $lnk)"
+          Write-Host "Start menu shortcut: $lnk"
           if (-not $lnk) { exit 1 }
           $env:TIETIE_HOME = Join-Path $env:RUNNER_TEMP 'tt'
           $p = Start-Process $exe -ArgumentList '--selftest' -Wait -PassThru

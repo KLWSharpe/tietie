@@ -75,7 +75,9 @@ jobs:
           Get-Content install.ps1 -Raw -Encoding UTF8 | Invoke-Expression
           if (-not (Test-Path "$env:RUNNER_TEMP\installed\Tietie.exe")) { exit 1 }
           Get-ChildItem "$env:RUNNER_TEMP\installed"
-          Test-Path ([Environment]::GetFolderPath('Programs') + '\貼貼 Tietie.lnk')
+          $lnk = Get-ChildItem ([Environment]::GetFolderPath('Programs')) -Filter '*Tietie.lnk' | Select-Object -First 1
+          Write-Host "Start menu shortcut: $($lnk.Name)"
+          if (-not $lnk) { exit 1 }
 
       - uses: actions/upload-artifact@v4
         with:
