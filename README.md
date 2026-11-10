@@ -23,7 +23,9 @@
 
 ## 安裝
 
-打開「終端機」，貼上這一行，按 Enter：
+只有 Mac 能用，需要 macOS 13 以上，Apple 晶片和 Intel 都可以。
+
+打開「終端機」（按 ⌘ + 空白鍵，打「終端機」，按 Enter），貼上這一行，按 Enter：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/KLWSharpe/tietie/main/install.sh | bash
@@ -31,16 +33,7 @@ curl -fsSL https://raw.githubusercontent.com/KLWSharpe/tietie/main/install.sh | 
 
 它會下載最新版、放進「應用程式」資料夾、然後打開。不需要輸入密碼。要更新到新版，再跑一次同一行就可以。
 
-需要 macOS 13 以上。Apple 晶片和 Intel 的 Mac 都能用。
-
-<details>
-<summary>不想用終端機？也可以手動下載</summary>
-
-1. 到 [Releases](https://github.com/KLWSharpe/tietie/releases/latest) 下載 `Tietie.zip`，解壓縮後把「Tietie」拖進「應用程式」資料夾。
-2. 第一次打開時，macOS 會說無法驗證開發者。這是因為貼貼沒有付費加入 Apple 的開發者計畫。
-3. 到「系統設定 → 隱私權與安全性」，往下捲，在 Tietie 那一行按「強制打開」。之後就不會再問。
-
-</details>
+**第一次用終端機、想要一步一步的圖文說明，或不想用終端機想自己下載，請看[安裝教學](docs/安裝教學.md)**。裡面也有第一次設定和常見問題。
 
 ## 怎麼用
 
