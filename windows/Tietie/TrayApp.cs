@@ -144,6 +144,9 @@ sealed class TrayApp : ApplicationContext
         about.Activate();
     }
 
+    /// 測試用：在指定位置打開工作列圖示的選單。
+    public void ShowTrayMenu(Point at) => trayMenu.Show(at);
+
     public void Quit()
     {
         tray.Visible = false;

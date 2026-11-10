@@ -1,7 +1,7 @@
 import AppKit
 import Carbon.HIToolbox
 
-let appVersion = "0.1.1"
+let appVersion = "0.2.0"
 
 final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let store = Store()

@@ -2,13 +2,13 @@
 
 # 貼貼 Tietie
 
-奎嵐 KueiLan 製作的免費、開源 Mac 剪貼簿小工具。記住你複製過的文字、圖片和檔案，按一組快捷鍵就能找回來貼上。
+奎嵐 KueiLan 製作的免費、開源剪貼簿小工具，Mac 和 Windows 都能用。記住你複製過的文字、圖片和檔案，按一組快捷鍵就能找回來貼上。
 
 我用了好幾年的 Clipy。後來它在新版 macOS 上打不開了，我就自己寫了一個更強的，免費分享給大家。
 
 歡迎給回饋與建議，之後會幫大家更新。有想法或安裝卡住，可以私訊 IG／Threads [@kueilanverse](https://www.instagram.com/kueilanverse)、寄信到 klwsharpe@gmail.com，或到 [Issues](https://github.com/KLWSharpe/tietie/issues) 留言。
 
-**第一次安裝請看：[一步一步的安裝教學](docs/安裝教學.md)**
+**第一次安裝請看一步一步的安裝教學：[Mac 版](docs/安裝教學.md)｜[Windows 版](docs/Windows安裝教學.md)**
 
 <img src="docs/screenshot-list.png" width="380" alt="貼貼的歷史清單">
 
@@ -19,25 +19,37 @@
 - **圖片裡的字可以直接貼出來**：選到圖片按 ⌥Enter，或按右鍵選「貼上圖片裡的文字」，貼出來的是字不是圖。
 - **貼出來是乾淨的**：從貼貼貼上的文字不帶原本的字體、顏色、連結格式。
 - **釘選**：常用的內容釘在最上面，清除歷史時不會被刪。
-- **一鍵清除**：貼完敏感內容後，從右上角選單就能清掉最近 10 分鐘或全部記錄。
+- **一鍵清除**：貼完敏感內容後，從貼貼的選單就能清掉最近 10 分鐘或全部記錄。
 - **密碼要不要記，你決定**：第一次打開就會問你，之後可以在設定裡更改。
 - **不連網**：所有記錄只存在你自己的電腦。
 
 ## 安裝
 
-只有 Mac 能用，需要 macOS 13 以上，Apple 晶片和 Intel 都可以。
+### Mac
 
-打開「終端機」（按 ⌘ + 空白鍵，打「終端機」，按 Enter），貼上這一行，按 Enter：
+需要 macOS 13 以上，Apple 晶片和 Intel 都可以。打開「終端機」（按 ⌘ + 空白鍵，打「終端機」，按 Enter），貼上這一行，按 Enter：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/KLWSharpe/tietie/main/install.sh | bash
 ```
 
-它會下載最新版、放進「應用程式」資料夾、然後打開。不需要輸入密碼。要更新到新版，再跑一次同一行就可以。
+詳細步驟、不用終端機的裝法、常見問題：[Mac 安裝教學](docs/安裝教學.md)
 
-**第一次用終端機、想要一步一步的圖文說明，或不想用終端機想自己下載，請看[安裝教學](docs/安裝教學.md)**。裡面也有第一次設定和常見問題。
+### Windows
 
-## 怎麼用
+Windows 10 和 11 都可以。按 Windows 鍵，打 `PowerShell`，按 Enter，貼上這一行，按 Enter：
+
+```powershell
+irm https://raw.githubusercontent.com/KLWSharpe/tietie/main/install.ps1 | iex
+```
+
+詳細步驟、不用 PowerShell 的裝法、常見問題：[Windows 安裝教學](docs/Windows安裝教學.md)
+
+兩種都不需要輸入密碼。要更新到新版，再貼一次同一行就可以，原本的記錄會留著。
+
+## 怎麼用（Mac）
+
+Windows 的快捷鍵請看 [Windows 安裝教學](docs/Windows安裝教學.md#快捷鍵)，大致是把 ⌘ 換成 Ctrl、⌥ 換成 Alt，叫出清單是 Ctrl + Shift + V。
 
 | 按鍵 | 作用 |
 |---|---|
@@ -56,7 +68,7 @@ curl -fsSL https://raw.githubusercontent.com/KLWSharpe/tietie/main/install.sh | 
 
 右上角選單列的貼貼圖示裡有：暫停記錄、清除最近 10 分鐘的記錄、清除全部歷史記錄、設定。
 
-### 自動貼上要開一次權限
+### Mac 的自動貼上要開一次權限
 
 要讓貼貼在你選好之後直接幫你貼上，需要到「系統設定 → 隱私權與安全性 → 輔助使用」把貼貼打開。第一次使用時貼貼會帶你過去。沒有開也能用，只是選好之後要自己按一次 ⌘V。
 
@@ -64,16 +76,20 @@ curl -fsSL https://raw.githubusercontent.com/KLWSharpe/tietie/main/install.sh | 
 
 ## 隱私
 
-- 記錄存在 `~/Library/Application Support/Tietie/`，只有你自己的帳號讀得到。
+- 記錄存在你自己的電腦：Mac 在 `~/Library/Application Support/Tietie/`，Windows 在 `%APPDATA%\Tietie\`，只有你自己的帳號讀得到。
 - 貼貼不連網，不收集任何資料。
 - 記錄沒有另外加密。能打開你電腦的人就看得到，電腦會借人或多人共用時，建議在設定裡關掉「記錄密碼管理器複製的帳號密碼」。
 - 預設最多保留 1000 筆、圖片最多佔用 2 GB，超過會自動刪掉最舊的，釘選的不會被刪。可以在設定裡調整。
 
 ## 移除
 
+Mac：
+
 1. 到貼貼的「設定」取消勾選「開機後自動啟動貼貼」，再從右上角選單按「結束貼貼」。
 2. 把「應用程式」裡的 Tietie 丟到垃圾桶。
 3. 想連記錄一起刪掉的話，把 `~/Library/Application Support/Tietie` 資料夾也丟到垃圾桶。
+
+Windows：請看 [Windows 安裝教學的移除段落](docs/Windows安裝教學.md#移除)。
 
 ## 自己從原始碼組裝
 
@@ -88,6 +104,12 @@ cd tietie && ./scripts/build.sh
 ```
 
 成品會在 `build/Tietie.app`。
+
+Windows 版的原始碼在 `windows/` 資料夾，需要 .NET 8 SDK：
+
+```powershell
+dotnet publish windows/Tietie/Tietie.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+```
 
 ## 授權
 

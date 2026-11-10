@@ -349,6 +349,28 @@ static class SelfTest
         Shoot(new OnboardingForm(), Path.Combine(dir, "4_首次設定.png"));
         Shoot(new SettingsForm(store), Path.Combine(dir, "5_設定.png"));
         Shoot(new AboutForm(), Path.Combine(dir, "6_關於.png"));
+        // 工作列小圖示：放大給人看，深色和淺色工作列各一張
+        using (var sheet = new Bitmap(360, 140))
+        {
+            using var g = Graphics.FromImage(sheet);
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            g.Clear(Color.White);
+            using (var dark = new SolidBrush(Color.FromArgb(32, 32, 32))) g.FillRectangle(dark, 0, 0, 180, 140);
+            using (var normal = Icons.Tray(false)) g.DrawIcon(normal, new Rectangle(20, 20, 64, 64));
+            using (var paused = Icons.Tray(true)) g.DrawIcon(paused, new Rectangle(100, 20, 64, 64));
+            using (var real = Icons.Tray(false)) g.DrawIcon(real, new Rectangle(20, 100, 16, 16));
+            using var p2 = new System.Drawing.Drawing2D.GraphicsPath();
+            var bmp = new Bitmap(32, 32);
+            using (var bg = Graphics.FromImage(bmp))
+            {
+                bg.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                Icons.DrawPapers(bg, new RectangleF(1, 1, 30, 30), Color.FromArgb(30, 30, 30), 2.6f, null);
+            }
+            g.DrawImage(bmp, new Rectangle(200, 20, 64, 64));
+            g.DrawImage(bmp, new Rectangle(200, 100, 16, 16));
+            sheet.Save(Path.Combine(dir, "8_工作列圖示.png"), ImageFormat.Png);
+            Note("OK  8_工作列圖示.png");
+        }
         Toast.Show("已複製，按 Ctrl+V 貼上", 5);
         Pump(500);
         ShootScreen(Path.Combine(dir, "7_整個螢幕.png"));
@@ -504,6 +526,14 @@ static class EndToEnd
         Pump(1800);
         Check("Alt+Enter 把圖片裡的字貼進記事本", NotepadText().Contains("4821"), NotepadText().Replace("\r\n", " / "));
         SelfTestShoot(Path.Combine(shots, "e2e_4_貼出圖片文字.png"));
+
+        // 工作列圖示的選單
+        var area = Screen.PrimaryScreen!.WorkingArea;
+        app.ShowTrayMenu(new Point(area.Right - 320, area.Bottom - 340));
+        Pump(600);
+        SelfTestShoot(Path.Combine(shots, "e2e_5_工作列選單.png"));
+        Press(0x1B);
+        Pump(300);
 
         try { notepadProcess?.Kill(); } catch { }
         foreach (var p in Process.GetProcessesByName("notepad")) { try { p.Kill(); } catch { } }

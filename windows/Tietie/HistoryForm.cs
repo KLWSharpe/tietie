@@ -6,7 +6,7 @@ namespace Tietie;
 sealed class HistoryForm : Form
 {
     readonly Store store;
-    readonly TextBox search = new();
+    readonly SearchBox search = new();
     readonly ListBox list = new();
     readonly Label empty = new();
     readonly Label hint = new();
@@ -59,8 +59,8 @@ sealed class HistoryForm : Form
         search.Font = Theme.UiFont(12f);
         search.BackColor = Theme.Field;
         search.ForeColor = Theme.Fore;
-        search.PlaceholderText = "打字搜尋，圖片裡的字也找得到";
-        search.TextChanged += (_, _) => Reload(true);
+        search.Hint = "打字搜尋，圖片裡的字也找得到";
+        search.TextChanged += (_, _) => { search.Invalidate(); Reload(true); };
         field.Controls.Add(search);
         top.Controls.Add(field);
 
@@ -413,10 +413,21 @@ sealed class HistoryForm : Form
         }
         if (item.Pinned)
         {
-            var pinRect = new RectangleF(right - 10 * s, r.Y + r.Height / 2f - 5 * s, 10 * s, 10 * s);
-            using var pinBrush = new SolidBrush(selected ? Color.White : Theme.Pin);
-            g.FillEllipse(pinBrush, pinRect);
-            right -= (int)(18 * s);
+            var pinColor = selected ? Color.White : Theme.Pin;
+            using var glyph = new Font("Segoe MDL2 Assets", 10f);
+            if (glyph.Name == "Segoe MDL2 Assets")
+            {
+                var gs = TextRenderer.MeasureText("\uE718", glyph);
+                TextRenderer.DrawText(g, "\uE718", glyph, new Rectangle(right - gs.Width, r.Y, gs.Width, r.Height), pinColor,
+                    TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+                right -= gs.Width + (int)(4 * s);
+            }
+            else
+            {
+                using var pinBrush = new SolidBrush(pinColor);
+                g.FillEllipse(pinBrush, new RectangleF(right - 10 * s, r.Y + r.Height / 2f - 5 * s, 10 * s, 10 * s));
+                right -= (int)(18 * s);
+            }
         }
 
         int textX = x + iconW + (int)(10 * s);
@@ -461,6 +472,23 @@ sealed class HistoryForm : Form
             return thumb;
         }
         catch { return null; }
+    }
+}
+
+/// 搜尋框：游標在裡面時也看得到灰色提示字。
+sealed class SearchBox : TextBox
+{
+    public string Hint = "";
+
+    protected override void WndProc(ref Message m)
+    {
+        base.WndProc(ref m);
+        if (m.Msg == 0x000F && Text.Length == 0 && Hint.Length > 0)
+        {
+            using var g = Graphics.FromHwnd(Handle);
+            TextRenderer.DrawText(g, Hint, Font, new Rectangle(1, 0, ClientSize.Width, ClientSize.Height), Theme.Sub,
+                TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+        }
     }
 }
 
