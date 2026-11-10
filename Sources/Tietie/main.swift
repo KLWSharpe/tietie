@@ -37,6 +37,7 @@ if let i = CommandLine.arguments.firstIndex(of: "--render-ui"), i + 1 < CommandL
         ("3_找不到.png", panel.renderSnapshot(searching: "不存在的字")),
         ("4_首次設定.png", OnboardingController().renderSnapshot()),
         ("5_設定.png", SettingsController(store: store).renderSnapshot()),
+        ("6_關於.png", AboutController().renderSnapshot()),
     ]
     for (name, data) in shots {
         if let data { try? data.write(to: dir.appendingPathComponent(name)); print("OK  \(name)") } else { print("FAIL  \(name)") }

@@ -1,7 +1,7 @@
 import AppKit
 import Carbon.HIToolbox
 
-let appVersion = "0.1.0"
+let appVersion = "0.1.1"
 
 final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let store = Store()
@@ -9,6 +9,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private lazy var panel = HistoryPanelController(store: store)
     private lazy var settingsWindow = SettingsController(store: store)
     private let onboarding = OnboardingController()
+    private let aboutWindow = AboutController()
     private let hotKey = HotKey()
     private var statusItem: NSStatusItem!
     private var hotKeyOK = true
@@ -254,12 +255,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     @objc private func showAbout() {
-        let alert = NSAlert()
-        alert.messageText = "貼貼 Tietie \(appVersion)"
-        alert.informativeText = "奎嵐 KueiLan 製作的免費、開源 Mac 剪貼簿小工具。\n記住你複製過的文字、圖片和檔案，所有記錄只存在這台電腦。\n\n歡迎給回饋與建議，之後會幫大家更新。\nhttps://github.com/KLWSharpe/tietie"
-        alert.addButton(withTitle: "好")
-        NSApp.activate(ignoringOtherApps: true)
-        alert.runModal()
+        aboutWindow.show()
     }
 
     @objc private func quit() {
