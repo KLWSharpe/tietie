@@ -1,0 +1,92 @@
+name: Windows
+
+on:
+  push:
+    branches: [main, windows]
+    paths:
+      - 'windows/**'
+      - 'install.ps1'
+      - '.github/workflows/windows.yml'
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: 組裝
+        run: >
+          dotnet publish windows/Tietie/Tietie.csproj -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true
+          -o out
+
+      - name: 版本
+        shell: pwsh
+        run: |
+          $p = Start-Process out\Tietie.exe -ArgumentList '--version' -Wait -PassThru -RedirectStandardOutput "$env:RUNNER_TEMP\version.txt"
+          Get-Content "$env:RUNNER_TEMP\version.txt"
+          (Get-Item out\Tietie.exe).Length / 1MB
+
+      - name: 自我檢查
+        shell: pwsh
+        run: |
+          $env:TIETIE_HOME = "$env:RUNNER_TEMP\tt-self"
+          $p = Start-Process out\Tietie.exe -ArgumentList '--selftest' -Wait -PassThru
+          Get-Content "$env:TIETIE_HOME\selftest.txt" -Encoding UTF8
+          if ($p.ExitCode -ne 0) { exit 1 }
+
+      - name: 版面截圖
+        if: always()
+        shell: pwsh
+        run: |
+          $env:TIETIE_HOME = "$env:RUNNER_TEMP\tt-ui"
+          $p = Start-Process out\Tietie.exe -ArgumentList '--render-ui', "$env:RUNNER_TEMP\shots" -Wait -PassThru
+          Get-Content "$env:TIETIE_HOME\render.txt" -Encoding UTF8
+          if ($p.ExitCode -ne 0) { exit 1 }
+
+      - name: 實際操作測試
+        if: always()
+        shell: pwsh
+        run: |
+          $env:TIETIE_HOME = "$env:RUNNER_TEMP\tt-e2e"
+          $env:TIETIE_SHOTS = "$env:RUNNER_TEMP\shots"
+          $p = Start-Process out\Tietie.exe -ArgumentList '--e2e' -Wait -PassThru
+          Get-Content "$env:TIETIE_HOME\e2e.txt" -Encoding UTF8
+          if ($p.ExitCode -ne 0) { exit 1 }
+
+      - name: 打包
+        if: always()
+        shell: pwsh
+        run: Compress-Archive -Path out\Tietie.exe -DestinationPath Tietie-Windows.zip -Force
+
+      - name: 測試安裝指令（Windows PowerShell 5.1，跟一般人的電腦一樣）
+        shell: powershell
+        run: |
+          $env:TIETIE_ZIP_PATH = "$PWD\Tietie-Windows.zip"
+          $env:TIETIE_INSTALL_DIR = "$env:RUNNER_TEMP\installed"
+          $env:TIETIE_NO_OPEN = '1'
+          Get-Content install.ps1 -Raw -Encoding UTF8 | Invoke-Expression
+          if (-not (Test-Path "$env:RUNNER_TEMP\installed\Tietie.exe")) { exit 1 }
+          Get-ChildItem "$env:RUNNER_TEMP\installed"
+          Test-Path ([Environment]::GetFolderPath('Programs') + '\貼貼 Tietie.lnk')
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Tietie-Windows
+          path: Tietie-Windows.zip
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: |
+            ${{ runner.temp }}/shots
+            ${{ runner.temp }}/tt-self/selftest.txt
+            ${{ runner.temp }}/tt-ui/render.txt
+            ${{ runner.temp }}/tt-e2e/e2e.txt
