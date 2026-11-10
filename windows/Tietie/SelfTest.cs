@@ -114,6 +114,27 @@ static class SelfTest
         store.AddText("剛剛複製的敏感內容", "text", "測試");
         store.ClearRecent(600);
         Check("清除最近 10 分鐘", store.List("敏感").Count == 0 && store.Count() == 1);
+        if (store.AddText("昨天複製過的密碼", "text", "測試") is long oldId)
+        {
+            store.Backdate(oldId, 86400);
+            store.AddText("昨天複製過的密碼", "text", "測試");
+            store.ClearRecent(600);
+            Check("昨天複製過、剛剛又複製一次的內容也會被清掉", store.List("昨天複製過").Count == 0);
+        }
+
+        Settings.SimulateLoadFailure(true);
+        Settings.Update(s => s.MaxItems = 10);
+        for (int i = 0; i < 15; i++) store.AddText($"設定壞掉時 {i}", "text", "測試");
+        Check("設定檔讀不到時不會自動刪記錄", store.List("設定壞掉時").Count == 15);
+        Settings.SimulateLoadFailure(false);
+        Settings.Update(s => s.MaxItems = 1000);
+        foreach (var item in store.List("設定壞掉時")) store.Delete(item.Id);
+
+        Settings.Update(s => s.MaxItems = 0);
+        for (int i = 0; i < 12; i++) store.AddText($"下限 {i}", "text", "測試");
+        Check("上限被改成 0 也至少保留 10 筆", store.List("下限").Count == 10, $"{store.List("下限").Count} 筆");
+        Settings.Update(s => s.MaxItems = 1000);
+        foreach (var item in store.List("下限")) store.Delete(item.Id);
 
         Settings.Update(s => s.MaxItems = 10);
         for (int i = 0; i < 30; i++) store.AddText($"批次 {i}", "text", "測試");
@@ -256,6 +277,16 @@ static class SelfTest
         }
         watcher.Dispose();
 
+        var big = new string('x', ClipboardWatcher.MaxTextChars + 10);
+        var watcher2 = new ClipboardWatcher(store, listen: false);
+        SetClipboard(new DataObject(DataFormats.UnicodeText, big));
+        long beforeBig = store.Count();
+        watcher2.Capture();
+        Check("超過 5 MB 的文字不記", store.Count() == beforeBig);
+        watcher2.Dispose();
+
+        Check("工作列和空視窗不能當貼上目標", !Native.IsPasteTarget(IntPtr.Zero) && !Native.IsPasteTarget(Native.FindWindow("Shell_TrayWnd", null)));
+
         Check("判斷單一網址", ClipboardWatcher.LooksLikeSingleUrl("https://example.com/a.png") && !ClipboardWatcher.LooksLikeSingleUrl("看這個 https://example.com"));
 
         var hk = new HotKeyWindow();
@@ -297,7 +328,7 @@ static class SelfTest
         if (!form.Visible) form.Show();
         form.Activate();
         Pump(500);
-        Shoot(Rectangle.Inflate(form.Bounds, 12, 12), file);
+        Shoot(Native.VisibleBounds(form.Handle, form.Bounds), file);
     }
 
     public static int RenderUi(string dir)
@@ -509,6 +540,18 @@ static class EndToEnd
         Press(0x1B);             // Esc
         Pump(500);
         Check("Esc 關掉清單", !app.Panel.Visible);
+
+        // 從工作列打開清單時，沒有原本的視窗，不可以把內容按進別的地方
+        var tray = Native.FindWindow("Shell_TrayWnd", null);
+        Native.Focus(tray);
+        Pump(400);
+        var beforeTray = NotepadText();
+        app.Panel.ShowPanel();
+        Pump(500);
+        Press(0x0D);
+        Pump(1500);
+        Check("從工作列打開時，不會把內容按進其他視窗", NotepadText() == beforeTray && app.Panel.PreviousWindow == IntPtr.Zero,
+            $"previous={app.Panel.PreviousWindow}");
 
         var png = SelfTest.TextImage("INVOICE 4821");
         var picture = new DataObject();

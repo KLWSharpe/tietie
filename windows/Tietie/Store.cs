@@ -28,8 +28,7 @@ sealed class Store : IDisposable
 
     public Store()
     {
-        db = new SqliteConnection($"Data Source={Paths.Db}");
-        db.Open();
+        db = Open();
         Exec("PRAGMA journal_mode=WAL;");
         Exec("PRAGMA secure_delete=ON;");
         Exec(@"CREATE TABLE IF NOT EXISTS items(
@@ -50,6 +49,32 @@ sealed class Store : IDisposable
     }
 
     public void Dispose() => db.Dispose();
+
+    /// 打開資料庫。檔案壞掉時改名保留，再建一個新的，貼貼才不會開不起來。
+    static SqliteConnection Open()
+    {
+        var conn = new SqliteConnection($"Data Source={Paths.Db}");
+        try
+        {
+            conn.Open();
+            using var check = conn.CreateCommand();
+            check.CommandText = "PRAGMA quick_check;";
+            var result = check.ExecuteScalar() as string;
+            if (result == "ok") return conn;
+        }
+        catch { }
+        conn.Dispose();
+        SqliteConnection.ClearAllPools();
+        var stamp = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+        foreach (var ext in new[] { "", "-wal", "-shm" })
+        {
+            var f = Paths.Db + ext;
+            try { if (File.Exists(f)) File.Move(f, $"{Paths.Db}.broken-{stamp}{ext}"); } catch { }
+        }
+        conn = new SqliteConnection($"Data Source={Paths.Db}");
+        conn.Open();
+        return conn;
+    }
 
     static double Now => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000.0;
 
@@ -150,6 +175,7 @@ sealed class Store : IDisposable
             var item = Item(id);
             Exec("DELETE FROM items WHERE id=$id", ("$id", id));
             if (item != null) DeleteFile(item.ImageFile);
+            Checkpoint();
         }
     }
 
@@ -159,6 +185,7 @@ sealed class Store : IDisposable
         {
             foreach (var item in Query("SELECT * FROM items WHERE pinned=0")) DeleteFile(item.ImageFile);
             Exec("DELETE FROM items WHERE pinned=0");
+            Checkpoint();
         }
     }
 
@@ -167,9 +194,22 @@ sealed class Store : IDisposable
         lock (gate)
         {
             var since = Now - seconds;
-            foreach (var item in Query("SELECT * FROM items WHERE pinned=0 AND created>=$t", ("$t", since))) DeleteFile(item.ImageFile);
-            Exec("DELETE FROM items WHERE pinned=0 AND created>=$t", ("$t", since));
+            foreach (var item in Query("SELECT * FROM items WHERE pinned=0 AND (created>=$t OR last_used>=$t)", ("$t", since))) DeleteFile(item.ImageFile);
+            Exec("DELETE FROM items WHERE pinned=0 AND (created>=$t OR last_used>=$t)", ("$t", since));
+            Checkpoint();
         }
+    }
+
+    /// 刪除後把暫存的寫入記錄清掉，被刪的內容才不會留在資料庫旁邊的暫存檔裡。
+    void Checkpoint()
+    {
+        try { Exec("PRAGMA wal_checkpoint(TRUNCATE);"); } catch { }
+    }
+
+    /// 測試用：把一筆記錄改成很久以前建立、很久以前用過。
+    public void Backdate(long id, double seconds)
+    {
+        lock (gate) Exec("UPDATE items SET created=$t, last_used=$t WHERE id=$id", ("$t", Now - seconds), ("$id", id));
     }
 
     public long Count() { lock (gate) return Scalar("SELECT COUNT(*) FROM items"); }
@@ -221,7 +261,9 @@ sealed class Store : IDisposable
     /// 超過筆數上限或圖片容量上限時，刪掉最舊的（釘選的不刪）。
     void Prune()
     {
-        var excess = Scalar("SELECT COUNT(*) FROM items WHERE pinned=0") - Settings.Data.MaxItems;
+        // 設定檔讀不到時不要刪任何東西，避免回到預設值後把使用者的記錄大量刪掉
+        if (Settings.LoadFailed) return;
+        var excess = Scalar("SELECT COUNT(*) FROM items WHERE pinned=0") - Math.Max(10, Settings.Data.MaxItems);
         if (excess > 0)
         {
             foreach (var item in Query("SELECT * FROM items WHERE pinned=0 ORDER BY last_used ASC LIMIT $n", ("$n", excess)))
@@ -230,7 +272,7 @@ sealed class Store : IDisposable
                 DeleteFile(item.ImageFile);
             }
         }
-        long cap = (long)Settings.Data.ImageCapMB * 1024 * 1024;
+        long cap = (long)Math.Max(50, Settings.Data.ImageCapMB) * 1024 * 1024;
         long total = Scalar("SELECT COALESCE(SUM(bytes),0) FROM items WHERE kind='image' AND pinned=0");
         if (total > cap)
         {

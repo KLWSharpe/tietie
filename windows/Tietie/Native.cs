@@ -41,6 +41,71 @@ static class Native
     [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hWnd);
     [DllImport("user32.dll")] public static extern bool DestroyIcon(IntPtr handle);
     [DllImport("dwmapi.dll")] public static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int value, int size);
+    [StructLayout(LayoutKind.Sequential)] public struct RECT { public int Left, Top, Right, Bottom; }
+    [DllImport("dwmapi.dll")] public static extern int DwmGetWindowAttribute(IntPtr hwnd, int attr, out RECT value, int size);
+
+    /// 視窗實際看得到的範圍（不含 Windows 11 看不見的邊框）。
+    public static Rectangle VisibleBounds(IntPtr hwnd, Rectangle fallback)
+    {
+        try
+        {
+            if (DwmGetWindowAttribute(hwnd, 9, out RECT r, Marshal.SizeOf<RECT>()) == 0)
+                return Rectangle.FromLTRB(r.Left, r.Top, r.Right, r.Bottom);
+        }
+        catch { }
+        return fallback;
+    }
+
+    [DllImport("user32.dll")] public static extern IntPtr GetAncestor(IntPtr hWnd, uint flags);
+    [DllImport("kernel32.dll")] static extern IntPtr OpenProcess(uint access, bool inherit, uint pid);
+    [DllImport("kernel32.dll")] static extern bool CloseHandle(IntPtr h);
+    [DllImport("advapi32.dll")] static extern bool OpenProcessToken(IntPtr process, uint access, out IntPtr token);
+    [DllImport("advapi32.dll")] static extern bool GetTokenInformation(IntPtr token, int cls, out int info, int len, out int ret);
+
+    static readonly string[] ShellClasses =
+    {
+        "Shell_TrayWnd", "Shell_SecondaryTrayWnd", "NotifyIconOverflowWindow", "TopLevelWindowForOverflowXamlIsland",
+        "Windows.UI.Core.CoreWindow", "Progman", "WorkerW", "XamlExplorerHostIslandWindow",
+    };
+
+    /// 這個視窗能不能當成貼上的目標（排除工作列、開始功能表、桌面和貼貼自己）。
+    public static bool IsPasteTarget(IntPtr hWnd)
+    {
+        if (hWnd == IntPtr.Zero || !IsWindow(hWnd)) return false;
+        GetWindowThreadProcessId(hWnd, out uint pid);
+        if (pid == 0 || pid == Environment.ProcessId) return false;
+        return !ShellClasses.Contains(ClassOf(GetAncestor(hWnd, 2)));
+    }
+
+    public static uint ProcessOf(IntPtr hWnd)
+    {
+        GetWindowThreadProcessId(hWnd, out uint pid);
+        return pid;
+    }
+
+    static bool? selfElevated;
+
+    /// 這個行程是不是用系統管理員權限在跑。查不到時回傳 null。
+    public static bool? IsElevated(uint pid)
+    {
+        var process = OpenProcess(0x1000, false, pid); // PROCESS_QUERY_LIMITED_INFORMATION
+        if (process == IntPtr.Zero) return null;
+        try
+        {
+            if (!OpenProcessToken(process, 0x0008, out var token)) return null;
+            try { return GetTokenInformation(token, 20, out int elevated, 4, out _) ? elevated != 0 : null; }
+            finally { CloseHandle(token); }
+        }
+        finally { CloseHandle(process); }
+    }
+
+    /// 目標視窗權限比貼貼高時，Windows 會擋掉模擬按鍵。
+    public static bool BlocksKeys(IntPtr hWnd)
+    {
+        selfElevated ??= IsElevated((uint)Environment.ProcessId) ?? false;
+        if (selfElevated == true) return false;
+        return IsElevated(ProcessOf(hWnd)) == true;
+    }
 
     public static bool KeyDown(int vk) => (GetAsyncKeyState(vk) & 0x8000) != 0;
 

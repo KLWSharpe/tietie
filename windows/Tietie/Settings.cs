@@ -35,24 +35,44 @@ sealed class SettingsData
 static class Settings
 {
     static readonly JsonSerializerOptions Options = new() { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    /// 設定檔存在卻讀不出來。這時不覆寫設定檔，也不自動刪除記錄。
+    public static bool LoadFailed { get; private set; }
     public static SettingsData Data { get; private set; } = Load();
 
     static SettingsData Load()
     {
-        try
+        if (!File.Exists(Paths.SettingsFile)) return new SettingsData();
+        for (int i = 0; i < 3; i++)
         {
-            if (File.Exists(Paths.SettingsFile))
-                return JsonSerializer.Deserialize<SettingsData>(File.ReadAllText(Paths.SettingsFile), Options) ?? new SettingsData();
+            try
+            {
+                var data = JsonSerializer.Deserialize<SettingsData>(File.ReadAllText(Paths.SettingsFile), Options);
+                if (data != null) return data;
+            }
+            catch { }
+            Thread.Sleep(200);
         }
-        catch { }
-        return new SettingsData();
+        LoadFailed = true;
+        return new SettingsData { Onboarded = true };
     }
 
     public static void Update(Action<SettingsData> change)
     {
         change(Data);
-        try { File.WriteAllText(Paths.SettingsFile, JsonSerializer.Serialize(Data, Options)); } catch { }
+        if (LoadFailed) return;
+        try
+        {
+            // 先寫到暫存檔再換掉，寫到一半斷電也不會把設定檔弄壞
+            var tmp = Paths.SettingsFile + ".tmp";
+            File.WriteAllText(tmp, JsonSerializer.Serialize(Data, Options));
+            if (File.Exists(Paths.SettingsFile)) File.Replace(tmp, Paths.SettingsFile, null);
+            else File.Move(tmp, Paths.SettingsFile);
+        }
+        catch { }
     }
+
+    /// 測試用：模擬設定檔讀不到的情況。
+    public static void SimulateLoadFailure(bool failed) => LoadFailed = failed;
 }
 
 sealed record HotKeyChoice(string Id, string Label, uint Modifiers)

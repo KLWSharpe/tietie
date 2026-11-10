@@ -69,7 +69,7 @@ sealed class TrayApp : ApplicationContext
             if (!ok && item.Kind == "image") { Toast.Show("這張圖片的檔案不見了，沒辦法貼上"); return; }
         }
         if (!ok) { Toast.Show("剪貼簿被別的程式佔用，請再試一次"); return; }
-        Store.Touch(item.Id);
+        try { Store.Touch(item.Id); } catch { }
         var target = Panel.PreviousWindow;
         Paster.AfterModifiersReleased(() =>
         {

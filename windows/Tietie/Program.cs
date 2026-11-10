@@ -11,6 +11,9 @@ static class Program
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
         SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
+        Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+        Application.ThreadException += (_, e) => Report(e.Exception);
+        AppDomain.CurrentDomain.UnhandledException += (_, e) => { if (e.ExceptionObject is Exception ex) Log(ex); };
 
         if (args.Contains("--version"))
         {
@@ -32,5 +35,17 @@ static class Program
         }
         Application.Run(new TrayApp(showPanel: args.Contains("--show"), noOnboarding: args.Contains("--no-onboarding")));
         return 0;
+    }
+
+    static void Log(Exception ex)
+    {
+        try { File.AppendAllText(Path.Combine(Paths.Home, "error.log"), $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} {ex}\r\n\r\n"); } catch { }
+    }
+
+    /// 出錯時不要跳出嚇人的對話框，記到 error.log 並小小提示。
+    static void Report(Exception ex)
+    {
+        Log(ex);
+        try { Toast.Show("貼貼遇到一個小問題，已記錄下來。可以再試一次"); } catch { }
     }
 }

@@ -17,6 +17,9 @@ sealed class ClipboardWatcher : NativeWindow, IDisposable
 
     // 密碼管理器複製時會加上的標記
     static readonly string[] ConcealedFormats = { "ExcludeClipboardContentFromMonitorProcessing", "Clipboard Viewer Ignore" };
+    // 密碼管理器的程式名稱（有些瀏覽器擴充或舊版不會加標記，用來源程式再擋一層）
+    static readonly string[] PasswordApps = { "keepass", "bitwarden", "1password", "lastpass", "dashlane", "enpass", "nordpass", "proton pass", "roboform", "keeper" };
+    public const int MaxTextChars = 5 * 1024 * 1024 / 2;
 
     readonly Store store;
     readonly bool listening;
@@ -77,7 +80,7 @@ sealed class ClipboardWatcher : NativeWindow, IDisposable
                 return BitConverter.ToInt32(bytes, 0) == 0;
             }
         }
-        catch { }
+        catch { return true; }
         return false;
     }
 
@@ -89,9 +92,9 @@ sealed class ClipboardWatcher : NativeWindow, IDisposable
         if (s.Paused) return false;
         var data = Read();
         if (data == null) return false;
-        if (IsConcealed(data) && !(s.Onboarded && s.RecordConcealed)) return false;
-
         var source = ForegroundApp();
+        bool concealed = IsConcealed(data) || PasswordApps.Any(p => source.Contains(p, StringComparison.OrdinalIgnoreCase));
+        if (concealed && !(s.Onboarded && s.RecordConcealed)) return false;
         bool recorded = false;
 
         if (data.GetDataPresent(DataFormats.FileDrop) && data.GetData(DataFormats.FileDrop) is string[] files && files.Length > 0)
@@ -113,7 +116,7 @@ sealed class ClipboardWatcher : NativeWindow, IDisposable
                     if (id is long newId && isNew) RecognizeLater(newId, png);
                 }
             }
-            else if (!string.IsNullOrWhiteSpace(text))
+            else if (!string.IsNullOrWhiteSpace(text) && text.Length <= MaxTextChars)
             {
                 recorded = store.AddText(text, "text", source) != null;
             }
@@ -236,10 +239,13 @@ static class Paster
                     bitmap = new Bitmap(image);
                 }
                 catch { return false; }
-                var imageData = new DataObject();
-                imageData.SetData(DataFormats.Bitmap, true, bitmap);
-                imageData.SetData("PNG", false, new MemoryStream(png));
-                return Put(imageData);
+                using (bitmap)
+                {
+                    var imageData = new DataObject();
+                    imageData.SetData(DataFormats.Bitmap, true, bitmap);
+                    imageData.SetData("PNG", false, new MemoryStream(png));
+                    return Put(imageData);
+                }
             case "file":
                 var existing = item.Text.Split('\n').Where(p => File.Exists(p) || Directory.Exists(p)).ToArray();
                 if (existing.Length == 0) return WriteText(item.Text);
@@ -269,15 +275,29 @@ static class Paster
         timer.Start();
     }
 
+    /// 回到原本的視窗並按 Ctrl+V。確定焦點真的回去了才按，否則只提示使用者自己貼。
     public static void PasteInto(IntPtr target)
     {
+        if (!Native.IsPasteTarget(target))
+        {
+            Toast.Show("已複製，按 Ctrl+V 貼上");
+            return;
+        }
+        if (Native.BlocksKeys(target))
+        {
+            Native.Focus(target);
+            Toast.Show("已複製。這個視窗是用系統管理員權限開的，請自己按 Ctrl+V 貼上", 3.5);
+            return;
+        }
         Native.Focus(target);
         var timer = new System.Windows.Forms.Timer { Interval = 70 };
         timer.Tick += (_, _) =>
         {
             timer.Stop();
             timer.Dispose();
-            SendCtrlV();
+            var fg = Native.GetForegroundWindow();
+            if (Native.ProcessOf(fg) == Native.ProcessOf(target)) SendCtrlV();
+            else Toast.Show("已複製，按 Ctrl+V 貼上");
         };
         timer.Start();
     }

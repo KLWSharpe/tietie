@@ -133,12 +133,9 @@ sealed class HistoryForm : Form
 
     public void ShowPanel()
     {
+        // 記下原本在用的視窗。從工作列、開始功能表或貼貼自己打開時，沒有可以貼上的地方
         var fg = Native.GetForegroundWindow();
-        if (fg != Handle && fg != preview.Handle)
-        {
-            Native.GetWindowThreadProcessId(fg, out uint pid);
-            if (pid != Environment.ProcessId) PreviousWindow = fg;
-        }
+        PreviousWindow = Native.IsPasteTarget(fg) ? fg : IntPtr.Zero;
         search.Text = "";
         Reload(true);
         var area = Screen.FromPoint(Cursor.Position).WorkingArea;
@@ -173,6 +170,13 @@ sealed class HistoryForm : Form
     void Reload(bool selectFirst)
     {
         items = store.List(search.Text);
+        // 縮圖只留目前清單上的，避免越用越佔記憶體
+        var keep = new HashSet<string>(items.Select(i => i.ImageFile));
+        foreach (var key in thumbs.Keys.Where(k => !keep.Contains(k)).ToList())
+        {
+            thumbs[key].Dispose();
+            thumbs.Remove(key);
+        }
         list.BeginUpdate();
         list.Items.Clear();
         foreach (var item in items) list.Items.Add(item);
