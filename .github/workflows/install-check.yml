@@ -1,0 +1,37 @@
+name: 安裝指令檢查
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: 照教學貼那一行（Windows PowerShell 5.1）
+        shell: powershell
+        run: |
+          $env:TIETIE_NO_OPEN = '1'
+          irm https://raw.githubusercontent.com/KLWSharpe/tietie/main/install.ps1 | iex
+          $exe = Join-Path $env:LOCALAPPDATA 'Programs\Tietie\Tietie.exe'
+          if (-not (Test-Path $exe)) { Write-Host '沒有裝好'; exit 1 }
+          $out = Join-Path $env:RUNNER_TEMP 'v.txt'
+          Start-Process $exe -ArgumentList '--version' -Wait -RedirectStandardOutput $out
+          Get-Content $out
+          $lnk = Join-Path ([Environment]::GetFolderPath('Programs')) '貼貼 Tietie.lnk'
+          Write-Host "開始功能表捷徑：$(Test-Path $lnk)"
+          if (-not (Test-Path $lnk)) { exit 1 }
+          $env:TIETIE_HOME = Join-Path $env:RUNNER_TEMP 'tt'
+          $p = Start-Process $exe -ArgumentList '--selftest' -Wait -PassThru
+          Get-Content (Join-Path $env:TIETIE_HOME 'selftest.txt') -Encoding UTF8 | Select-Object -Last 3
+          if ($p.ExitCode -ne 0) { exit 1 }
+
+  mac:
+    runs-on: macos-latest
+    steps:
+      - name: 照教學貼那一行
+        run: |
+          TIETIE_INSTALL_DIR="$RUNNER_TEMP/apps" TIETIE_NO_OPEN=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/KLWSharpe/tietie/main/install.sh)"
+          "$RUNNER_TEMP/apps/Tietie.app/Contents/MacOS/Tietie" --version
+          TIETIE_HOME="$RUNNER_TEMP/tt" "$RUNNER_TEMP/apps/Tietie.app/Contents/MacOS/Tietie" --selftest | tail -3
