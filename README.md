@@ -6,7 +6,9 @@
 
 我用了好幾年的 Clipy。後來它在新版 macOS 上打不開了，我就自己寫了一個更強的，免費分享給大家。
 
-歡迎給回饋與建議，之後會幫大家更新。有想法請到 [Issues](https://github.com/KLWSharpe/tietie/issues) 留言。
+歡迎給回饋與建議，之後會幫大家更新。有想法或安裝卡住，可以私訊 IG／Threads [@kueilanverse](https://www.instagram.com/kueilanverse)、寄信到 klwsharpe@gmail.com，或到 [Issues](https://github.com/KLWSharpe/tietie/issues) 留言。
+
+**第一次安裝請看：[一步一步的安裝教學](docs/安裝教學.md)**
 
 <img src="docs/screenshot-list.png" width="380" alt="貼貼的歷史清單">
 
@@ -93,4 +95,4 @@ MIT License。免費使用、修改、再分享。
 
 ## 作者
 
-奎嵐 KueiLan。網站：[kueilan.com](https://kueilan.com)
+奎嵐 KueiLan。網站：[kueilan.com](https://kueilan.com)　IG／Threads：[@kueilanverse](https://www.instagram.com/kueilanverse)
