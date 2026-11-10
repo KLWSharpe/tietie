@@ -17,6 +17,7 @@ if [ ! -x "$TMP/new/Tietie.app/Contents/MacOS/Tietie" ]; then
 fi
 
 # 「應用程式」資料夾不能寫入的話，改放到個人的應用程式資料夾
+mkdir -p "$DEST" 2>/dev/null || true
 if [ ! -w "$DEST" ]; then
     DEST="$HOME/Applications"
     mkdir -p "$DEST"
