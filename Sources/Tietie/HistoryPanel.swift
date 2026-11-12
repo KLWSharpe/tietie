@@ -624,7 +624,22 @@ func snapshot(of window: NSWindow) -> Data? {
     guard let view = window.contentView else { return nil }
     window.layoutIfNeeded()
     view.layoutSubtreeIfNeeded()
+    // TIETIE_RENDER_SCALE=2 可輸出兩倍解析度（做宣傳圖用）
+    let scale = CGFloat(Double(ProcessInfo.processInfo.environment["TIETIE_RENDER_SCALE"] ?? "") ?? 1)
     guard let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { return nil }
+    rep.size = view.bounds.size
+    if scale > 1, let hi = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: Int(view.bounds.width * scale), pixelsHigh: Int(view.bounds.height * scale),
+                                            bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false,
+                                            colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0) {
+        hi.size = view.bounds.size
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: hi)
+        NSColor.windowBackgroundColor.setFill()
+        view.bounds.fill()
+        NSGraphicsContext.restoreGraphicsState()
+        view.cacheDisplay(in: view.bounds, to: hi)
+        return hi.representation(using: .png, properties: [:])
+    }
     view.cacheDisplay(in: view.bounds, to: rep)
     let canvas = NSImage(size: view.bounds.size)
     canvas.lockFocus()
