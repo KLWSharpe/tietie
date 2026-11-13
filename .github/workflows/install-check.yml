@@ -27,6 +27,38 @@ jobs:
           Get-Content (Join-Path $env:TIETIE_HOME 'selftest.txt') -Encoding UTF8 | Select-Object -Last 1
           if ($p.ExitCode -ne 0) { exit 1 }
 
+      - name: 從貼貼裡按「立即更新」（實際下載安裝）
+        shell: pwsh
+        run: |
+          $exe = Join-Path $env:LOCALAPPDATA 'Programs\Tietie\Tietie.exe'
+          $env:TIETIE_HOME = Join-Path $env:RUNNER_TEMP 'tt-upd'
+          '{"tag_name":"v9.9.9"}' | Set-Content "$env:RUNNER_TEMP\fake-release.json" -Encoding UTF8
+          $env:TIETIE_UPDATE_URL = ([Uri]"$env:RUNNER_TEMP\fake-release.json").AbsoluteUri
+          $before = (Get-Item $exe).LastWriteTimeUtc
+          $p = Start-Process $exe -ArgumentList '--no-onboarding' -PassThru
+          Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes, System.Windows.Forms
+          $root = [Windows.Automation.AutomationElement]::RootElement
+          $cond = New-Object Windows.Automation.PropertyCondition([Windows.Automation.AutomationElement]::ProcessIdProperty, $p.Id)
+          $dlg = $null
+          for ($i = 0; $i -lt 60 -and -not $dlg; $i++) {
+            Start-Sleep 1
+            foreach ($w in $root.FindAll([Windows.Automation.TreeScope]::Children, $cond)) { if ($w.Current.Name -eq '貼貼') { $dlg = $w } }
+          }
+          if (-not $dlg) { Write-Host 'FAIL  沒有跳出新版提示'; exit 1 }
+          $btn = $dlg.FindFirst([Windows.Automation.TreeScope]::Descendants, (New-Object Windows.Automation.PropertyCondition([Windows.Automation.AutomationElement]::NameProperty, '立即更新')))
+          $btn.SetFocus(); Start-Sleep -Milliseconds 300; [System.Windows.Forms.SendKeys]::SendWait(' ')
+          $new = $null
+          for ($i = 0; $i -lt 90 -and -not $new; $i++) {
+            Start-Sleep 1
+            $new = Get-Process -Name Tietie -ErrorAction SilentlyContinue | Where-Object { $_.Id -ne $p.Id } | Select-Object -First 1
+          }
+          $oldAlive = -not $p.HasExited
+          $after = (Get-Item $exe).LastWriteTimeUtc
+          Write-Host "舊的還在跑：$oldAlive　新的：$($new.Id)　檔案更新前 $before　更新後 $after"
+          Get-Process -Name Tietie -ErrorAction SilentlyContinue | Stop-Process -Force
+          if ($oldAlive -or -not $new) { Write-Host 'FAIL  按了立即更新，沒有換成新版重新打開'; exit 1 }
+          Write-Host 'PASS  按「立即更新」後，舊版關閉、新版下載安裝並自動打開'
+
   mac:
     runs-on: macos-latest
     steps:
