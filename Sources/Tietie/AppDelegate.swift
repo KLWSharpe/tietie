@@ -1,7 +1,7 @@
 import AppKit
 import Carbon.HIToolbox
 
-let appVersion = "0.3.0"
+let appVersion = "0.4.0"
 
 final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let store = Store()
@@ -59,6 +59,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             DistributedNotificationCenter.default().addObserver(forName: Notification.Name("app.tietie.debug.show"), object: nil, queue: .main) { [weak self] _ in
                 self?.panel.show()
             }
+        }
+        // 測試時（指定 TIETIE_HOME）不自動檢查，除非另外指定了假的更新網址
+        if ProcessInfo.processInfo.environment["TIETIE_HOME"] == nil || ProcessInfo.processInfo.environment["TIETIE_UPDATE_URL"] != nil {
+            Updater.startAutomaticChecks()
         }
         if args.contains("--show") {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in self?.panel.show() }
@@ -203,6 +207,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let about = NSMenuItem(title: "關於貼貼", action: #selector(showAbout), keyEquivalent: "")
         about.target = self
         menu.addItem(about)
+        let update = NSMenuItem(title: "檢查更新…", action: #selector(checkUpdate), keyEquivalent: "")
+        update.target = self
+        menu.addItem(update)
 
         menu.addItem(.separator())
         let size = ByteCountFormatter.string(fromByteCount: store.imageBytes(), countStyle: .file)
@@ -254,6 +261,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Pasteboard") {
             NSWorkspace.shared.open(url)
         }
+    }
+
+    @objc private func checkUpdate() {
+        Updater.check(manual: true)
     }
 
     @objc private func openSettings() {

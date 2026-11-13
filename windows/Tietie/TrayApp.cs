@@ -34,6 +34,8 @@ sealed class TrayApp : ApplicationContext
         if (!Settings.Data.Onboarded && !noOnboarding) new OnboardingForm().Show();
         else AutoStart.Apply(Settings.Data.LaunchAtLogin);
         if (showPanel) Panel.ShowPanel();
+        // 測試時（指定 TIETIE_HOME）不自動檢查，除非另外指定了假的更新網址
+        if (!Paths.TestMode || Environment.GetEnvironmentVariable("TIETIE_UPDATE_URL") != null) Updater.StartAutomaticChecks();
     }
 
     void RegisterHotKey()
@@ -117,6 +119,7 @@ sealed class TrayApp : ApplicationContext
         trayMenu.Items.Add(new ToolStripSeparator());
         trayMenu.Items.Add("設定…", null, (_, _) => ShowSettings());
         trayMenu.Items.Add("關於貼貼", null, (_, _) => ShowAbout());
+        trayMenu.Items.Add("檢查更新…", null, (_, _) => _ = Updater.Check(true));
         trayMenu.Items.Add(new ToolStripSeparator());
         long bytes = Store.ImageBytes();
         string size = bytes < 1024 * 1024 ? $"{bytes / 1024} KB" : $"{bytes / 1024.0 / 1024.0:0.0} MB";

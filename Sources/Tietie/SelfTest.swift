@@ -20,6 +20,8 @@ enum SelfTest {
 
         // 文字
         let a = store.addText("第一段文字 hello", sourceApp: "測試")
+        check("版本比較：新版", Updater.isNewer("v0.4.0", than: "0.3.0") && Updater.isNewer("0.10.0", than: "0.9.9") && Updater.isNewer("1.0", than: "0.9.9"))
+        check("版本比較：同版或舊版不提示", !Updater.isNewer("v0.3.0", than: "0.3.0") && !Updater.isNewer("0.2.9", than: "0.3.0") && !Updater.isNewer("0.3", than: "0.3.0"))
         check("新增文字", a != nil && store.count() == 1, "count=\(store.count())")
         let b = store.addText("第一段文字 hello", sourceApp: "測試")
         check("重複內容不會多一筆", a == b && store.count() == 1, "count=\(store.count())")

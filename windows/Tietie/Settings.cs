@@ -30,6 +30,7 @@ sealed class SettingsData
     public bool Paused { get; set; }
     public bool LaunchAtLogin { get; set; } = true;
     public string HotKey { get; set; } = "ctrl+shift+v";
+    public string SkippedUpdateVersion { get; set; } = "";
 }
 
 static class Settings

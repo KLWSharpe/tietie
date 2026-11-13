@@ -78,6 +78,9 @@ static class SelfTest
         store.ClearUnpinned();
 
         var a = store.AddText("第一段文字 hello", "text", "測試");
+        Check("版本比較：新版", Updater.IsNewer("v0.4.0", "0.3.0") && Updater.IsNewer("0.10.0", "0.9.9") && Updater.IsNewer("1.0", "0.9.9"));
+        Check("版本比較：同版或舊版不提示", !Updater.IsNewer("v0.3.0", "0.3.0") && !Updater.IsNewer("0.2.9", "0.3.0") && !Updater.IsNewer("0.3", "0.3.0"));
+        Check("讀得懂 GitHub 的版本資訊", Updater.ReadTag("{\"tag_name\":\"v0.4.0\",\"name\":\"x\"}") == "v0.4.0");
         Check("新增文字", a != null && store.Count() == 1, $"count={store.Count()}");
         var b = store.AddText("第一段文字 hello", "text", "測試");
         Check("重複內容不會多一筆", a == b && store.Count() == 1, $"count={store.Count()}");

@@ -61,6 +61,40 @@ jobs:
           Get-Content "$env:TIETIE_HOME\e2e.txt" -Encoding UTF8
           if ($p.ExitCode -ne 0) { exit 1 }
 
+      - name: 新版提示測試
+        if: always()
+        shell: pwsh
+        run: |
+          $env:TIETIE_HOME = "$env:RUNNER_TEMP\tt-upd"
+          New-Item -ItemType Directory -Force -Path "$env:RUNNER_TEMP\shots" | Out-Null
+          '{"tag_name":"v9.9.9"}' | Set-Content "$env:RUNNER_TEMP\fake-release.json" -Encoding UTF8
+          $env:TIETIE_UPDATE_URL = ([Uri]"$env:RUNNER_TEMP\fake-release.json").AbsoluteUri
+          $env:TIETIE_UPDATE_DRYRUN = '1'
+          $p = Start-Process out\Tietie.exe -ArgumentList '--no-onboarding' -PassThru
+          Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes, System.Windows.Forms, System.Drawing
+          $root = [Windows.Automation.AutomationElement]::RootElement
+          $cond = New-Object Windows.Automation.PropertyCondition([Windows.Automation.AutomationElement]::ProcessIdProperty, $p.Id)
+          $dlg = $null
+          for ($i = 0; $i -lt 60 -and -not $dlg; $i++) {
+            Start-Sleep 1
+            foreach ($w in $root.FindAll([Windows.Automation.TreeScope]::Children, $cond)) { if ($w.Current.Name -eq '貼貼') { $dlg = $w } }
+          }
+          if (-not $dlg) { Write-Host 'FAIL  沒有跳出新版提示'; Stop-Process $p -Force; exit 1 }
+          $text = ($dlg.FindAll([Windows.Automation.TreeScope]::Descendants, [Windows.Automation.Condition]::TrueCondition) | ForEach-Object { $_.Current.Name } | Where-Object { $_ }) -join ' | '
+          Write-Host "提示內容：$text"
+          $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+          $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
+          [System.Drawing.Graphics]::FromImage($bmp).CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
+          $bmp.Save("$env:RUNNER_TEMP\shots\e2e_6_新版提示.png")
+          if ($text -notmatch '9\.9\.9' -or $text -notmatch '立即更新') { Write-Host 'FAIL  提示內容不對'; Stop-Process $p -Force; exit 1 }
+          $btn = $dlg.FindFirst([Windows.Automation.TreeScope]::Descendants, (New-Object Windows.Automation.PropertyCondition([Windows.Automation.AutomationElement]::NameProperty, '立即更新')))
+          $btn.GetCurrentPattern([Windows.Automation.InvokePattern]::Pattern).Invoke()
+          Start-Sleep 2
+          $alive = -not $p.HasExited
+          Stop-Process $p -Force -ErrorAction SilentlyContinue
+          if (-not $alive) { Write-Host 'FAIL  按了立即更新之後貼貼當掉'; exit 1 }
+          Write-Host 'PASS  新版提示跳出，按「立即更新」有反應'
+
       - name: 打包
         if: always()
         shell: pwsh
