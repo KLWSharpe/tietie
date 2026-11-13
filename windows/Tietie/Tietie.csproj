@@ -10,7 +10,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>Tietie</AssemblyName>
     <RootNamespace>Tietie</RootNamespace>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <Product>貼貼 Tietie</Product>
     <Company>奎嵐 KueiLan</Company>
     <Copyright>Copyright (c) 2026 奎嵐 KueiLan</Copyright>
