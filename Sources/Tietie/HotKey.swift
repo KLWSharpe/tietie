@@ -38,6 +38,16 @@ enum Paster {
 
     /// 跳出系統的權限提示，帶使用者去「輔助使用」打勾。
     static func requestTrust() {
+        // 貼貼更新後，系統裡的開關還是亮的，但它綁的是舊版，對新版無效，重新打開也一樣。
+        // 這時先清掉貼貼自己這一筆舊紀錄，系統才會重新列出新版讓使用者打開。
+        // 只在目前沒有權限時做，不會拿掉有效的權限，也只動貼貼自己這一筆。
+        if !trusted, let id = Bundle.main.bundleIdentifier {
+            let reset = Process()
+            reset.executableURL = URL(fileURLWithPath: "/usr/bin/tccutil")
+            reset.arguments = ["reset", "Accessibility", id]
+            try? reset.run()
+            reset.waitUntilExit()
+        }
         let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
         _ = AXIsProcessTrustedWithOptions(options)
     }

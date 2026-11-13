@@ -20,6 +20,19 @@ static class Native
     [DllImport("user32.dll", SetLastError = true)] public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
     [DllImport("user32.dll")] public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
     [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
+    [DllImport("imm32.dll")] public static extern uint ImmGetVirtualKey(IntPtr hWnd);
+    [DllImport("imm32.dll")] static extern IntPtr ImmGetContext(IntPtr hWnd);
+    [DllImport("imm32.dll")] static extern bool ImmReleaseContext(IntPtr hWnd, IntPtr himc);
+    [DllImport("imm32.dll")] static extern bool ImmNotifyIME(IntPtr himc, uint action, uint index, uint value);
+
+    /// 取消輸入法正在組的字（數字鍵被拿去快速貼上時，不要留下注音符號）
+    public static void CancelComposition(IntPtr hWnd)
+    {
+        var himc = ImmGetContext(hWnd);
+        if (himc == IntPtr.Zero) return;
+        ImmNotifyIME(himc, 0x15 /* NI_COMPOSITIONSTR */, 0x4 /* CPS_CANCEL */, 0);
+        ImmReleaseContext(hWnd, himc);
+    }
     [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hWnd);
     [DllImport("user32.dll")] public static extern bool BringWindowToTop(IntPtr hWnd);
     [DllImport("user32.dll")] public static extern bool IsWindow(IntPtr hWnd);

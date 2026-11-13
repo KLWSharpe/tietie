@@ -595,6 +595,21 @@ static class EndToEnd
         Pump(1500);
         Check("Ctrl+0 貼上這頁第 10 筆", NotepadText().Contains(wantTenth), $"要的是「{wantTenth}」");
 
+        // 直接按數字（不用按 Ctrl）就貼上這一頁的第幾筆
+        Press(0x11, 0x10, 0x56);
+        Pump(800);
+        var wantThird = app.Panel.Items.Count >= 3 ? app.Panel.Items[2].Text : "?";
+        Press(0x33);             // 3
+        Pump(1500);
+        Check("搜尋框是空的時候，直接按 3 貼上第 3 筆", !app.Panel.Visible && NotepadText().EndsWith(wantThird), $"要的是「{wantThird}」");
+        Press(0x11, 0x10, 0x56);
+        Pump(800);
+        Press(0x45); Pump(60);   // e
+        Press(0x32); Pump(300);  // 2
+        Check("搜尋框有字時，按數字是打字", app.Panel.Visible && app.Panel.SearchText == "e2", $"搜尋框「{app.Panel.SearchText}」");
+        Press(0x1B);
+        Pump(500);
+
         // 從工作列打開清單時，沒有原本的視窗，不可以把內容按進別的地方
         var tray = Native.FindWindow("Shell_TrayWnd", null);
         Native.Focus(tray);

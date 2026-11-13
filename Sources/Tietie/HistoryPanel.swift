@@ -183,7 +183,7 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
         emptyLabel.font = .systemFont(ofSize: 13)
         emptyLabel.maximumNumberOfLines = 3
 
-        hint.stringValue = "← → 換頁　↩ 貼上　⌘1–0 快速貼　⌥↩ 貼圖片裡的字　空白鍵預覽　右鍵看更多"
+        hint.stringValue = "按數字 1–0 直接貼　← → 換頁　↩ 貼上　⌥↩ 貼圖片裡的字　空白鍵預覽　右鍵看更多"
 
         pager.segmentStyle = .rounded
         pager.trackingMode = .selectOne
@@ -465,11 +465,22 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
         default:
             break
         }
-        // 數字鍵 1 到 9、0 的實體鍵位，不受輸入法或鍵盤配置影響；⌘0 是這頁第 10 筆
+        // 數字鍵 1 到 9、0 的實體鍵位（含右邊數字鍵盤），不受輸入法或鍵盤配置影響；0 是這頁第 10 筆
         let digitKeys = [18, 19, 20, 21, 23, 22, 26, 28, 25, 29]
-        if flags == .command, let index = digitKeys.firstIndex(of: Int(event.keyCode)) {
-            if index < items.count { pick(items[index]) }
-            return true
+        let padKeys = [83, 84, 85, 86, 87, 88, 89, 91, 92, 82]
+        let code = Int(event.keyCode)
+        if let index = digitKeys.firstIndex(of: code) ?? padKeys.firstIndex(of: code) {
+            // 搜尋框是空的：直接按數字就貼上。搜尋框有字：數字當成打字，要快速貼改按 ⌘ 加數字
+            if flags == .command || (flags.isEmpty && search.stringValue.isEmpty) {
+                if index < items.count { pick(items[index]) }
+                return true
+            }
+            // ⌥ 加數字：把數字打進搜尋框，用來搜尋開頭是數字的內容（例如訂單編號）
+            if flags == .option {
+                panel.makeFirstResponder(search)
+                search.currentEditor()?.insertText(String((index + 1) % 10))
+                return true
+            }
         }
         return false
     }
@@ -577,7 +588,7 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
             return c
         }()
         let item = items[row]
-        cell.badge.stringValue = row < 10 ? "⌘\((row + 1) % 10)" : ""
+        cell.badge.stringValue = row < 10 ? (search.stringValue.isEmpty ? "" : "⌘") + "\((row + 1) % 10)" : ""
         cell.pin.isHidden = !item.pinned
 
         var meta: [String] = []

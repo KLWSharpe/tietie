@@ -77,7 +77,7 @@ sealed class HistoryForm : Form
         hint.TextAlign = ContentAlignment.MiddleCenter;
         hint.ForeColor = Theme.Sub;
         hint.Font = Theme.UiFont(8.25f);
-        hint.Text = "← → 換頁　Enter 貼上　Ctrl+1–0 快速貼　Alt+Enter 貼圖片裡的字　空白鍵預覽　右鍵看更多";
+        hint.Text = "按數字 1–0 直接貼　← → 換頁　Enter 貼上　Alt+Enter 貼圖片裡的字　空白鍵預覽　右鍵看更多";
 
         var host = new Panel { Dock = DockStyle.Fill, BackColor = Theme.Back, Padding = new Padding(6, 0, 6, 0) };
         list.Dock = DockStyle.Fill;
@@ -324,12 +324,29 @@ sealed class HistoryForm : Form
                 break;
         }
         var key = keyData & Keys.KeyCode;
-        if ((keyData & Keys.Modifiers) == Keys.Control)
+        var mods = keyData & Keys.Modifiers;
+        // 注音等中文輸入法開著時，數字鍵會先被輸入法接走，這裡拿回原本按的是哪個鍵
+        bool viaIme = false;
+        if (key == Keys.ProcessKey && mods == Keys.None && search.Text.Length == 0)
         {
-            int index = key == Keys.D0 || key == Keys.NumPad0 ? 9 : key >= Keys.D1 && key <= Keys.D9 ? key - Keys.D1 : key >= Keys.NumPad1 && key <= Keys.NumPad9 ? key - Keys.NumPad1 : -1;
-            if (index >= 0)
+            key = (Keys)Native.ImmGetVirtualKey(Handle);
+            viaIme = true;
+        }
+        int index = key == Keys.D0 || key == Keys.NumPad0 ? 9 : key >= Keys.D1 && key <= Keys.D9 ? key - Keys.D1 : key >= Keys.NumPad1 && key <= Keys.NumPad9 ? key - Keys.NumPad1 : -1;
+        if (index >= 0)
+        {
+            // 搜尋框是空的：直接按數字就貼上。搜尋框有字：數字當成打字，要快速貼改按 Ctrl 加數字
+            if (mods == Keys.Control || (mods == Keys.None && search.Text.Length == 0))
             {
+                if (viaIme) Native.CancelComposition(search.Handle);
                 if (index < items.Count) Pick(items[index], false);
+                return true;
+            }
+            // Alt 加數字：把數字打進搜尋框，用來搜尋開頭是數字的內容（例如訂單編號）
+            if (mods == Keys.Alt)
+            {
+                search.Focus();
+                search.SelectedText = ((index + 1) % 10).ToString();
                 return true;
             }
         }
@@ -512,7 +529,7 @@ sealed class HistoryForm : Form
         int right = r.Right - (int)(12 * s);
         if (e.Index < 10)
         {
-            var badge = $"Ctrl+{(e.Index + 1) % 10}";
+            var badge = (search.Text.Length == 0 ? "" : "Ctrl+") + $"{(e.Index + 1) % 10}";
             using var badgeFont = Theme.UiFont(8.25f);
             var bs = TextRenderer.MeasureText(badge, badgeFont);
             TextRenderer.DrawText(g, badge, badgeFont, new Rectangle(right - bs.Width, r.Y, bs.Width, r.Height), sub,
