@@ -338,6 +338,18 @@ static class SelfTest
         Settings.Update(s => { s.Onboarded = true; s.MaxItems = 1000; s.ImageCapMB = 2048; });
         using var store = new Store();
         store.ClearUnpinned();
+        // 較早的記錄，讓清單有好幾頁可以看分頁效果
+        foreach (var (text, app) in new[] {
+            ("週五前把簡報寄給 Amy", "Slack"), ("Wi-Fi 密碼在冰箱旁邊", "LINE"), ("下週二 10:00 牙醫", "行事曆"),
+            ("https://kueilan.com", "Google Chrome"), ("發票抬頭：貼貼工作室", "Notion"), ("會議室 B 已預約到 4 點", "Outlook"),
+            ("新竹市東區光復路一段 100 號", "Google 地圖"), ("請幫我把這段翻成英文", "ChatGPT"), ("報名表下載連結已寄出", "Gmail"),
+            ("AB-20261101 已出貨", "蝦皮"), ("記得帶身分證影本", "記事本"), ("簡報第 7 頁圖表要換", "PowerPoint"),
+            ("今天晚餐吃咖哩", "LINE"), ("帳單 11/25 到期", "Gmail"), ("Zoom 會議 ID 123 456 7890", "Zoom"),
+            ("把新版合約傳給律師", "Slack"), ("下載頁網址要放在最後一張", "Notion"), ("星期六早上去郵局", "記事本") })
+        {
+            store.AddText(text, "text", app);
+            Thread.Sleep(10);
+        }
         store.AddText("https://github.com/KLWSharpe/tietie", "text", "Google Chrome");
         Thread.Sleep(10);
         store.AddText("王小明　0912-345-678　台北市信義區松仁路 100 號", "text", "Notion");
@@ -361,6 +373,11 @@ static class SelfTest
         panel.ShowPanel();
         Pump(600);
         Shoot(Rectangle.Inflate(panel.Bounds, 12, 12), Path.Combine(dir, "1_清單.png"));
+        panel.GoToPage(1);
+        Pump(300);
+        Shoot(Rectangle.Inflate(panel.Bounds, 12, 12), Path.Combine(dir, "1b_第二頁.png"));
+        panel.GoToPage(0);
+        Pump(300);
         // 右鍵選單（選到圖片那一列）
         int imageRow = panel.Items.ToList().FindIndex(i => i.Kind == "image");
         if (imageRow >= 0)
@@ -540,6 +557,43 @@ static class EndToEnd
         Press(0x1B);             // Esc
         Pump(500);
         Check("Esc 關掉清單", !app.Panel.Visible);
+
+        // 換頁：多複製 12 筆，清單就有兩頁
+        for (int i = 1; i <= 12; i++) Copy(new DataObject(DataFormats.UnicodeText, $"換頁測試 e2e-page-{i:00}"));
+        FocusNotepad();
+        Press(0x11, 0x10, 0x56);
+        Pump(800);
+        Check("記錄超過 10 筆時有兩頁", app.Panel.PageCount >= 2 && app.Panel.Page == 0 && app.Panel.Items.Count == 10,
+            $"第 {app.Panel.Page + 1}／{app.Panel.PageCount} 頁，{app.Panel.Items.Count} 筆");
+        Press(0x27);             // 右
+        Pump(300);
+        SelfTestShoot(Path.Combine(shots, "e2e_3_第二頁.png"));
+        var secondPage = app.Panel.Items.Select(i => i.Text).ToList();
+        Check("按右鍵換到第二頁（第 11 到 20 筆）", app.Panel.Page == 1 && secondPage.Count > 1, string.Join(" | ", secondPage));
+        Press(0x25);             // 左
+        Pump(300);
+        Check("按左鍵回到第一頁", app.Panel.Page == 0);
+        for (int i = 0; i < 9; i++) { Press(0x28); Pump(60); }
+        Press(0x28);             // 第一頁最後一筆再按下
+        Pump(300);
+        Check("在第一頁最後一筆按下，跳到第二頁第一筆", app.Panel.Page == 1 && app.Panel.SelectedIndex == 0,
+            $"第 {app.Panel.Page + 1} 頁第 {app.Panel.SelectedIndex + 1} 筆");
+        Press(0x26);             // 上
+        Pump(300);
+        Check("在第二頁第一筆按上，回到第一頁最後一筆", app.Panel.Page == 0 && app.Panel.SelectedIndex == 9,
+            $"第 {app.Panel.Page + 1} 頁第 {app.Panel.SelectedIndex + 1} 筆");
+        Press(0x27);
+        Pump(300);
+        var wantSecond = secondPage.Count > 1 ? secondPage[1] : "?";
+        Press(0x11, 0x32);       // 第二頁的 Ctrl+2 = 第 12 筆
+        Pump(1500);
+        Check("第二頁按 Ctrl+2 貼上第 12 筆", NotepadText().Contains(wantSecond), $"要的是「{wantSecond}」");
+        Press(0x11, 0x10, 0x56);
+        Pump(800);
+        var wantTenth = app.Panel.Items.Count >= 10 ? app.Panel.Items[9].Text : "?";
+        Press(0x11, 0x30);       // Ctrl+0 = 這頁第 10 筆
+        Pump(1500);
+        Check("Ctrl+0 貼上這頁第 10 筆", NotepadText().Contains(wantTenth), $"要的是「{wantTenth}」");
 
         // 從工作列打開清單時，沒有原本的視窗，不可以把內容按進別的地方
         var tray = Native.FindWindow("Shell_TrayWnd", null);

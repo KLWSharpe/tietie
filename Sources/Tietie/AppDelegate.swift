@@ -54,6 +54,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 }
             }
         }
+        if args.contains("--debug") {
+            // 測試用：收到通知就打開清單
+            DistributedNotificationCenter.default().addObserver(forName: Notification.Name("app.tietie.debug.show"), object: nil, queue: .main) { [weak self] _ in
+                self?.panel.show()
+            }
+        }
         if args.contains("--show") {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in self?.panel.show() }
         }

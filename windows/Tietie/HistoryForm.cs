@@ -13,8 +13,14 @@ sealed class HistoryForm : Form
     readonly PreviewForm preview = new();
     readonly ContextMenuStrip menu = new();
     readonly Dictionary<string, Image> thumbs = new();
+    List<ClipItem> allItems = new();
     List<ClipItem> items = new();
     bool menuOpen;
+    const int PageSize = 10;
+    readonly Panel pager = new();
+    int page;
+    int pagerStart;
+    readonly List<(Rectangle rect, int page)> pagerTabs = new();
 
     /// 打開清單之前在用的視窗，貼上時要回到這裡。
     public IntPtr PreviousWindow { get; private set; }
@@ -23,6 +29,8 @@ sealed class HistoryForm : Form
     public event Action<ClipItem, bool>? Picked;
 
     public IReadOnlyList<ClipItem> Items => items;
+    public int Page => page;
+    public int PageCount => Math.Max(1, (allItems.Count + PageSize - 1) / PageSize);
     public string SearchText => search.Text;
     public int SelectedIndex => list.SelectedIndex;
     public bool PreviewVisible => preview.Visible;
@@ -39,7 +47,7 @@ sealed class HistoryForm : Form
         TopMost = true;
         KeyPreview = true;
         StartPosition = FormStartPosition.Manual;
-        ClientSize = new Size(480, 560);
+        ClientSize = new Size(480, 600);
         BackColor = Theme.Back;
         Font = Theme.UiFont(10f);
         Padding = new Padding(1);
@@ -69,7 +77,7 @@ sealed class HistoryForm : Form
         hint.TextAlign = ContentAlignment.MiddleCenter;
         hint.ForeColor = Theme.Sub;
         hint.Font = Theme.UiFont(8.25f);
-        hint.Text = "Enter 貼上　Alt+Enter 貼圖片裡的字　Ctrl+1–9 快速貼　空白鍵預覽　Alt+P 釘選　右鍵看更多";
+        hint.Text = "← → 換頁　Enter 貼上　Ctrl+1–0 快速貼　Alt+Enter 貼圖片裡的字　空白鍵預覽　右鍵看更多";
 
         var host = new Panel { Dock = DockStyle.Fill, BackColor = Theme.Back, Padding = new Padding(6, 0, 6, 0) };
         list.Dock = DockStyle.Fill;
@@ -92,8 +100,19 @@ sealed class HistoryForm : Form
         host.Controls.Add(list);
         host.Controls.Add(empty);
 
+        pager.Dock = DockStyle.Top;
+        pager.Height = 30;
+        pager.BackColor = Theme.Back;
+        pager.Paint += PaintPager;
+        pager.MouseClick += (_, e) =>
+        {
+            foreach (var (rect, p) in pagerTabs)
+                if (rect.Contains(e.Location)) { GoToPage(p); return; }
+        };
+
         Controls.Add(host);
         Controls.Add(hint);
+        Controls.Add(pager);
         Controls.Add(top);
 
         menu.Font = Theme.UiFont(9.75f);
@@ -137,6 +156,7 @@ sealed class HistoryForm : Form
         var fg = Native.GetForegroundWindow();
         PreviousWindow = Native.IsPasteTarget(fg) ? fg : IntPtr.Zero;
         search.Text = "";
+        page = 0;
         Reload(true);
         var area = Screen.FromPoint(Cursor.Position).WorkingArea;
         Location = new Point(area.Left + (area.Width - Width) / 2, area.Top + (int)((area.Height - Height) * 0.38));
@@ -163,13 +183,37 @@ sealed class HistoryForm : Form
         if (!Visible) return;
         var selected = Selected?.Id;
         Reload(false);
-        var row = items.FindIndex(i => i.Id == selected);
-        Select(row >= 0 ? row : 0);
+        if (!SelectItem(selected)) Select(0);
+    }
+
+    /// 選到某一筆（會先換到它所在的頁），找不到就回傳 false
+    bool SelectItem(long? id)
+    {
+        if (id == null) return false;
+        var index = allItems.FindIndex(i => i.Id == id);
+        if (index < 0) return false;
+        GoToPage(index / PageSize, index % PageSize);
+        return true;
     }
 
     void Reload(bool selectFirst)
     {
-        items = store.List(search.Text);
+        allItems = store.List(search.Text, 1000);
+        if (selectFirst) page = 0;
+        ShowPage();
+        bool none = items.Count == 0;
+        empty.Text = search.Text.Length == 0 ? "還沒有記錄。\n複製任何文字或圖片，就會出現在這裡。" : $"找不到「{search.Text}」";
+        empty.Visible = none;
+        list.Visible = !none;
+        if (selectFirst && !none) Select(0);
+        UpdatePreview();
+    }
+
+    /// 把目前這一頁的 10 筆放進清單
+    void ShowPage()
+    {
+        page = Math.Clamp(page, 0, PageCount - 1);
+        items = allItems.Skip(page * PageSize).Take(PageSize).ToList();
         // 縮圖只留目前清單上的，避免越用越佔記憶體
         var keep = new HashSet<string>(items.Select(i => i.ImageFile));
         foreach (var key in thumbs.Keys.Where(k => !keep.Contains(k)).ToList())
@@ -181,12 +225,56 @@ sealed class HistoryForm : Form
         list.Items.Clear();
         foreach (var item in items) list.Items.Add(item);
         list.EndUpdate();
-        bool none = items.Count == 0;
-        empty.Text = search.Text.Length == 0 ? "還沒有記錄。\n複製任何文字或圖片，就會出現在這裡。" : $"找不到「{search.Text}」";
-        empty.Visible = none;
-        list.Visible = !none;
-        if (selectFirst && !none) Select(0);
+        pager.Invalidate();
+    }
+
+    /// 換到第幾頁（從 0 開始），row 是要選的那一列，-1 表示最後一列
+    public void GoToPage(int newPage, int row = 0)
+    {
+        page = Math.Clamp(newPage, 0, PageCount - 1);
+        ShowPage();
+        if (items.Count > 0) Select(row < 0 ? items.Count - 1 : Math.Min(row, items.Count - 1));
         UpdatePreview();
+    }
+
+    /// 上方的分頁標籤：一次最多顯示 6 頁，目前頁一定在裡面
+    void PaintPager(object? sender, PaintEventArgs e)
+    {
+        pagerTabs.Clear();
+        if (allItems.Count == 0) return;
+        var g = e.Graphics;
+        g.SmoothingMode = SmoothingMode.AntiAlias;
+        float s = Dpi;
+        int count = PageCount, visible = Math.Min(6, count);
+        if (page < pagerStart) pagerStart = page;
+        if (page >= pagerStart + visible) pagerStart = page - visible + 1;
+        pagerStart = Math.Clamp(pagerStart, 0, count - visible);
+        using var font = Theme.UiFont(8.25f);
+        using var bold = new Font(font, FontStyle.Bold);
+        int x = (int)(14 * s), h = (int)(22 * s), y = (pager.Height - h) / 2;
+        for (int i = 0; i < visible; i++)
+        {
+            int p = pagerStart + i;
+            int first = p * PageSize + 1, last = Math.Min((p + 1) * PageSize, Math.Max(allItems.Count, first));
+            var label = $"{first}–{last}";
+            bool on = p == page;
+            int w = TextRenderer.MeasureText(label, on ? bold : font).Width + (int)(14 * s);
+            var rect = new Rectangle(x, y, w, h);
+            using (var path = Icons.Rounded(new RectangleF(rect.X, rect.Y, rect.Width - 1, rect.Height - 1), 5 * s))
+            {
+                using var fill = new SolidBrush(on ? Theme.Accent : Theme.Field);
+                g.FillPath(fill, path);
+                using var pen = new Pen(on ? Theme.Accent : Theme.Border);
+                g.DrawPath(pen, path);
+            }
+            TextRenderer.DrawText(g, label, on ? bold : font, rect, on ? Color.White : Theme.Fore,
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+            pagerTabs.Add((rect, p));
+            x += w + (int)(4 * s);
+        }
+        var info = $"第 {page + 1}／{count} 頁" + (count > visible ? "　還有更多頁" : "");
+        TextRenderer.DrawText(g, info, font, new Rectangle(x, 0, pager.Width - x - (int)(14 * s), pager.Height), Theme.Sub,
+            TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
     }
 
     void Select(int row)
@@ -203,10 +291,26 @@ sealed class HistoryForm : Form
     {
         switch (keyData)
         {
-            case Keys.Down: Select(Math.Min(list.SelectedIndex + 1, items.Count - 1)); return true;
-            case Keys.Up: Select(Math.Max(list.SelectedIndex - 1, 0)); return true;
-            case Keys.PageDown: Select(Math.Min(list.SelectedIndex + 8, items.Count - 1)); return true;
-            case Keys.PageUp: Select(Math.Max(list.SelectedIndex - 8, 0)); return true;
+            case Keys.Down: // 到這頁最後一筆再按，就跳到下一頁第一筆
+                if (list.SelectedIndex >= items.Count - 1 && page < PageCount - 1) GoToPage(page + 1);
+                else Select(Math.Min(list.SelectedIndex + 1, items.Count - 1));
+                return true;
+            case Keys.Up: // 到這頁第一筆再按，就回上一頁最後一筆
+                if (list.SelectedIndex <= 0 && page > 0) GoToPage(page - 1, -1);
+                else Select(Math.Max(list.SelectedIndex - 1, 0));
+                return true;
+            case Keys.Right:
+            case Keys.Left:
+                // 搜尋框有字時，左右鍵留給打字；按住 Alt 一樣可以換頁
+                if (search.Text.Length > 0) break;
+                GoToPage(page + (keyData == Keys.Right ? 1 : -1), list.SelectedIndex);
+                return true;
+            case Keys.Alt | Keys.Right:
+            case Keys.Alt | Keys.Left:
+                GoToPage(page + ((keyData & Keys.KeyCode) == Keys.Right ? 1 : -1), list.SelectedIndex);
+                return true;
+            case Keys.PageDown: GoToPage(page + 1); return true;
+            case Keys.PageUp: GoToPage(page - 1); return true;
             case Keys.Enter: Pick(Selected, false); return true;
             case Keys.Alt | Keys.Enter: Pick(Selected, true); return true;
             case Keys.Escape:
@@ -222,7 +326,7 @@ sealed class HistoryForm : Form
         var key = keyData & Keys.KeyCode;
         if ((keyData & Keys.Modifiers) == Keys.Control)
         {
-            int index = key >= Keys.D1 && key <= Keys.D9 ? key - Keys.D1 : key >= Keys.NumPad1 && key <= Keys.NumPad9 ? key - Keys.NumPad1 : -1;
+            int index = key == Keys.D0 || key == Keys.NumPad0 ? 9 : key >= Keys.D1 && key <= Keys.D9 ? key - Keys.D1 : key >= Keys.NumPad1 && key <= Keys.NumPad9 ? key - Keys.NumPad1 : -1;
             if (index >= 0)
             {
                 if (index < items.Count) Pick(items[index], false);
@@ -243,7 +347,7 @@ sealed class HistoryForm : Form
         if (Selected is not ClipItem item) return;
         store.SetPinned(item.Id, !item.Pinned);
         Reload(false);
-        Select(items.FindIndex(i => i.Id == item.Id));
+        SelectItem(item.Id);
     }
 
     void DeleteSelected()
@@ -406,9 +510,9 @@ sealed class HistoryForm : Form
         if (item.Kind == "text" && item.Text.Length > 80) meta.Add($"{item.Text.Length} 字");
 
         int right = r.Right - (int)(12 * s);
-        if (e.Index < 9)
+        if (e.Index < 10)
         {
-            var badge = $"Ctrl+{e.Index + 1}";
+            var badge = $"Ctrl+{(e.Index + 1) % 10}";
             using var badgeFont = Theme.UiFont(8.25f);
             var bs = TextRenderer.MeasureText(badge, badgeFont);
             TextRenderer.DrawText(g, badge, badgeFont, new Rectangle(right - bs.Width, r.Y, bs.Width, r.Height), sub,

@@ -20,6 +20,16 @@ if let i = CommandLine.arguments.firstIndex(of: "--render-ui"), i + 1 < CommandL
     _ = NSApplication.shared
     let store = Store()
     store.clearUnpinned()
+    // 較早的記錄，讓清單有好幾頁可以看分頁效果
+    let older: [(String, String)] = [
+        ("週五前把簡報寄給 Amy", "Slack"), ("Wi-Fi 密碼在冰箱旁邊", "LINE"), ("下週二 10:00 牙醫", "行事曆"),
+        ("https://kueilan.com", "Chrome"), ("發票抬頭：貼貼工作室", "Notion"), ("會議室 B 已預約到 4 點", "Outlook"),
+        ("新竹市東區光復路一段 100 號", "Google 地圖"), ("請幫我把這段翻成英文", "ChatGPT"), ("報名表下載連結已寄出", "Gmail"),
+        ("AB-20261101 已出貨", "蝦皮"), ("記得帶身分證影本", "備忘錄"), ("簡報第 7 頁圖表要換", "Keynote"),
+        ("今天晚餐吃咖哩", "LINE"), ("帳單 11/25 到期", "Gmail"), ("Zoom 會議 ID 123 456 7890", "Zoom"),
+        ("把新版合約傳給律師", "Slack"), ("下載頁網址要放在最後一張", "Notion"), ("星期六早上去郵局", "備忘錄"),
+    ]
+    for (text, app) in older { store.addText(text, sourceApp: app) }
     store.addText("https://github.com/KLWSharpe/tietie", sourceApp: "Chrome")
     store.addText("王小明　0912-345-678　台北市信義區松仁路 100 號", sourceApp: "Notion")
     let png = SelfTest.textImage("訂單編號 AB-12345678")
@@ -33,6 +43,7 @@ if let i = CommandLine.arguments.firstIndex(of: "--render-ui"), i + 1 < CommandL
     let panel = HistoryPanelController(store: store)
     let shots: [(String, Data?)] = [
         ("1_清單.png", panel.renderSnapshot()),
+        ("1b_第二頁.png", panel.renderSnapshot(page: 1)),
         ("2_搜尋發票.png", panel.renderSnapshot(searching: "12345678")),
         ("3_找不到.png", panel.renderSnapshot(searching: "不存在的字")),
         ("4_首次設定.png", OnboardingController().renderSnapshot()),

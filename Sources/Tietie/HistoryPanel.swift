@@ -99,7 +99,14 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
     private let emptyLabel = NSTextField(labelWithString: "")
     private let hint = NSTextField(labelWithString: "")
     private let preview = PreviewPanel()
+    /// 符合搜尋的全部記錄；畫面上一次只顯示其中一頁（10 筆）
+    private var allItems: [ClipItem] = []
     private var items: [ClipItem] = []
+    private var page = 0
+    static let pageSize = 10
+    private let pager = NSSegmentedControl()
+    private let pageLabel = NSTextField(labelWithString: "")
+    private var pagerStart = 0
     private var keyMonitor: Any?
     private let thumbs = NSCache<NSString, NSImage>()
     private let timeFormatter: RelativeDateTimeFormatter = {
@@ -116,7 +123,7 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
 
     init(store: Store) {
         self.store = store
-        panel = KeyPanel(contentRect: NSRect(x: 0, y: 0, width: 460, height: 520),
+        panel = KeyPanel(contentRect: NSRect(x: 0, y: 0, width: 480, height: 600),
                          styleMask: [.titled, .fullSizeContentView, .nonactivatingPanel],
                          backing: .buffered, defer: false)
         super.init()
@@ -176,13 +183,23 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
         emptyLabel.font = .systemFont(ofSize: 13)
         emptyLabel.maximumNumberOfLines = 3
 
-        hint.stringValue = "↩ 貼上　⌥↩ 貼圖片裡的字　⌘1–9 快速貼　空白鍵預覽　⌥P 釘選　右鍵看更多"
+        hint.stringValue = "← → 換頁　↩ 貼上　⌘1–0 快速貼　⌥↩ 貼圖片裡的字　空白鍵預覽　右鍵看更多"
+
+        pager.segmentStyle = .rounded
+        pager.trackingMode = .selectOne
+        pager.controlSize = .small
+        pager.font = .monospacedDigitSystemFont(ofSize: 11, weight: .medium)
+        pager.target = self
+        pager.action = #selector(pagerClicked)
+        pageLabel.font = .systemFont(ofSize: 11)
+        pageLabel.textColor = .secondaryLabelColor
+        pageLabel.alignment = .right
         hint.font = .systemFont(ofSize: 10.5)
         hint.textColor = .secondaryLabelColor
         hint.alignment = .center
         hint.lineBreakMode = .byTruncatingTail
 
-        for v in [search, scroll, emptyLabel, hint] as [NSView] {
+        for v in [search, pager, pageLabel, scroll, emptyLabel, hint] as [NSView] {
             v.translatesAutoresizingMaskIntoConstraints = false
             effect.addSubview(v)
         }
@@ -192,7 +209,13 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
             search.trailingAnchor.constraint(equalTo: effect.trailingAnchor, constant: -12),
             search.heightAnchor.constraint(equalToConstant: 30),
 
-            scroll.topAnchor.constraint(equalTo: search.bottomAnchor, constant: 8),
+            pager.topAnchor.constraint(equalTo: search.bottomAnchor, constant: 10),
+            pager.leadingAnchor.constraint(equalTo: effect.leadingAnchor, constant: 14),
+            pageLabel.centerYAnchor.constraint(equalTo: pager.centerYAnchor),
+            pageLabel.trailingAnchor.constraint(equalTo: effect.trailingAnchor, constant: -16),
+            pageLabel.leadingAnchor.constraint(greaterThanOrEqualTo: pager.trailingAnchor, constant: 8),
+
+            scroll.topAnchor.constraint(equalTo: pager.bottomAnchor, constant: 6),
             scroll.leadingAnchor.constraint(equalTo: effect.leadingAnchor),
             scroll.trailingAnchor.constraint(equalTo: effect.trailingAnchor),
             scroll.bottomAnchor.constraint(equalTo: hint.topAnchor, constant: -6),
@@ -208,9 +231,10 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
     }
 
     /// 不顯示在螢幕上，直接把清單畫成圖片（檢查版面用）。
-    func renderSnapshot(searching query: String = "") -> Data? {
+    func renderSnapshot(searching query: String = "", page targetPage: Int = 0) -> Data? {
         search.stringValue = query
         reload(selectFirst: true)
+        if targetPage > 0 { goToPage(targetPage) }
         return snapshot(of: panel)
     }
 
@@ -229,6 +253,9 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
             "search": search.stringValue,
             "selectedRow": table.selectedRow,
             "count": items.count,
+            "total": allItems.count,
+            "page": page + 1,
+            "pageCount": pageCount,
             "titles": items.prefix(6).map { ($0.pinned ? "[釘] " : "") + $0.kind + ": " + String(($0.kind == "image" ? $0.ocr : $0.text).prefix(40)) },
             "previewVisible": preview.isVisible,
             "firstResponder": String(describing: type(of: panel.firstResponder as Any)),
@@ -245,6 +272,7 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
 
     func show() {
         search.stringValue = ""
+        page = 0
         reload(selectFirst: true)
 
         let mouse = NSEvent.mouseLocation
@@ -284,16 +312,71 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
         guard panel.isVisible else { return }
         let selectedID = selectedItem?.id
         reload(selectFirst: false)
-        if let id = selectedID, let row = items.firstIndex(where: { $0.id == id }) {
-            select(row)
-        } else if !items.isEmpty {
-            select(0)
+        if let id = selectedID { selectItem(id) } else if !items.isEmpty { select(0) }
+    }
+
+    // MARK: - 分頁
+
+    private var pageCount: Int { max(1, (allItems.count + Self.pageSize - 1) / Self.pageSize) }
+
+    /// 換到第幾頁（從 0 開始），row 是要選的那一列，-1 表示最後一列
+    private func goToPage(_ newPage: Int, row: Int = 0) {
+        let target = min(max(newPage, 0), pageCount - 1)
+        page = target
+        showPage()
+        select(row < 0 ? items.count - 1 : min(row, items.count - 1))
+        updatePreviewIfShown()
+    }
+
+    private func showPage() {
+        page = min(max(page, 0), pageCount - 1)
+        let start = page * Self.pageSize
+        items = start < allItems.count ? Array(allItems[start..<min(start + Self.pageSize, allItems.count)]) : []
+        table.reloadData()
+        updatePager()
+    }
+
+    /// 上方的分頁標籤：一次最多顯示 6 頁，目前頁一定在裡面
+    private func updatePager() {
+        let count = pageCount
+        let visible = min(6, count)
+        if page < pagerStart { pagerStart = page }
+        if page >= pagerStart + visible { pagerStart = page - visible + 1 }
+        pagerStart = min(max(0, pagerStart), count - visible)
+        pager.segmentCount = visible
+        for i in 0..<visible {
+            let p = pagerStart + i
+            let first = p * Self.pageSize + 1
+            let last = min((p + 1) * Self.pageSize, max(allItems.count, first))
+            pager.setLabel("\(first)–\(last)", forSegment: i)
+            pager.setWidth(0, forSegment: i)
         }
+        pager.selectedSegment = page - pagerStart
+        pager.isHidden = allItems.isEmpty
+        let more = count > visible ? "　還有更多頁" : ""
+        pageLabel.stringValue = allItems.isEmpty ? "" : "第 \(page + 1)／\(count) 頁\(more)"
+    }
+
+    @objc private func pagerClicked() {
+        goToPage(pagerStart + pager.selectedSegment)
+        panel.makeFirstResponder(search)
+    }
+
+    /// 選到某一筆（必要時自動換到它所在的頁）
+    private func selectItem(_ id: Int64) {
+        guard let index = allItems.firstIndex(where: { $0.id == id }) else {
+            if !items.isEmpty { select(0) }
+            return
+        }
+        page = index / Self.pageSize
+        showPage()
+        select(index % Self.pageSize)
     }
 
     private func reload(selectFirst: Bool) {
-        items = store.list(search: search.stringValue)
-        table.reloadData()
+        allItems = store.list(search: search.stringValue, limit: 1000)
+        if selectFirst { page = 0 }
+        showPage()
         if items.isEmpty {
             emptyLabel.stringValue = search.stringValue.isEmpty
                 ? "還沒有記錄。\n複製任何文字或圖片，就會出現在這裡。"
@@ -325,10 +408,23 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
 
         let flags = event.modifierFlags.intersection([.command, .option, .control, .shift])
         switch Int(event.keyCode) {
-        case 125: // 下
-            select(min(table.selectedRow + 1, items.count - 1)); updatePreviewIfShown(); return true
-        case 126: // 上
-            select(max(table.selectedRow - 1, 0)); updatePreviewIfShown(); return true
+        case 125: // 下：到這頁最後一筆再按，就跳到下一頁第一筆
+            if table.selectedRow >= items.count - 1, page < pageCount - 1 { goToPage(page + 1) }
+            else { select(min(table.selectedRow + 1, items.count - 1)); updatePreviewIfShown() }
+            return true
+        case 126: // 上：到這頁第一筆再按，就回上一頁最後一筆
+            if table.selectedRow <= 0, page > 0 { goToPage(page - 1, row: -1) }
+            else { select(max(table.selectedRow - 1, 0)); updatePreviewIfShown() }
+            return true
+        case 124, 123: // → ←：換頁（搜尋框有字時要按住 ⌥，才不會影響打字）
+            if search.stringValue.isEmpty || flags == .option {
+                goToPage(page + (event.keyCode == 124 ? 1 : -1), row: table.selectedRow)
+                return true
+            }
+            return false
+        case 121, 116: // Page Down／Page Up
+            goToPage(page + (event.keyCode == 121 ? 1 : -1))
+            return true
         case 36, 76: // return / enter
             // ⌥↩：選到圖片時，貼出圖片裡辨識出來的文字
             if let item = selectedItem { pick(item, asText: flags == .option) }
@@ -362,15 +458,15 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
             if flags == .option, let item = selectedItem {
                 store.setPinned(item.id, !item.pinned)
                 reload(selectFirst: false)
-                if let row = items.firstIndex(where: { $0.id == item.id }) { select(row) }
+                selectItem(item.id)
                 return true
             }
             return false
         default:
             break
         }
-        // 數字鍵 1 到 9 的實體鍵位，不受輸入法或鍵盤配置影響
-        let digitKeys = [18, 19, 20, 21, 23, 22, 26, 28, 25]
+        // 數字鍵 1 到 9、0 的實體鍵位，不受輸入法或鍵盤配置影響；⌘0 是這頁第 10 筆
+        let digitKeys = [18, 19, 20, 21, 23, 22, 26, 28, 25, 29]
         if flags == .command, let index = digitKeys.firstIndex(of: Int(event.keyCode)) {
             if index < items.count { pick(items[index]) }
             return true
@@ -428,7 +524,7 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
         guard let item = selectedItem else { return }
         store.setPinned(item.id, !item.pinned)
         reload(selectFirst: false)
-        if let row = items.firstIndex(where: { $0.id == item.id }) { select(row) }
+        selectItem(item.id)
     }
     @objc private func menuDelete() {
         guard let item = selectedItem else { return }
@@ -481,7 +577,7 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
             return c
         }()
         let item = items[row]
-        cell.badge.stringValue = row < 9 ? "⌘\(row + 1)" : ""
+        cell.badge.stringValue = row < 10 ? "⌘\((row + 1) % 10)" : ""
         cell.pin.isHidden = !item.pinned
 
         var meta: [String] = []
