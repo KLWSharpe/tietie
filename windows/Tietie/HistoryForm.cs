@@ -530,9 +530,9 @@ sealed class HistoryForm : Form
         if (e.Index < 10)
         {
             var badge = (search.Text.Length == 0 ? "" : "Ctrl+") + $"{(e.Index + 1) % 10}";
-            using var badgeFont = Theme.UiFont(8.25f);
+            using var badgeFont = Theme.UiFont(search.Text.Length == 0 ? 12f : 9f, FontStyle.Bold);
             var bs = TextRenderer.MeasureText(badge, badgeFont);
-            TextRenderer.DrawText(g, badge, badgeFont, new Rectangle(right - bs.Width, r.Y, bs.Width, r.Height), sub,
+            TextRenderer.DrawText(g, badge, badgeFont, new Rectangle(right - bs.Width, r.Y, bs.Width, r.Height), selected ? Color.White : Theme.Fore,
                 TextFormatFlags.VerticalCenter | TextFormatFlags.Right | TextFormatFlags.NoPrefix);
             right -= bs.Width + (int)(6 * s);
         }
