@@ -476,7 +476,15 @@ sealed class HistoryForm : Form
         var fore = selected ? Color.White : Theme.Fore;
         var sub = selected ? Color.FromArgb(225, 235, 255) : Theme.Sub;
 
-        int x = r.X + (int)(14 * s);
+        int badgeW = (int)(44 * s);
+        if (e.Index < 10)
+        {
+            var badge = (search.Text.Length == 0 ? "" : "Ctrl+") + $"{(e.Index + 1) % 10}";
+            using var badgeFont = Theme.UiFont(search.Text.Length == 0 ? 12f : 9f, FontStyle.Bold);
+            TextRenderer.DrawText(g, badge, badgeFont, new Rectangle(r.X + (int)(6 * s), r.Y, badgeW, r.Height), fore,
+                TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.NoPrefix);
+        }
+        int x = r.X + (int)(6 * s) + badgeW + (int)(4 * s);
         var meta = new List<string>();
         string title;
         int iconW;
@@ -527,15 +535,6 @@ sealed class HistoryForm : Form
         if (item.Kind == "text" && item.Text.Length > 80) meta.Add($"{item.Text.Length} 字");
 
         int right = r.Right - (int)(12 * s);
-        if (e.Index < 10)
-        {
-            var badge = (search.Text.Length == 0 ? "" : "Ctrl+") + $"{(e.Index + 1) % 10}";
-            using var badgeFont = Theme.UiFont(search.Text.Length == 0 ? 12f : 9f, FontStyle.Bold);
-            var bs = TextRenderer.MeasureText(badge, badgeFont);
-            TextRenderer.DrawText(g, badge, badgeFont, new Rectangle(right - bs.Width, r.Y, bs.Width, r.Height), selected ? Color.White : Theme.Fore,
-                TextFormatFlags.VerticalCenter | TextFormatFlags.Right | TextFormatFlags.NoPrefix);
-            right -= bs.Width + (int)(6 * s);
-        }
         if (item.Pinned)
         {
             var pinColor = selected ? Color.White : Theme.Pin;

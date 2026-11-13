@@ -38,9 +38,9 @@ final class ItemCell: NSTableCellView {
         sub.textColor = .secondaryLabelColor
         sub.lineBreakMode = .byTruncatingTail
 
-        badge.font = .monospacedDigitSystemFont(ofSize: 11, weight: .regular)
-        badge.textColor = .secondaryLabelColor
-        badge.alignment = .right
+        badge.font = .monospacedDigitSystemFont(ofSize: 15, weight: .semibold)
+        badge.textColor = .labelColor
+        badge.alignment = .center
 
         pin.image = NSImage(systemSymbolName: "pin.fill", accessibilityDescription: "已釘選")
         pin.contentTintColor = .systemOrange
@@ -58,7 +58,11 @@ final class ItemCell: NSTableCellView {
         badge.setContentCompressionResistancePriority(.required, for: .horizontal)
 
         NSLayoutConstraint.activate([
-            icon.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 6),
+            badge.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2),
+            badge.centerYAnchor.constraint(equalTo: centerYAnchor),
+            badge.widthAnchor.constraint(equalToConstant: 32),
+
+            icon.leadingAnchor.constraint(equalTo: badge.trailingAnchor, constant: 4),
             icon.centerYAnchor.constraint(equalTo: centerYAnchor),
             iconWidth,
             iconHeight,
@@ -71,11 +75,7 @@ final class ItemCell: NSTableCellView {
             sub.trailingAnchor.constraint(lessThanOrEqualTo: pin.leadingAnchor, constant: -6),
             sub.topAnchor.constraint(equalTo: centerYAnchor, constant: 2),
 
-            badge.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
-            badge.centerYAnchor.constraint(equalTo: centerYAnchor),
-            badge.widthAnchor.constraint(greaterThanOrEqualToConstant: 24),
-
-            pin.trailingAnchor.constraint(equalTo: badge.leadingAnchor, constant: -4),
+            pin.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             pin.centerYAnchor.constraint(equalTo: centerYAnchor),
             pin.widthAnchor.constraint(equalToConstant: 12),
         ])
