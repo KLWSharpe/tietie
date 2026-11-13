@@ -88,7 +88,12 @@ jobs:
           $bmp.Save("$env:RUNNER_TEMP\shots\e2e_6_新版提示.png")
           if ($text -notmatch '9\.9\.9' -or $text -notmatch '立即更新') { Write-Host 'FAIL  提示內容不對'; Stop-Process $p -Force; exit 1 }
           $btn = $dlg.FindFirst([Windows.Automation.TreeScope]::Descendants, (New-Object Windows.Automation.PropertyCondition([Windows.Automation.AutomationElement]::NameProperty, '立即更新')))
-          $btn.GetCurrentPattern([Windows.Automation.InvokePattern]::Pattern).Invoke()
+          $pat = $null
+          if ($btn.TryGetCurrentPattern([Windows.Automation.InvokePattern]::Pattern, [ref]$pat)) { $pat.Invoke() }
+          else { $btn.SetFocus(); Start-Sleep -Milliseconds 300; [System.Windows.Forms.SendKeys]::SendWait(' ') }
+          Start-Sleep 1
+          $still = $root.FindAll([Windows.Automation.TreeScope]::Children, $cond) | Where-Object { $_.Current.Name -eq '貼貼' }
+          if ($still) { Write-Host 'FAIL  按了立即更新，提示沒有關掉'; Stop-Process $p -Force; exit 1 }
           Start-Sleep 2
           $alive = -not $p.HasExited
           Stop-Process $p -Force -ErrorAction SilentlyContinue
