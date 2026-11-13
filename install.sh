@@ -24,9 +24,10 @@ if [ ! -w "$DEST" ]; then
 fi
 
 # 關掉正在執行的舊版，並把舊版移到暫存區（不直接刪除）
-pkill -x Tietie >/dev/null 2>&1 || true
+# -a：從貼貼裡按「立即更新」時，貼貼是這個指令的上層程式，不加 -a 會關不掉它
+pkill -a -x Tietie >/dev/null 2>&1 || true
 for _ in $(seq 1 25); do
-    pgrep -x Tietie >/dev/null 2>&1 || break
+    pgrep -a -x Tietie >/dev/null 2>&1 || break
     sleep 0.2
 done
 if [ -d "$DEST/Tietie.app" ]; then
