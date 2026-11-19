@@ -1,16 +1,21 @@
-<img src="docs/icon.png" width="96" alt="貼貼圖示">
+<p align="center"><img src="docs/icon.png" width="96" alt="貼貼圖示"></p>
 
-# 貼貼 Tietie
+<h1 align="center">貼貼 Tietie</h1>
 
-奎嵐 KueiLan 製作的免費、開源剪貼簿小工具，Mac 和 Windows 都能用。記住你複製過的文字、圖片和檔案，按一組快捷鍵就能找回來貼上。
+<p align="center">給每天複製貼上很多次的人。免費、開源的剪貼簿小工具，Mac 和 Windows 都能用。<br>
+複製過的文字、圖片、檔案它都記得，按一組快捷鍵叫出來，看到第幾筆就按數字幾。</p>
+
+<p align="center"><b><a href="#安裝">免費安裝（Mac／Windows）</a></b>　｜　<a href="https://github.com/KLWSharpe/tietie/releases/latest">下載頁</a>　｜　<a href="README.en.md">English</a></p>
+
+<p align="center"><img src="docs/demo.gif" width="760" alt="示範：按 ⇧⌘V 叫出清單，按數字 3 貼上第 3 筆，打 Wi 就找到一張寫著 Wi-Fi 密碼的截圖"></p>
+
+<p align="center">作者：<a href="https://kueilan.com">奎嵐 KueiLan</a>，AI 實戰教學　｜　IG <a href="https://www.instagram.com/kueilanverse">@kueilanverse</a>　｜　Threads <a href="https://www.threads.com/@kueilanverse">@kueilanverse</a></p>
 
 我用了好幾年的 Clipy。後來它在新版 macOS 上打不開了，我就自己寫了一個更強的，免費分享給大家。
 
 歡迎給回饋與建議，之後會幫大家更新。有想法或安裝卡住，可以私訊 IG／Threads [@kueilanverse](https://www.instagram.com/kueilanverse)、寄信到 klwsharpe@gmail.com，或到 [Issues](https://github.com/KLWSharpe/tietie/issues) 留言。
 
 **第一次安裝請看一步一步的安裝教學：[Mac 版](docs/安裝教學.md)｜[Windows 版](docs/Windows安裝教學.md)**
-
-<img src="docs/screenshot-list.png" width="380" alt="貼貼的歷史清單">
 
 ## 它能做什麼
 
@@ -121,4 +126,10 @@ MIT License。免費使用、修改、再分享。
 
 ## 作者
 
-奎嵐 KueiLan。網站：[kueilan.com](https://kueilan.com)　IG／Threads：[@kueilanverse](https://www.instagram.com/kueilanverse)
+奎嵐 KueiLan，教大家把 AI 用進日常工作。貼貼從第一版到現在，都是我和 AI 一起寫出來的，每一版的測試紀錄放在[驗收紀錄](docs/驗收紀錄.md)。
+
+- 網站：[kueilan.com](https://kueilan.com)
+- IG：[@kueilanverse](https://www.instagram.com/kueilanverse)
+- Threads：[@kueilanverse](https://www.threads.com/@kueilanverse)
+
+覺得好用的話，按右上角的 Star 或分享給朋友，就是對我最大的鼓勵。
