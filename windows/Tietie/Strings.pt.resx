@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 這個檔案由 scripts/i18n.py 從 i18n/*.json 產生，請改 json 再重新產生，不要直接改這裡。 -->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="_language" xml:space="preserve"><value>Português</value></data>
+  <data name="app.name" xml:space="preserve"><value>Tietie</value></data>
+  <data name="app.fullName" xml:space="preserve"><value>貼貼 Tietie</value></data>
+  <data name="app.tooltipPaused" xml:space="preserve"><value>Tietie (gravação pausada)</value></data>
+  <data name="menu.open" xml:space="preserve"><value>Abrir lista do Tietie</value></data>
+  <data name="win.menu.open" xml:space="preserve"><value>Abrir lista do Tietie ({0})</value></data>
+  <data name="menu.hotkeyTaken" xml:space="preserve"><value>O atalho {0} está em uso. Troque nos Ajustes</value></data>
+  <data name="menu.pause" xml:space="preserve"><value>Pausar gravação</value></data>
+  <data name="menu.clearRecent" xml:space="preserve"><value>Limpar últimos 10 minutos</value></data>
+  <data name="menu.clearAll" xml:space="preserve"><value>Limpar todo o histórico (manter fixados)</value></data>
+  <data name="menu.settings" xml:space="preserve"><value>Ajustes…</value></data>
+  <data name="menu.language" xml:space="preserve"><value>Idioma</value></data>
+  <data name="menu.languageSystem" xml:space="preserve"><value>Igual ao sistema ({0})</value></data>
+  <data name="menu.about" xml:space="preserve"><value>Sobre o Tietie</value></data>
+  <data name="menu.checkUpdate" xml:space="preserve"><value>Verificar atualizações…</value></data>
+  <data name="menu.stats" xml:space="preserve"><value>Itens: {0} · Imagens: {1}</value></data>
+  <data name="menu.quit" xml:space="preserve"><value>Sair do Tietie</value></data>
+  <data name="toast.hotkeyTaken" xml:space="preserve"><value>O atalho {0} está sendo usado por outro app. Escolha outro nos ajustes do Tietie</value></data>
+  <data name="toast.noTextInImage" xml:space="preserve"><value>Nenhum texto foi encontrado nesta imagem</value></data>
+  <data name="toast.imageMissing" xml:space="preserve"><value>O arquivo desta imagem sumiu, então não dá para colar</value></data>
+  <data name="win.toast.copied" xml:space="preserve"><value>Copiado. Pressione Ctrl+V para colar</value></data>
+  <data name="win.toast.copiedAdmin" xml:space="preserve"><value>Copiado. Esta janela está rodando como administrador, então pressione Ctrl+V você mesmo</value></data>
+  <data name="win.toast.clipboardBusy" xml:space="preserve"><value>Outro app está usando a área de transferência. Tente de novo</value></data>
+  <data name="win.toast.error" xml:space="preserve"><value>O Tietie teve um pequeno problema e registrou o ocorrido. Tente de novo</value></data>
+  <data name="toast.paused" xml:space="preserve"><value>Gravação pausada</value></data>
+  <data name="toast.resumed" xml:space="preserve"><value>Gravação retomada</value></data>
+  <data name="toast.clearedRecent" xml:space="preserve"><value>Últimos 10 minutos apagados</value></data>
+  <data name="toast.clearedAll" xml:space="preserve"><value>Histórico apagado</value></data>
+  <data name="toast.languageChanged" xml:space="preserve"><value>Idioma: {0}</value></data>
+  <data name="panel.search" xml:space="preserve"><value>Digite para buscar, até texto dentro de imagens</value></data>
+  <data name="win.panel.hint" xml:space="preserve"><value>1–0 cola o item　← → página　Enter colar　Alt+Enter colar texto da imagem
+Espaço prévia　Clique direito para mais</value></data>
+  <data name="panel.page" xml:space="preserve"><value>Página {0} de {1}</value></data>
+  <data name="panel.pageMore" xml:space="preserve"><value>Página {0} de {1}　Há mais páginas</value></data>
+  <data name="panel.empty" xml:space="preserve"><value>Nada por aqui ainda.
+Copie qualquer texto ou imagem e ele aparece aqui.</value></data>
+  <data name="panel.notFound" xml:space="preserve"><value>Nada encontrado para “{0}”</value></data>
+  <data name="ctx.paste" xml:space="preserve"><value>Colar</value></data>
+  <data name="ctx.pasteImage" xml:space="preserve"><value>Colar imagem</value></data>
+  <data name="ctx.pasteImageText" xml:space="preserve"><value>Colar texto da imagem</value></data>
+  <data name="ctx.pasteImageTextNone" xml:space="preserve"><value>Colar texto da imagem (nenhum texto encontrado)</value></data>
+  <data name="ctx.preview" xml:space="preserve"><value>Ver prévia</value></data>
+  <data name="ctx.pin" xml:space="preserve"><value>Fixar</value></data>
+  <data name="ctx.unpin" xml:space="preserve"><value>Desafixar</value></data>
+  <data name="ctx.delete" xml:space="preserve"><value>Apagar este item</value></data>
+  <data name="row.justNow" xml:space="preserve"><value>agora mesmo</value></data>
+  <data name="win.row.minutesAgo" xml:space="preserve"><value>há {0} min</value></data>
+  <data name="win.row.hoursAgo" xml:space="preserve"><value>há {0} h</value></data>
+  <data name="win.row.daysAgo" xml:space="preserve"><value>há {0} d</value></data>
+  <data name="row.image" xml:space="preserve"><value>Imagem</value></data>
+  <data name="row.imageText" xml:space="preserve"><value>Imagem: {0}</value></data>
+  <data name="row.files" xml:space="preserve"><value>{0} e outros ({1} arquivos)</value></data>
+  <data name="row.file" xml:space="preserve"><value>Arquivo</value></data>
+  <data name="row.chars" xml:space="preserve"><value>{0} caracteres</value></data>
+  <data name="row.text" xml:space="preserve"><value>Texto</value></data>
+  <data name="row.pinned" xml:space="preserve"><value>Fixado</value></data>
+  <data name="onb.title" xml:space="preserve"><value>Boas-vindas ao 貼貼 Tietie</value></data>
+  <data name="onb.intro" xml:space="preserve"><value>O Tietie guarda os textos, imagens e arquivos que você copia. Pressione {0} para abrir a lista, escolha um item e ele é colado como texto simples.
+Tudo fica neste computador e nunca é enviado para lugar nenhum.</value></data>
+  <data name="onb.passwordQuestion" xml:space="preserve"><value>1. Guardar senhas?</value></data>
+  <data name="onb.recordAll" xml:space="preserve"><value>Guardar tudo, inclusive logins copiados de gerenciadores de senhas</value></data>
+  <data name="onb.skipSecret" xml:space="preserve"><value>Não guardar o que for copiado de gerenciadores de senhas</value></data>
+  <data name="win.onb.passwordNote" xml:space="preserve"><value>O histórico fica neste computador, então qualquer pessoa que use este computador pode vê-lo. Se você empresta ou divide o computador, escolha a segunda opção. Depois de colar algo sensível, você também pode apagar tudo pelo ícone do Tietie na barra de tarefas. Dá para mudar isso depois nos Ajustes.</value></data>
+  <data name="win.onb.startupTitle" xml:space="preserve"><value>2. Abrir ao iniciar</value></data>
+  <data name="win.onb.trayNote" xml:space="preserve"><value>O Tietie fica na barra de tarefas, no canto inferior direito da tela. Se não aparecer, clique na seta “^” da barra de tarefas.</value></data>
+  <data name="onb.start" xml:space="preserve"><value>Começar</value></data>
+  <data name="launchAtLogin" xml:space="preserve"><value>Abrir o Tietie ao iniciar o computador</value></data>
+  <data name="settings.title" xml:space="preserve"><value>Ajustes do Tietie</value></data>
+  <data name="settings.hotkey" xml:space="preserve"><value>Atalho para abrir a lista</value></data>
+  <data name="settings.keep" xml:space="preserve"><value>Guardar até</value></data>
+  <data name="settings.items" xml:space="preserve"><value>{0} itens</value></data>
+  <data name="settings.imageCap" xml:space="preserve"><value>Espaço máximo para imagens</value></data>
+  <data name="settings.recordConcealed" xml:space="preserve"><value>Guardar logins copiados de gerenciadores de senhas</value></data>
+  <data name="settings.limitNote" xml:space="preserve"><value>Ao passar do limite, os itens mais antigos são apagados automaticamente. Itens fixados nunca são apagados.</value></data>
+  <data name="win.settings.passwords" xml:space="preserve"><value>Senhas</value></data>
+  <data name="win.settings.startup" xml:space="preserve"><value>Inicialização</value></data>
+  <data name="win.settings.usageLabel" xml:space="preserve"><value>Uso atual</value></data>
+  <data name="win.settings.usage" xml:space="preserve"><value>Itens: {0} · Imagens: {1}</value></data>
+  <data name="win.settings.lowerConfirm" xml:space="preserve"><value>Depois de diminuir o limite, os itens antigos acima dele serão apagados na próxima vez que você copiar algo (os fixados ficam). Diminuir o limite?</value></data>
+  <data name="about.version" xml:space="preserve"><value>Versão {0}</value></data>
+  <data name="win.about.tagline" xml:space="preserve"><value>Gerenciador de área de transferência gratuito e de código aberto</value></data>
+  <data name="about.detail" xml:space="preserve"><value>Guarda os textos, imagens e arquivos que você copia.
+Tudo fica neste computador e nunca é enviado.</value></data>
+  <data name="about.author" xml:space="preserve"><value>Feito por 奎嵐 KueiLan</value></data>
+  <data name="about.site" xml:space="preserve"><value>Visitar o site de KueiLan: kueilan.com</value></data>
+  <data name="about.repo" xml:space="preserve"><value>Código-fonte e sugestões no GitHub</value></data>
+  <data name="about.feedback" xml:space="preserve"><value>Sugestões e opiniões são bem-vindas. Vêm mais atualizações por aí.</value></data>
+  <data name="update.unreachableTitle" xml:space="preserve"><value>Não foi possível verificar atualizações</value></data>
+  <data name="update.unreachableText" xml:space="preserve"><value>Talvez você esteja sem internet. Tente de novo mais tarde.</value></data>
+  <data name="update.latestTitle" xml:space="preserve"><value>Você já tem a versão mais recente</value></data>
+  <data name="update.latestText" xml:space="preserve"><value>O Tietie {0} é a versão mais recente.</value></data>
+  <data name="update.heading" xml:space="preserve"><value>O Tietie {0} está disponível</value></data>
+  <data name="win.update.text" xml:space="preserve"><value>Você está na versão {0}. Clique em “Atualizar agora” e a instalação leva poucos segundos. Seu histórico é mantido.</value></data>
+  <data name="update.now" xml:space="preserve"><value>Atualizar agora</value></data>
+  <data name="update.later" xml:space="preserve"><value>Mais tarde</value></data>
+  <data name="update.skip" xml:space="preserve"><value>Pular esta versão</value></data>
+  <data name="update.failTitle" xml:space="preserve"><value>Não foi possível atualizar automaticamente</value></data>
+  <data name="win.update.failText" xml:space="preserve"><value>Pressione a tecla Windows, digite PowerShell e pressione Enter. Depois cole a linha abaixo e pressione Enter:
+
+{0}</value></data>
+  <data name="ok" xml:space="preserve"><value>OK</value></data>
+</root>

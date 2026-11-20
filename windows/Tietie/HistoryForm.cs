@@ -34,6 +34,8 @@ sealed class HistoryForm : Form
     public string SearchText => search.Text;
     public int SelectedIndex => list.SelectedIndex;
     public bool PreviewVisible => preview.Visible;
+    public string HintText => hint.Text;
+    public string SearchHint => search.Hint;
 
     float Dpi => DeviceDpi / 96f;
 
@@ -51,7 +53,7 @@ sealed class HistoryForm : Form
         BackColor = Theme.Back;
         Font = Theme.UiFont(10f);
         Padding = new Padding(1);
-        Text = "貼貼";
+        Text = L.T("app.name");
 
         var top = new Panel { Dock = DockStyle.Top, Height = 56, Padding = new Padding(14, 12, 14, 8), BackColor = Theme.Back };
         var field = new Panel { Dock = DockStyle.Fill, BackColor = Theme.Field, Padding = new Padding(10, 7, 10, 4) };
@@ -67,17 +69,17 @@ sealed class HistoryForm : Form
         search.Font = Theme.UiFont(12f);
         search.BackColor = Theme.Field;
         search.ForeColor = Theme.Fore;
-        search.Hint = "打字搜尋，圖片裡的字也找得到";
+        search.Hint = L.T("panel.search");
         search.TextChanged += (_, _) => { search.Invalidate(); Reload(true); };
         field.Controls.Add(search);
         top.Controls.Add(field);
 
         hint.Dock = DockStyle.Bottom;
-        hint.Height = 30;
+        hint.Height = 38;
         hint.TextAlign = ContentAlignment.MiddleCenter;
         hint.ForeColor = Theme.Sub;
         hint.Font = Theme.UiFont(8.25f);
-        hint.Text = "按數字 1–0 直接貼　← → 換頁　Enter 貼上　Alt+Enter 貼圖片裡的字　空白鍵預覽　右鍵看更多";
+        hint.Text = L.T("win.panel.hint");
 
         var host = new Panel { Dock = DockStyle.Fill, BackColor = Theme.Back, Padding = new Padding(6, 0, 6, 0) };
         list.Dock = DockStyle.Fill;
@@ -202,7 +204,7 @@ sealed class HistoryForm : Form
         if (selectFirst) page = 0;
         ShowPage();
         bool none = items.Count == 0;
-        empty.Text = search.Text.Length == 0 ? "還沒有記錄。\n複製任何文字或圖片，就會出現在這裡。" : $"找不到「{search.Text}」";
+        empty.Text = search.Text.Length == 0 ? L.T("panel.empty") : L.T("panel.notFound", search.Text);
         empty.Visible = none;
         list.Visible = !none;
         if (selectFirst && !none) Select(0);
@@ -272,7 +274,7 @@ sealed class HistoryForm : Form
             pagerTabs.Add((rect, p));
             x += w + (int)(4 * s);
         }
-        var info = $"第 {page + 1}／{count} 頁" + (count > visible ? "　還有更多頁" : "");
+        var info = L.T(count > visible ? "panel.pageMore" : "panel.page", page + 1, count);
         TextRenderer.DrawText(g, info, font, new Rectangle(x, 0, pager.Width - x - (int)(14 * s), pager.Height), Theme.Sub,
             TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
     }
@@ -413,19 +415,19 @@ sealed class HistoryForm : Form
         menu.Items.Clear();
         if (item.Kind == "image")
         {
-            menu.Items.Add("貼上圖片", null, (_, _) => Pick(item, false));
+            menu.Items.Add(L.T("ctx.pasteImage"), null, (_, _) => Pick(item, false));
             bool hasText = item.Ocr.Trim().Length > 0;
-            var t = menu.Items.Add(hasText ? "貼上圖片裡的文字" : "貼上圖片裡的文字（這張沒有讀到字）", null, (_, _) => Pick(item, true));
+            var t = menu.Items.Add(hasText ? L.T("ctx.pasteImageText") : L.T("ctx.pasteImageTextNone"), null, (_, _) => Pick(item, true));
             t.Enabled = hasText;
         }
         else
         {
-            menu.Items.Add("貼上", null, (_, _) => Pick(item, false));
+            menu.Items.Add(L.T("ctx.paste"), null, (_, _) => Pick(item, false));
         }
         menu.Items.Add(new ToolStripSeparator());
-        menu.Items.Add("放大預覽", null, (_, _) => preview.ShowItem(item, this));
-        menu.Items.Add(item.Pinned ? "取消釘選" : "釘選", null, (_, _) => TogglePin());
-        menu.Items.Add("刪除這一筆", null, (_, _) => DeleteSelected());
+        menu.Items.Add(L.T("ctx.preview"), null, (_, _) => preview.ShowItem(item, this));
+        menu.Items.Add(item.Pinned ? L.T("ctx.unpin") : L.T("ctx.pin"), null, (_, _) => TogglePin());
+        menu.Items.Add(L.T("ctx.delete"), null, (_, _) => DeleteSelected());
         menuOpen = true;
         menu.Show(list, at);
     }
@@ -447,10 +449,10 @@ sealed class HistoryForm : Form
     string Age(double lastUsed)
     {
         var seconds = DateTimeOffset.UtcNow.ToUnixTimeSeconds() - lastUsed;
-        if (seconds < 60) return "剛剛";
-        if (seconds < 3600) return $"{(int)(seconds / 60)} 分鐘前";
-        if (seconds < 86400) return $"{(int)(seconds / 3600)} 小時前";
-        return $"{(int)(seconds / 86400)} 天前";
+        if (seconds < 60) return L.T("row.justNow");
+        if (seconds < 3600) return L.T("win.row.minutesAgo", (int)(seconds / 60));
+        if (seconds < 86400) return L.T("win.row.hoursAgo", (int)(seconds / 3600));
+        return L.T("win.row.daysAgo", (int)(seconds / 86400));
     }
 
     static string SizeText(long bytes) => bytes < 1024 * 1024 ? $"{Math.Max(1, bytes / 1024)} KB" : $"{bytes / 1024.0 / 1024.0:0.0} MB";
@@ -506,7 +508,7 @@ sealed class HistoryForm : Form
                     g.Restore(st);
                 }
                 var firstLine = item.Ocr.Split('\n').FirstOrDefault() ?? "";
-                title = firstLine.Trim().Length == 0 ? "圖片" : "圖片：" + OneLine(item.Ocr);
+                title = firstLine.Trim().Length == 0 ? L.T("row.image") : L.T("row.imageText", OneLine(item.Ocr));
                 meta.Add($"{item.Width}×{item.Height}");
                 break;
             case "file":
@@ -520,8 +522,8 @@ sealed class HistoryForm : Form
                 }
                 catch { }
                 var names = paths.Select(Path.GetFileName).ToArray();
-                title = names.Length > 1 ? $"{names[0]} 等 {names.Length} 個檔案" : names.FirstOrDefault() ?? "檔案";
-                meta.Add("檔案");
+                title = names.Length > 1 ? L.T("row.files", names[0] ?? "", names.Length) : names.FirstOrDefault() ?? L.T("row.file");
+                meta.Add(L.T("row.file"));
                 break;
             default:
                 iconW = (int)(20 * s);
@@ -532,7 +534,7 @@ sealed class HistoryForm : Form
         if (item.SourceApp.Length > 0) meta.Add(item.SourceApp);
         meta.Add(Age(item.LastUsed));
         if (item.Kind == "image") meta.Add(SizeText(item.Bytes));
-        if (item.Kind == "text" && item.Text.Length > 80) meta.Add($"{item.Text.Length} 字");
+        if (item.Kind == "text" && item.Text.Length > 80) meta.Add(L.T("row.chars", item.Text.Length));
 
         int right = r.Right - (int)(12 * s);
         if (item.Pinned)

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 這個檔案由 scripts/i18n.py 從 i18n/*.json 產生，請改 json 再重新產生，不要直接改這裡。 -->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="_language" xml:space="preserve"><value>한국어</value></data>
+  <data name="app.name" xml:space="preserve"><value>Tietie</value></data>
+  <data name="app.fullName" xml:space="preserve"><value>貼貼 Tietie</value></data>
+  <data name="app.tooltipPaused" xml:space="preserve"><value>Tietie (기록 일시 정지됨)</value></data>
+  <data name="menu.open" xml:space="preserve"><value>Tietie 목록 열기</value></data>
+  <data name="win.menu.open" xml:space="preserve"><value>Tietie 목록 열기 ({0})</value></data>
+  <data name="menu.hotkeyTaken" xml:space="preserve"><value>단축키 {0}을(를) 사용 중입니다. 설정에서 바꿔 주세요</value></data>
+  <data name="menu.pause" xml:space="preserve"><value>기록 일시 정지</value></data>
+  <data name="menu.clearRecent" xml:space="preserve"><value>최근 10분 기록 지우기</value></data>
+  <data name="menu.clearAll" xml:space="preserve"><value>모든 기록 지우기 (고정 항목은 유지)</value></data>
+  <data name="menu.settings" xml:space="preserve"><value>설정…</value></data>
+  <data name="menu.language" xml:space="preserve"><value>언어</value></data>
+  <data name="menu.languageSystem" xml:space="preserve"><value>시스템 설정 따르기 ({0})</value></data>
+  <data name="menu.about" xml:space="preserve"><value>Tietie 정보</value></data>
+  <data name="menu.checkUpdate" xml:space="preserve"><value>업데이트 확인…</value></data>
+  <data name="menu.stats" xml:space="preserve"><value>기록 {0}개 · 이미지 {1}</value></data>
+  <data name="menu.quit" xml:space="preserve"><value>Tietie 종료</value></data>
+  <data name="toast.hotkeyTaken" xml:space="preserve"><value>단축키 {0}을(를) 다른 앱이 쓰고 있어요. Tietie 설정에서 다른 조합을 골라 주세요</value></data>
+  <data name="toast.noTextInImage" xml:space="preserve"><value>이 이미지에서 글자를 찾지 못했어요</value></data>
+  <data name="toast.imageMissing" xml:space="preserve"><value>이 이미지 파일이 없어져서 붙여넣을 수 없어요</value></data>
+  <data name="win.toast.copied" xml:space="preserve"><value>복사했어요. Ctrl+V로 붙여넣으세요</value></data>
+  <data name="win.toast.copiedAdmin" xml:space="preserve"><value>복사했어요. 이 창은 관리자 권한으로 실행 중이라 직접 Ctrl+V를 눌러 주세요</value></data>
+  <data name="win.toast.clipboardBusy" xml:space="preserve"><value>다른 앱이 클립보드를 쓰고 있어요. 다시 시도해 주세요</value></data>
+  <data name="win.toast.error" xml:space="preserve"><value>Tietie에 작은 문제가 생겨 기록해 두었어요. 다시 시도해 주세요</value></data>
+  <data name="toast.paused" xml:space="preserve"><value>기록을 일시 정지했어요</value></data>
+  <data name="toast.resumed" xml:space="preserve"><value>기록을 다시 시작했어요</value></data>
+  <data name="toast.clearedRecent" xml:space="preserve"><value>최근 10분 기록을 지웠어요</value></data>
+  <data name="toast.clearedAll" xml:space="preserve"><value>기록을 지웠어요</value></data>
+  <data name="toast.languageChanged" xml:space="preserve"><value>표시 언어: {0}</value></data>
+  <data name="panel.search" xml:space="preserve"><value>입력해서 검색 (이미지 속 글자도 찾아요)</value></data>
+  <data name="win.panel.hint" xml:space="preserve"><value>1–0 바로 붙여넣기　← → 페이지 이동　Enter 붙여넣기　Alt+Enter 이미지 속 글자 붙여넣기
+스페이스 미리보기　오른쪽 클릭으로 더 보기</value></data>
+  <data name="panel.page" xml:space="preserve"><value>{0}/{1} 페이지</value></data>
+  <data name="panel.pageMore" xml:space="preserve"><value>{0}/{1} 페이지　페이지가 더 있어요</value></data>
+  <data name="panel.empty" xml:space="preserve"><value>아직 기록이 없어요.
+글자나 이미지를 복사하면 여기에 나타나요.</value></data>
+  <data name="panel.notFound" xml:space="preserve"><value>“{0}” 검색 결과가 없어요</value></data>
+  <data name="ctx.paste" xml:space="preserve"><value>붙여넣기</value></data>
+  <data name="ctx.pasteImage" xml:space="preserve"><value>이미지 붙여넣기</value></data>
+  <data name="ctx.pasteImageText" xml:space="preserve"><value>이미지 속 글자 붙여넣기</value></data>
+  <data name="ctx.pasteImageTextNone" xml:space="preserve"><value>이미지 속 글자 붙여넣기 (글자를 찾지 못함)</value></data>
+  <data name="ctx.preview" xml:space="preserve"><value>크게 미리보기</value></data>
+  <data name="ctx.pin" xml:space="preserve"><value>고정</value></data>
+  <data name="ctx.unpin" xml:space="preserve"><value>고정 해제</value></data>
+  <data name="ctx.delete" xml:space="preserve"><value>이 항목 삭제</value></data>
+  <data name="row.justNow" xml:space="preserve"><value>방금</value></data>
+  <data name="win.row.minutesAgo" xml:space="preserve"><value>{0}분 전</value></data>
+  <data name="win.row.hoursAgo" xml:space="preserve"><value>{0}시간 전</value></data>
+  <data name="win.row.daysAgo" xml:space="preserve"><value>{0}일 전</value></data>
+  <data name="row.image" xml:space="preserve"><value>이미지</value></data>
+  <data name="row.imageText" xml:space="preserve"><value>이미지: {0}</value></data>
+  <data name="row.files" xml:space="preserve"><value>{0} 외 (파일 {1}개)</value></data>
+  <data name="row.file" xml:space="preserve"><value>파일</value></data>
+  <data name="row.chars" xml:space="preserve"><value>{0}자</value></data>
+  <data name="row.text" xml:space="preserve"><value>텍스트</value></data>
+  <data name="row.pinned" xml:space="preserve"><value>고정됨</value></data>
+  <data name="onb.title" xml:space="preserve"><value>貼貼 Tietie에 오신 것을 환영해요</value></data>
+  <data name="onb.intro" xml:space="preserve"><value>Tietie는 복사한 글자, 이미지, 파일을 기억해요. {0}을(를) 눌러 목록을 열고 하나를 고르면 바로 붙여넣어지고, 글자는 서식 없이 붙여넣어져요.
+모든 기록은 이 컴퓨터에만 저장되고 어디에도 업로드되지 않아요.</value></data>
+  <data name="onb.passwordQuestion" xml:space="preserve"><value>1. 비밀번호도 기록할까요?</value></data>
+  <data name="onb.recordAll" xml:space="preserve"><value>모두 기록 (비밀번호 관리자에서 복사한 로그인 정보 포함)</value></data>
+  <data name="onb.skipSecret" xml:space="preserve"><value>비밀번호 관리자에서 복사한 내용은 기록하지 않기</value></data>
+  <data name="win.onb.passwordNote" xml:space="preserve"><value>기록은 이 컴퓨터에 남기 때문에 이 컴퓨터를 쓸 수 있는 사람은 누구나 볼 수 있어요. 다른 사람에게 빌려주거나 함께 쓴다면 두 번째를 추천해요. 민감한 내용을 붙여넣은 뒤에는 작업 표시줄의 Tietie 아이콘에서 바로 지울 수도 있어요. 나중에 ‘설정’에서 바꿀 수 있어요.</value></data>
+  <data name="win.onb.startupTitle" xml:space="preserve"><value>2. 자동 실행</value></data>
+  <data name="win.onb.trayNote" xml:space="preserve"><value>Tietie는 화면 오른쪽 아래 작업 표시줄에 있어요. 보이지 않으면 작업 표시줄의 ‘^’ 화살표를 눌러 보세요.</value></data>
+  <data name="onb.start" xml:space="preserve"><value>시작하기</value></data>
+  <data name="launchAtLogin" xml:space="preserve"><value>로그인할 때 Tietie 실행</value></data>
+  <data name="settings.title" xml:space="preserve"><value>Tietie 설정</value></data>
+  <data name="settings.hotkey" xml:space="preserve"><value>목록 열기 단축키</value></data>
+  <data name="settings.keep" xml:space="preserve"><value>최대 보관 개수</value></data>
+  <data name="settings.items" xml:space="preserve"><value>{0}개</value></data>
+  <data name="settings.imageCap" xml:space="preserve"><value>이미지 최대 용량</value></data>
+  <data name="settings.recordConcealed" xml:space="preserve"><value>비밀번호 관리자에서 복사한 로그인 정보 기록</value></data>
+  <data name="settings.limitNote" xml:space="preserve"><value>한도를 넘으면 가장 오래된 기록부터 자동으로 지워져요. 고정한 항목은 지워지지 않아요.</value></data>
+  <data name="win.settings.passwords" xml:space="preserve"><value>비밀번호</value></data>
+  <data name="win.settings.startup" xml:space="preserve"><value>시작</value></data>
+  <data name="win.settings.usageLabel" xml:space="preserve"><value>현재 사용량</value></data>
+  <data name="win.settings.usage" xml:space="preserve"><value>기록 {0}개 · 이미지 {1}</value></data>
+  <data name="win.settings.lowerConfirm" xml:space="preserve"><value>한도를 낮추면 한도를 넘는 오래된 기록은 다음에 복사할 때 지워져요 (고정한 항목은 유지). 한도를 낮출까요?</value></data>
+  <data name="about.version" xml:space="preserve"><value>버전 {0}</value></data>
+  <data name="win.about.tagline" xml:space="preserve"><value>무료 오픈 소스 클립보드 도구</value></data>
+  <data name="about.detail" xml:space="preserve"><value>복사한 글자, 이미지, 파일을 기억해요.
+모든 기록은 이 컴퓨터에만 저장되고 업로드되지 않아요.</value></data>
+  <data name="about.author" xml:space="preserve"><value>만든 사람: 奎嵐 KueiLan</value></data>
+  <data name="about.site" xml:space="preserve"><value>奎嵐 KueiLan 웹사이트 방문 (kueilan.com)</value></data>
+  <data name="about.repo" xml:space="preserve"><value>GitHub에서 소스 코드 보기 · 의견 보내기</value></data>
+  <data name="about.feedback" xml:space="preserve"><value>의견과 제안을 환영해요. 앞으로도 계속 업데이트할게요.</value></data>
+  <data name="update.unreachableTitle" xml:space="preserve"><value>업데이트 정보를 확인할 수 없어요</value></data>
+  <data name="update.unreachableText" xml:space="preserve"><value>인터넷에 연결되어 있지 않은 것 같아요. 잠시 후 다시 시도해 주세요.</value></data>
+  <data name="update.latestTitle" xml:space="preserve"><value>최신 버전이에요</value></data>
+  <data name="update.latestText" xml:space="preserve"><value>지금 쓰고 있는 Tietie {0}이(가) 최신 버전이에요.</value></data>
+  <data name="update.heading" xml:space="preserve"><value>Tietie 새 버전 {0}이(가) 나왔어요</value></data>
+  <data name="win.update.text" xml:space="preserve"><value>지금 쓰고 있는 버전은 {0}이에요. ‘지금 업데이트’를 누르면 몇 초 만에 설치되고, 기존 기록은 그대로 남아요.</value></data>
+  <data name="update.now" xml:space="preserve"><value>지금 업데이트</value></data>
+  <data name="update.later" xml:space="preserve"><value>나중에</value></data>
+  <data name="update.skip" xml:space="preserve"><value>이 버전 건너뛰기</value></data>
+  <data name="update.failTitle" xml:space="preserve"><value>자동으로 업데이트할 수 없어요</value></data>
+  <data name="win.update.failText" xml:space="preserve"><value>Windows 키를 누르고 PowerShell을 입력한 다음 Enter를 누르세요. 아래 한 줄을 붙여넣고 Enter를 눌러 주세요:
+
+{0}</value></data>
+  <data name="ok" xml:space="preserve"><value>확인</value></data>
+</root>

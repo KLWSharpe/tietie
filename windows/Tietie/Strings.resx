@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 這個檔案由 scripts/i18n.py 從 i18n/*.json 產生，請改 json 再重新產生，不要直接改這裡。 -->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="_language" xml:space="preserve"><value>English</value></data>
+  <data name="app.name" xml:space="preserve"><value>Tietie</value></data>
+  <data name="app.fullName" xml:space="preserve"><value>貼貼 Tietie</value></data>
+  <data name="app.tooltipPaused" xml:space="preserve"><value>Tietie (recording paused)</value></data>
+  <data name="menu.open" xml:space="preserve"><value>Open Tietie List</value></data>
+  <data name="win.menu.open" xml:space="preserve"><value>Open Tietie List ({0})</value></data>
+  <data name="menu.hotkeyTaken" xml:space="preserve"><value>Shortcut {0} is in use. Change it in Settings</value></data>
+  <data name="menu.pause" xml:space="preserve"><value>Pause Recording</value></data>
+  <data name="menu.clearRecent" xml:space="preserve"><value>Clear Last 10 Minutes</value></data>
+  <data name="menu.clearAll" xml:space="preserve"><value>Clear All History (Keep Pinned)</value></data>
+  <data name="menu.settings" xml:space="preserve"><value>Settings…</value></data>
+  <data name="menu.language" xml:space="preserve"><value>Language</value></data>
+  <data name="menu.languageSystem" xml:space="preserve"><value>Same as System ({0})</value></data>
+  <data name="menu.about" xml:space="preserve"><value>About Tietie</value></data>
+  <data name="menu.checkUpdate" xml:space="preserve"><value>Check for Updates…</value></data>
+  <data name="menu.stats" xml:space="preserve"><value>Items: {0} · Images: {1}</value></data>
+  <data name="menu.quit" xml:space="preserve"><value>Quit Tietie</value></data>
+  <data name="toast.hotkeyTaken" xml:space="preserve"><value>Shortcut {0} is taken by another app. Pick a different one in Tietie's settings</value></data>
+  <data name="toast.noTextInImage" xml:space="preserve"><value>No text was found in this image</value></data>
+  <data name="toast.imageMissing" xml:space="preserve"><value>This image's file is missing, so it can't be pasted</value></data>
+  <data name="win.toast.copied" xml:space="preserve"><value>Copied. Press Ctrl+V to paste</value></data>
+  <data name="win.toast.copiedAdmin" xml:space="preserve"><value>Copied. This window runs as administrator, so press Ctrl+V yourself</value></data>
+  <data name="win.toast.clipboardBusy" xml:space="preserve"><value>Another app is using the clipboard. Please try again</value></data>
+  <data name="win.toast.error" xml:space="preserve"><value>Tietie ran into a small problem and logged it. Please try again</value></data>
+  <data name="toast.paused" xml:space="preserve"><value>Recording paused</value></data>
+  <data name="toast.resumed" xml:space="preserve"><value>Recording resumed</value></data>
+  <data name="toast.clearedRecent" xml:space="preserve"><value>Cleared the last 10 minutes</value></data>
+  <data name="toast.clearedAll" xml:space="preserve"><value>History cleared</value></data>
+  <data name="toast.languageChanged" xml:space="preserve"><value>Language: {0}</value></data>
+  <data name="panel.search" xml:space="preserve"><value>Type to search, even text inside images</value></data>
+  <data name="win.panel.hint" xml:space="preserve"><value>1–0 paste that item　← → page　Enter paste　Alt+Enter paste text in image
+Space preview　Right-click for more</value></data>
+  <data name="panel.page" xml:space="preserve"><value>Page {0} of {1}</value></data>
+  <data name="panel.pageMore" xml:space="preserve"><value>Page {0} of {1}　More pages</value></data>
+  <data name="panel.empty" xml:space="preserve"><value>Nothing here yet.
+Copy any text or image and it will show up here.</value></data>
+  <data name="panel.notFound" xml:space="preserve"><value>No results for “{0}”</value></data>
+  <data name="ctx.paste" xml:space="preserve"><value>Paste</value></data>
+  <data name="ctx.pasteImage" xml:space="preserve"><value>Paste Image</value></data>
+  <data name="ctx.pasteImageText" xml:space="preserve"><value>Paste Text in Image</value></data>
+  <data name="ctx.pasteImageTextNone" xml:space="preserve"><value>Paste Text in Image (no text found)</value></data>
+  <data name="ctx.preview" xml:space="preserve"><value>Preview</value></data>
+  <data name="ctx.pin" xml:space="preserve"><value>Pin</value></data>
+  <data name="ctx.unpin" xml:space="preserve"><value>Unpin</value></data>
+  <data name="ctx.delete" xml:space="preserve"><value>Delete This Item</value></data>
+  <data name="row.justNow" xml:space="preserve"><value>just now</value></data>
+  <data name="win.row.minutesAgo" xml:space="preserve"><value>{0} min ago</value></data>
+  <data name="win.row.hoursAgo" xml:space="preserve"><value>{0} hr ago</value></data>
+  <data name="win.row.daysAgo" xml:space="preserve"><value>{0} d ago</value></data>
+  <data name="row.image" xml:space="preserve"><value>Image</value></data>
+  <data name="row.imageText" xml:space="preserve"><value>Image: {0}</value></data>
+  <data name="row.files" xml:space="preserve"><value>{0} and more ({1} files)</value></data>
+  <data name="row.file" xml:space="preserve"><value>File</value></data>
+  <data name="row.chars" xml:space="preserve"><value>{0} chars</value></data>
+  <data name="row.text" xml:space="preserve"><value>Text</value></data>
+  <data name="row.pinned" xml:space="preserve"><value>Pinned</value></data>
+  <data name="onb.title" xml:space="preserve"><value>Welcome to 貼貼 Tietie</value></data>
+  <data name="onb.intro" xml:space="preserve"><value>Tietie remembers the text, images and files you copy. Press {0} to open the list, pick an item and it's pasted as plain text.
+Everything stays on this computer and is never uploaded.</value></data>
+  <data name="onb.passwordQuestion" xml:space="preserve"><value>1. Keep passwords?</value></data>
+  <data name="onb.recordAll" xml:space="preserve"><value>Keep everything, including logins copied from password managers</value></data>
+  <data name="onb.skipSecret" xml:space="preserve"><value>Don't keep items copied from password managers</value></data>
+  <data name="win.onb.passwordNote" xml:space="preserve"><value>Your history stays on this computer, so anyone who can use this computer can see it. If you share or lend this computer, choose the second option. After pasting something sensitive, you can clear it from the Tietie icon in the taskbar. You can change this later in Settings.</value></data>
+  <data name="win.onb.startupTitle" xml:space="preserve"><value>2. Launch at startup</value></data>
+  <data name="win.onb.trayNote" xml:space="preserve"><value>Tietie lives in the taskbar at the bottom right of your screen. If you can't see it, click the “^” arrow on the taskbar.</value></data>
+  <data name="onb.start" xml:space="preserve"><value>Get Started</value></data>
+  <data name="launchAtLogin" xml:space="preserve"><value>Start Tietie when I log in</value></data>
+  <data name="settings.title" xml:space="preserve"><value>Tietie Settings</value></data>
+  <data name="settings.hotkey" xml:space="preserve"><value>Shortcut to open the list</value></data>
+  <data name="settings.keep" xml:space="preserve"><value>Keep up to</value></data>
+  <data name="settings.items" xml:space="preserve"><value>{0} items</value></data>
+  <data name="settings.imageCap" xml:space="preserve"><value>Images can use up to</value></data>
+  <data name="settings.recordConcealed" xml:space="preserve"><value>Keep logins copied from password managers</value></data>
+  <data name="settings.limitNote" xml:space="preserve"><value>When a limit is reached, the oldest items are deleted automatically. Pinned items are never deleted.</value></data>
+  <data name="win.settings.passwords" xml:space="preserve"><value>Passwords</value></data>
+  <data name="win.settings.startup" xml:space="preserve"><value>Startup</value></data>
+  <data name="win.settings.usageLabel" xml:space="preserve"><value>Current usage</value></data>
+  <data name="win.settings.usage" xml:space="preserve"><value>Items: {0} · Images: {1}</value></data>
+  <data name="win.settings.lowerConfirm" xml:space="preserve"><value>After lowering the limit, older items over the limit will be deleted the next time you copy something (pinned items are kept). Lower the limit?</value></data>
+  <data name="about.version" xml:space="preserve"><value>Version {0}</value></data>
+  <data name="win.about.tagline" xml:space="preserve"><value>A free, open-source clipboard manager</value></data>
+  <data name="about.detail" xml:space="preserve"><value>Remembers the text, images and files you copy.
+Everything stays on this computer and is never uploaded.</value></data>
+  <data name="about.author" xml:space="preserve"><value>Made by 奎嵐 KueiLan</value></data>
+  <data name="about.site" xml:space="preserve"><value>Visit KueiLan's website: kueilan.com</value></data>
+  <data name="about.repo" xml:space="preserve"><value>Source code and feedback on GitHub</value></data>
+  <data name="about.feedback" xml:space="preserve"><value>Feedback and ideas are welcome. More updates are on the way.</value></data>
+  <data name="update.unreachableTitle" xml:space="preserve"><value>Couldn't check for updates</value></data>
+  <data name="update.unreachableText" xml:space="preserve"><value>You may be offline. Please try again later.</value></data>
+  <data name="update.latestTitle" xml:space="preserve"><value>You're up to date</value></data>
+  <data name="update.latestText" xml:space="preserve"><value>Tietie {0} is the latest version.</value></data>
+  <data name="update.heading" xml:space="preserve"><value>Tietie {0} is available</value></data>
+  <data name="win.update.text" xml:space="preserve"><value>You have version {0}. Click “Update Now” and it installs in a few seconds. Your history is kept.</value></data>
+  <data name="update.now" xml:space="preserve"><value>Update Now</value></data>
+  <data name="update.later" xml:space="preserve"><value>Later</value></data>
+  <data name="update.skip" xml:space="preserve"><value>Skip This Version</value></data>
+  <data name="update.failTitle" xml:space="preserve"><value>Couldn't update automatically</value></data>
+  <data name="win.update.failText" xml:space="preserve"><value>Press the Windows key, type PowerShell and press Enter. Then paste the line below and press Enter:
+
+{0}</value></data>
+  <data name="ok" xml:space="preserve"><value>OK</value></data>
+</root>

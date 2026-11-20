@@ -11,6 +11,8 @@ final class AboutController: NSObject {
         window?.makeKeyAndOrderFront(nil)
     }
 
+    func close() { window?.close() }
+
     func renderSnapshot() -> Data? {
         if window == nil { build() }
         return window.flatMap { snapshot(of: $0) }
@@ -22,6 +24,8 @@ final class AboutController: NSObject {
         field.textColor = color
         field.alignment = .center
         field.isSelectable = false
+        // 視窗寬 380，左右各留 32；長一點的語言會自動換行，不會頂到邊
+        field.preferredMaxLayoutWidth = 316
         return field
     }
 
@@ -42,27 +46,27 @@ final class AboutController: NSObject {
         icon.widthAnchor.constraint(equalToConstant: 96).isActive = true
         icon.heightAnchor.constraint(equalToConstant: 96).isActive = true
 
-        let name = text("貼貼 Tietie", size: 22, weight: .semibold)
-        let version = text("版本 \(appVersion)", size: 11, color: .secondaryLabelColor)
-        let tagline = text("免費、開源的 Mac 剪貼簿小工具", size: 13)
-        let detail = text("記住你複製過的文字、圖片和檔案。\n所有記錄只存在這台電腦，不會上傳。", size: 12, color: .secondaryLabelColor)
+        let name = text(L("app.fullName"), size: 22, weight: .semibold)
+        let version = text(L("about.version", appVersion), size: 11, color: .secondaryLabelColor)
+        let tagline = text(L("mac.about.tagline"), size: 13)
+        let detail = text(L("about.detail"), size: 12, color: .secondaryLabelColor)
 
         let line = NSBox()
         line.boxType = .separator
         line.widthAnchor.constraint(equalToConstant: 240).isActive = true
 
-        let author = text("製作：奎嵐 KueiLan", size: 13, weight: .medium)
+        let author = text(L("about.author"), size: 13, weight: .medium)
         // 主要按鈕：直接打開奎嵐的網站
-        let site = NSButton(title: "前往奎嵐的網站 kueilan.com", target: self, action: #selector(openSite))
+        let site = NSButton(title: L("about.site"), target: self, action: #selector(openSite))
         site.bezelStyle = .rounded
         site.controlSize = .large
         site.keyEquivalent = "\r"
-        let repo = link("到 GitHub 看原始碼、給回饋", action: #selector(openRepo))
+        let repo = link(L("about.repo"), action: #selector(openRepo))
         let links = NSStackView(views: [site, repo])
         links.orientation = .vertical
         links.spacing = 10
 
-        let feedback = text("歡迎給回饋與建議，之後會幫大家更新。", size: 11, color: .secondaryLabelColor)
+        let feedback = text(L("about.feedback"), size: 11, color: .secondaryLabelColor)
 
         let stack = NSStackView(views: [icon, name, version, tagline, detail, line, author, links, feedback])
         stack.orientation = .vertical
@@ -80,7 +84,7 @@ final class AboutController: NSObject {
 
         let w = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 380, height: 400),
                          styleMask: [.titled, .closable, .fullSizeContentView], backing: .buffered, defer: false)
-        w.title = "關於貼貼"
+        w.title = L("menu.about")
         w.titleVisibility = .hidden
         w.titlebarAppearsTransparent = true
         w.isMovableByWindowBackground = true

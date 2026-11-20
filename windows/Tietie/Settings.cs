@@ -31,6 +31,8 @@ sealed class SettingsData
     public bool LaunchAtLogin { get; set; } = true;
     public string HotKey { get; set; } = "ctrl+shift+v";
     public string SkippedUpdateVersion { get; set; } = "";
+    /// 介面語言：system 跟著 Windows，或 zh-Hant、en、ja…
+    public string Language { get; set; } = "system";
 }
 
 static class Settings

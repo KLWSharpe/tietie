@@ -114,9 +114,9 @@ private func makeWindow(title: String, width: CGFloat, content: NSView) -> NSWin
 
 final class OnboardingController: NSObject, NSWindowDelegate {
     private var window: NSWindow?
-    private let recordAll = NSButton(radioButtonWithTitle: "全部都記，包含從密碼管理器複製的帳號密碼", target: nil, action: nil)
-    private let skipSecret = NSButton(radioButtonWithTitle: "密碼管理器複製的內容不要記", target: nil, action: nil)
-    private let loginCheck = NSButton(checkboxWithTitle: "開機後自動啟動貼貼", target: nil, action: nil)
+    private let recordAll = NSButton(radioButtonWithTitle: L("onb.recordAll"), target: nil, action: nil)
+    private let skipSecret = NSButton(radioButtonWithTitle: L("onb.skipSecret"), target: nil, action: nil)
+    private let loginCheck = NSButton(checkboxWithTitle: L("launchAtLogin"), target: nil, action: nil)
     private let axStatus = NSTextField(labelWithString: "")
     private var timer: Timer?
     var onFinish: (() -> Void)?
@@ -142,41 +142,41 @@ final class OnboardingController: NSObject, NSWindowDelegate {
         stack.alignment = .leading
         stack.spacing = 10
 
-        stack.addArrangedSubview(label("歡迎使用貼貼 Tietie", size: 20, weight: .semibold))
-        stack.addArrangedSubview(label("貼貼會記住你複製過的文字、圖片和檔案。按 \(HotKeyChoice.find(Settings.shared.data.hotKey).label) 叫出清單，選一筆就貼上，貼出來的文字不帶格式。\n所有記錄只存在這台電腦，不會上傳到任何地方。", color: .secondaryLabelColor))
+        stack.addArrangedSubview(label(L("onb.title"), size: 20, weight: .semibold))
+        stack.addArrangedSubview(label(L("onb.intro", HotKeyChoice.find(Settings.shared.data.hotKey).label), color: .secondaryLabelColor))
         stack.setCustomSpacing(20, after: stack.arrangedSubviews.last!)
 
-        stack.addArrangedSubview(label("1. 要不要記錄密碼？", weight: .semibold))
+        stack.addArrangedSubview(label(L("onb.passwordQuestion"), weight: .semibold))
         recordAll.target = self; recordAll.action = #selector(radioChanged)
         skipSecret.target = self; skipSecret.action = #selector(radioChanged)
         recordAll.state = Settings.shared.data.recordConcealed ? .on : .off
         skipSecret.state = Settings.shared.data.recordConcealed ? .off : .on
         stack.addArrangedSubview(recordAll)
         stack.addArrangedSubview(skipSecret)
-        stack.addArrangedSubview(label("記錄會留在這台電腦上，能打開這台電腦的人就看得到。如果電腦會借人或多人共用，建議選第二個。貼完敏感內容後，也可以從右上角選單一鍵清除。之後可以在「設定」裡更改。", size: 11.5, color: .secondaryLabelColor))
+        stack.addArrangedSubview(label(L("mac.onb.passwordNote"), size: 11.5, color: .secondaryLabelColor))
         stack.setCustomSpacing(20, after: stack.arrangedSubviews.last!)
 
-        stack.addArrangedSubview(label("2. 開啟自動貼上", weight: .semibold))
-        stack.addArrangedSubview(label("要讓貼貼在你選好之後直接幫你貼上，需要在系統設定的「輔助使用」把貼貼打開。沒有開也能用，只是選好之後要自己按一次 ⌘V。", size: 11.5, color: .secondaryLabelColor))
-        let axButton = NSButton(title: "開啟權限設定…", target: self, action: #selector(openAX))
+        stack.addArrangedSubview(label(L("mac.onb.axTitle"), weight: .semibold))
+        stack.addArrangedSubview(label(L("mac.onb.axNote"), size: 11.5, color: .secondaryLabelColor))
+        let axButton = NSButton(title: L("mac.openAX"), target: self, action: #selector(openAX))
         let axRow = NSStackView(views: [axButton, axStatus])
         axRow.spacing = 10
         axStatus.font = .systemFont(ofSize: 12)
         stack.addArrangedSubview(axRow)
         stack.setCustomSpacing(20, after: axRow)
 
-        stack.addArrangedSubview(label("3. 自動啟動", weight: .semibold))
+        stack.addArrangedSubview(label(L("mac.onb.startupTitle"), weight: .semibold))
         loginCheck.state = Settings.shared.data.launchAtLogin ? .on : .off
         stack.addArrangedSubview(loginCheck)
         stack.setCustomSpacing(24, after: loginCheck)
 
-        let done = NSButton(title: "開始使用", target: self, action: #selector(finish))
+        let done = NSButton(title: L("onb.start"), target: self, action: #selector(finish))
         done.keyEquivalent = "\r"
         done.bezelStyle = .rounded
         done.controlSize = .large
         stack.addArrangedSubview(done)
 
-        let w = makeWindow(title: "貼貼 Tietie", width: 500, content: stack)
+        let w = makeWindow(title: L("app.fullName"), width: 500, content: stack)
         w.delegate = self
         window = w
     }
@@ -194,10 +194,10 @@ final class OnboardingController: NSObject, NSWindowDelegate {
 
     private func refreshStatus() {
         if Paster.trusted {
-            axStatus.stringValue = "已開啟"
+            axStatus.stringValue = L("mac.ax.on")
             axStatus.textColor = .systemGreen
         } else {
-            axStatus.stringValue = "尚未開啟"
+            axStatus.stringValue = L("mac.ax.off")
             axStatus.textColor = .secondaryLabelColor
         }
     }
@@ -234,8 +234,8 @@ final class SettingsController: NSObject, NSWindowDelegate {
     private let hotKeyPopup = NSPopUpButton()
     private let maxPopup = NSPopUpButton()
     private let capPopup = NSPopUpButton()
-    private let concealedCheck = NSButton(checkboxWithTitle: "記錄密碼管理器複製的帳號密碼", target: nil, action: nil)
-    private let loginCheck = NSButton(checkboxWithTitle: "開機後自動啟動貼貼", target: nil, action: nil)
+    private let concealedCheck = NSButton(checkboxWithTitle: L("settings.recordConcealed"), target: nil, action: nil)
+    private let loginCheck = NSButton(checkboxWithTitle: L("launchAtLogin"), target: nil, action: nil)
     private let axStatus = NSTextField(labelWithString: "")
     private let usage = NSTextField(labelWithString: "")
     private var timer: Timer?
@@ -258,6 +258,9 @@ final class SettingsController: NSObject, NSWindowDelegate {
         window?.makeKeyAndOrderFront(nil)
     }
 
+    var isVisible: Bool { window?.isVisible ?? false }
+    func close() { window?.close() }
+
     func renderSnapshot() -> Data? {
         if window == nil { build() }
         sync()
@@ -266,7 +269,7 @@ final class SettingsController: NSObject, NSWindowDelegate {
 
     private func build() {
         for choice in HotKeyChoice.all { hotKeyPopup.addItem(withTitle: choice.label) }
-        for n in maxChoices { maxPopup.addItem(withTitle: "\(n) 筆") }
+        for n in maxChoices { maxPopup.addItem(withTitle: L("settings.items", n)) }
         for (_, title) in capChoices { capPopup.addItem(withTitle: title) }
         for control in [hotKeyPopup, maxPopup, capPopup, concealedCheck, loginCheck] as [NSControl] {
             control.target = self
@@ -274,17 +277,17 @@ final class SettingsController: NSObject, NSWindowDelegate {
         }
 
         let grid = NSGridView(views: [
-            [label("叫出清單的快捷鍵"), hotKeyPopup],
-            [label("最多保留"), maxPopup],
-            [label("圖片最多佔用"), capPopup],
+            [label(L("settings.hotkey")), hotKeyPopup],
+            [label(L("settings.keep")), maxPopup],
+            [label(L("settings.imageCap")), capPopup],
         ])
         grid.rowSpacing = 10
         grid.columnSpacing = 14
         grid.column(at: 0).xPlacement = .trailing
         grid.rowAlignment = .firstBaseline
 
-        let axButton = NSButton(title: "開啟權限設定…", target: self, action: #selector(openAX))
-        let axRow = NSStackView(views: [label("自動貼上權限"), axStatus, axButton])
+        let axButton = NSButton(title: L("mac.openAX"), target: self, action: #selector(openAX))
+        let axRow = NSStackView(views: [label(L("mac.settings.ax")), axStatus, axButton])
         axRow.spacing = 10
         axStatus.font = .systemFont(ofSize: 13)
 
@@ -293,9 +296,9 @@ final class SettingsController: NSObject, NSWindowDelegate {
 
         let stack = NSStackView(views: [
             grid,
-            label("超過上限時，會自動刪掉最舊的記錄。釘選的不會被刪。", size: 11.5, color: .secondaryLabelColor),
+            label(L("settings.limitNote"), size: 11.5, color: .secondaryLabelColor),
             concealedCheck,
-            label("記錄只存在這台電腦，不會上傳。電腦會借人或多人共用時，建議取消勾選。", size: 11.5, color: .secondaryLabelColor),
+            label(L("mac.settings.passwordNote"), size: 11.5, color: .secondaryLabelColor),
             loginCheck,
             axRow,
             usage,
@@ -306,7 +309,7 @@ final class SettingsController: NSObject, NSWindowDelegate {
         stack.setCustomSpacing(4, after: grid)
         stack.setCustomSpacing(4, after: concealedCheck)
 
-        let w = makeWindow(title: "貼貼設定", width: 440, content: stack)
+        let w = makeWindow(title: L("settings.title"), width: 440, content: stack)
         w.delegate = self
         window = w
     }
@@ -322,10 +325,10 @@ final class SettingsController: NSObject, NSWindowDelegate {
     }
 
     private func refreshStatus() {
-        axStatus.stringValue = Paster.trusted ? "已開啟" : "尚未開啟"
+        axStatus.stringValue = Paster.trusted ? L("mac.ax.on") : L("mac.ax.off")
         axStatus.textColor = Paster.trusted ? .systemGreen : .systemOrange
-        let size = ByteCountFormatter.string(fromByteCount: store.imageBytes(), countStyle: .file)
-        usage.stringValue = "目前共 \(store.count()) 筆記錄，圖片佔用 \(size)。"
+        let size = sizeText(store.imageBytes())
+        usage.stringValue = L("mac.settings.usage", store.count(), size)
     }
 
     @objc private func changed() {
@@ -338,10 +341,10 @@ final class SettingsController: NSObject, NSWindowDelegate {
         let overCap = newCap < Int64(Settings.shared.data.imageCapMB) * 1024 * 1024 && store.imageBytes() > newCap
         if overCount || overCap {
             let alert = NSAlert()
-            alert.messageText = "調低上限會刪掉最舊的記錄"
-            alert.informativeText = "超過新上限的舊記錄會馬上刪除，沒辦法復原。釘選的不會被刪。"
-            alert.addButton(withTitle: "取消")
-            alert.addButton(withTitle: "調低並刪除")
+            alert.messageText = L("mac.settings.lowerTitle")
+            alert.informativeText = L("mac.settings.lowerText")
+            alert.addButton(withTitle: L("mac.settings.lowerCancel"))
+            alert.addButton(withTitle: L("mac.settings.lowerConfirm"))
             if alert.runModal() == .alertFirstButtonReturn {
                 sync()
                 return

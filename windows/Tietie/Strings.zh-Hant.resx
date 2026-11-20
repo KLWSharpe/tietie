@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 這個檔案由 scripts/i18n.py 從 i18n/*.json 產生，請改 json 再重新產生，不要直接改這裡。 -->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="_language" xml:space="preserve"><value>繁體中文</value></data>
+  <data name="app.name" xml:space="preserve"><value>貼貼</value></data>
+  <data name="app.fullName" xml:space="preserve"><value>貼貼 Tietie</value></data>
+  <data name="app.tooltipPaused" xml:space="preserve"><value>貼貼（已暫停記錄）</value></data>
+  <data name="menu.open" xml:space="preserve"><value>開啟貼貼清單</value></data>
+  <data name="win.menu.open" xml:space="preserve"><value>開啟貼貼清單（{0}）</value></data>
+  <data name="menu.hotkeyTaken" xml:space="preserve"><value>快捷鍵 {0} 被佔用，請到設定更換</value></data>
+  <data name="menu.pause" xml:space="preserve"><value>暫停記錄</value></data>
+  <data name="menu.clearRecent" xml:space="preserve"><value>清除最近 10 分鐘的記錄</value></data>
+  <data name="menu.clearAll" xml:space="preserve"><value>清除全部歷史記錄（保留釘選）</value></data>
+  <data name="menu.settings" xml:space="preserve"><value>設定…</value></data>
+  <data name="menu.language" xml:space="preserve"><value>語言</value></data>
+  <data name="menu.languageSystem" xml:space="preserve"><value>跟隨系統（{0}）</value></data>
+  <data name="menu.about" xml:space="preserve"><value>關於貼貼</value></data>
+  <data name="menu.checkUpdate" xml:space="preserve"><value>檢查更新…</value></data>
+  <data name="menu.stats" xml:space="preserve"><value>已記錄 {0} 筆 · 圖片 {1}</value></data>
+  <data name="menu.quit" xml:space="preserve"><value>結束貼貼</value></data>
+  <data name="toast.hotkeyTaken" xml:space="preserve"><value>快捷鍵 {0} 被別的程式佔用了，請到貼貼的設定換一組</value></data>
+  <data name="toast.noTextInImage" xml:space="preserve"><value>這張圖片裡沒有讀到文字</value></data>
+  <data name="toast.imageMissing" xml:space="preserve"><value>這張圖片的檔案不見了，沒辦法貼上</value></data>
+  <data name="win.toast.copied" xml:space="preserve"><value>已複製，按 Ctrl+V 貼上</value></data>
+  <data name="win.toast.copiedAdmin" xml:space="preserve"><value>已複製。這個視窗是用系統管理員權限開的，請自己按 Ctrl+V 貼上</value></data>
+  <data name="win.toast.clipboardBusy" xml:space="preserve"><value>剪貼簿被別的程式佔用，請再試一次</value></data>
+  <data name="win.toast.error" xml:space="preserve"><value>貼貼遇到一個小問題，已記錄下來。可以再試一次</value></data>
+  <data name="toast.paused" xml:space="preserve"><value>已暫停記錄</value></data>
+  <data name="toast.resumed" xml:space="preserve"><value>恢復記錄</value></data>
+  <data name="toast.clearedRecent" xml:space="preserve"><value>已清除最近 10 分鐘的記錄</value></data>
+  <data name="toast.clearedAll" xml:space="preserve"><value>已清除歷史記錄</value></data>
+  <data name="toast.languageChanged" xml:space="preserve"><value>介面語言：{0}</value></data>
+  <data name="panel.search" xml:space="preserve"><value>打字搜尋，圖片裡的字也找得到</value></data>
+  <data name="win.panel.hint" xml:space="preserve"><value>按數字 1–0 直接貼　← → 換頁　Enter 貼上　Alt+Enter 貼圖片裡的字　空白鍵預覽　右鍵看更多</value></data>
+  <data name="panel.page" xml:space="preserve"><value>第 {0}／{1} 頁</value></data>
+  <data name="panel.pageMore" xml:space="preserve"><value>第 {0}／{1} 頁　還有更多頁</value></data>
+  <data name="panel.empty" xml:space="preserve"><value>還沒有記錄。
+複製任何文字或圖片，就會出現在這裡。</value></data>
+  <data name="panel.notFound" xml:space="preserve"><value>找不到「{0}」</value></data>
+  <data name="ctx.paste" xml:space="preserve"><value>貼上</value></data>
+  <data name="ctx.pasteImage" xml:space="preserve"><value>貼上圖片</value></data>
+  <data name="ctx.pasteImageText" xml:space="preserve"><value>貼上圖片裡的文字</value></data>
+  <data name="ctx.pasteImageTextNone" xml:space="preserve"><value>貼上圖片裡的文字（這張沒有讀到字）</value></data>
+  <data name="ctx.preview" xml:space="preserve"><value>放大預覽</value></data>
+  <data name="ctx.pin" xml:space="preserve"><value>釘選</value></data>
+  <data name="ctx.unpin" xml:space="preserve"><value>取消釘選</value></data>
+  <data name="ctx.delete" xml:space="preserve"><value>刪除這一筆</value></data>
+  <data name="row.justNow" xml:space="preserve"><value>剛剛</value></data>
+  <data name="win.row.minutesAgo" xml:space="preserve"><value>{0} 分鐘前</value></data>
+  <data name="win.row.hoursAgo" xml:space="preserve"><value>{0} 小時前</value></data>
+  <data name="win.row.daysAgo" xml:space="preserve"><value>{0} 天前</value></data>
+  <data name="row.image" xml:space="preserve"><value>圖片</value></data>
+  <data name="row.imageText" xml:space="preserve"><value>圖片：{0}</value></data>
+  <data name="row.files" xml:space="preserve"><value>{0} 等 {1} 個檔案</value></data>
+  <data name="row.file" xml:space="preserve"><value>檔案</value></data>
+  <data name="row.chars" xml:space="preserve"><value>{0} 字</value></data>
+  <data name="row.text" xml:space="preserve"><value>文字</value></data>
+  <data name="row.pinned" xml:space="preserve"><value>已釘選</value></data>
+  <data name="onb.title" xml:space="preserve"><value>歡迎使用貼貼 Tietie</value></data>
+  <data name="onb.intro" xml:space="preserve"><value>貼貼會記住你複製過的文字、圖片和檔案。按 {0} 叫出清單，選一筆就貼上，貼出來的文字不帶格式。
+所有記錄只存在這台電腦，不會上傳到任何地方。</value></data>
+  <data name="onb.passwordQuestion" xml:space="preserve"><value>1. 要不要記錄密碼？</value></data>
+  <data name="onb.recordAll" xml:space="preserve"><value>全部都記，包含從密碼管理器複製的帳號密碼</value></data>
+  <data name="onb.skipSecret" xml:space="preserve"><value>密碼管理器複製的內容不要記</value></data>
+  <data name="win.onb.passwordNote" xml:space="preserve"><value>記錄會留在這台電腦上，能打開這台電腦的人就看得到。如果電腦會借人或多人共用，建議選第二個。貼完敏感內容後，也可以從工作列的貼貼圖示一鍵清除。之後可以在「設定」裡更改。</value></data>
+  <data name="win.onb.startupTitle" xml:space="preserve"><value>2. 自動啟動</value></data>
+  <data name="win.onb.trayNote" xml:space="preserve"><value>貼貼會待在螢幕右下角的工作列。如果看不到，點工作列上的「^」箭頭就能找到。</value></data>
+  <data name="onb.start" xml:space="preserve"><value>開始使用</value></data>
+  <data name="launchAtLogin" xml:space="preserve"><value>開機後自動啟動貼貼</value></data>
+  <data name="settings.title" xml:space="preserve"><value>貼貼設定</value></data>
+  <data name="settings.hotkey" xml:space="preserve"><value>叫出清單的快捷鍵</value></data>
+  <data name="settings.keep" xml:space="preserve"><value>最多保留</value></data>
+  <data name="settings.items" xml:space="preserve"><value>{0} 筆</value></data>
+  <data name="settings.imageCap" xml:space="preserve"><value>圖片最多佔用</value></data>
+  <data name="settings.recordConcealed" xml:space="preserve"><value>記錄密碼管理器複製的帳號密碼</value></data>
+  <data name="settings.limitNote" xml:space="preserve"><value>超過上限時，會自動刪掉最舊的記錄。釘選的不會被刪。</value></data>
+  <data name="win.settings.passwords" xml:space="preserve"><value>密碼</value></data>
+  <data name="win.settings.startup" xml:space="preserve"><value>啟動</value></data>
+  <data name="win.settings.usageLabel" xml:space="preserve"><value>目前用量</value></data>
+  <data name="win.settings.usage" xml:space="preserve"><value>{0} 筆 · 圖片 {1}</value></data>
+  <data name="win.settings.lowerConfirm" xml:space="preserve"><value>調低上限後，超過的舊記錄會在下次複製時被刪掉（釘選的不會）。確定要調低嗎？</value></data>
+  <data name="about.version" xml:space="preserve"><value>版本 {0}</value></data>
+  <data name="win.about.tagline" xml:space="preserve"><value>免費、開源的剪貼簿小工具</value></data>
+  <data name="about.detail" xml:space="preserve"><value>記住你複製過的文字、圖片和檔案。
+所有記錄只存在這台電腦，不會上傳。</value></data>
+  <data name="about.author" xml:space="preserve"><value>製作：奎嵐 KueiLan</value></data>
+  <data name="about.site" xml:space="preserve"><value>前往奎嵐的網站 kueilan.com</value></data>
+  <data name="about.repo" xml:space="preserve"><value>到 GitHub 看原始碼、給回饋</value></data>
+  <data name="about.feedback" xml:space="preserve"><value>歡迎給回饋與建議，之後會幫大家更新。</value></data>
+  <data name="update.unreachableTitle" xml:space="preserve"><value>暫時查不到新版資訊</value></data>
+  <data name="update.unreachableText" xml:space="preserve"><value>可能是網路沒有連上，請稍後再試一次。</value></data>
+  <data name="update.latestTitle" xml:space="preserve"><value>已經是最新版</value></data>
+  <data name="update.latestText" xml:space="preserve"><value>你現在用的貼貼 {0} 就是最新版本。</value></data>
+  <data name="update.heading" xml:space="preserve"><value>貼貼有新版本 {0}</value></data>
+  <data name="win.update.text" xml:space="preserve"><value>你現在用的是 {0}。按「立即更新」，幾秒鐘就裝好，原本的記錄都會留著。</value></data>
+  <data name="update.now" xml:space="preserve"><value>立即更新</value></data>
+  <data name="update.later" xml:space="preserve"><value>稍後再說</value></data>
+  <data name="update.skip" xml:space="preserve"><value>略過這一版</value></data>
+  <data name="update.failTitle" xml:space="preserve"><value>沒辦法自動更新</value></data>
+  <data name="win.update.failText" xml:space="preserve"><value>請按 Windows 鍵，打 PowerShell，按 Enter，貼上下面這一行再按 Enter：
+
+{0}</value></data>
+  <data name="ok" xml:space="preserve"><value>好</value></data>
+</root>

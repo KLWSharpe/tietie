@@ -42,7 +42,7 @@ final class ItemCell: NSTableCellView {
         badge.textColor = .labelColor
         badge.alignment = .center
 
-        pin.image = NSImage(systemSymbolName: "pin.fill", accessibilityDescription: "已釘選")
+        pin.image = NSImage(systemSymbolName: "pin.fill", accessibilityDescription: L("row.pinned"))
         pin.contentTintColor = .systemOrange
         pin.symbolConfiguration = NSImage.SymbolConfiguration(pointSize: 10, weight: .regular)
 
@@ -111,7 +111,7 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
     private let thumbs = NSCache<NSString, NSImage>()
     private let timeFormatter: RelativeDateTimeFormatter = {
         let f = RelativeDateTimeFormatter()
-        f.locale = Locale(identifier: "zh_TW")
+        f.locale = Lang.locale
         f.unitsStyle = .short
         return f
     }()
@@ -149,7 +149,7 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
         effect.blendingMode = .behindWindow
         panel.contentView = effect
 
-        search.placeholderString = "打字搜尋，圖片裡的字也找得到"
+        search.placeholderString = L("panel.search")
         search.font = .systemFont(ofSize: 15)
         search.delegate = self
         search.focusRingType = .none
@@ -183,7 +183,7 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
         emptyLabel.font = .systemFont(ofSize: 13)
         emptyLabel.maximumNumberOfLines = 3
 
-        hint.stringValue = "按數字 1–0 直接貼　← → 換頁　↩ 貼上　⌥↩ 貼圖片裡的字　空白鍵預覽　右鍵看更多"
+        hint.stringValue = L("mac.panel.hint")
 
         pager.segmentStyle = .rounded
         pager.trackingMode = .selectOne
@@ -197,7 +197,11 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
         hint.font = .systemFont(ofSize: 10.5)
         hint.textColor = .secondaryLabelColor
         hint.alignment = .center
-        hint.lineBreakMode = .byTruncatingTail
+        // 有些語言的提示比較長，最多排兩行
+        hint.lineBreakMode = .byWordWrapping
+        hint.maximumNumberOfLines = 2
+        hint.cell?.wraps = true
+        hint.preferredMaxLayoutWidth = 456
 
         for v in [search, pager, pageLabel, scroll, emptyLabel, hint] as [NSView] {
             v.translatesAutoresizingMaskIntoConstraints = false
@@ -353,8 +357,7 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
         }
         pager.selectedSegment = page - pagerStart
         pager.isHidden = allItems.isEmpty
-        let more = count > visible ? "　還有更多頁" : ""
-        pageLabel.stringValue = allItems.isEmpty ? "" : "第 \(page + 1)／\(count) 頁\(more)"
+        pageLabel.stringValue = allItems.isEmpty ? "" : L(count > visible ? "panel.pageMore" : "panel.page", page + 1, count)
     }
 
     @objc private func pagerClicked() {
@@ -379,8 +382,8 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
         showPage()
         if items.isEmpty {
             emptyLabel.stringValue = search.stringValue.isEmpty
-                ? "還沒有記錄。\n複製任何文字或圖片，就會出現在這裡。"
-                : "找不到「\(search.stringValue)」"
+                ? L("panel.empty")
+                : L("panel.notFound", search.stringValue)
             emptyLabel.isHidden = false
         } else {
             emptyLabel.isHidden = true
@@ -514,16 +517,16 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
         }
         menu.autoenablesItems = false
         if item.kind == "image" {
-            add("貼上圖片", #selector(menuPaste))
+            add(L("ctx.pasteImage"), #selector(menuPaste))
             let hasText = !item.ocr.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            add(hasText ? "貼上圖片裡的文字" : "貼上圖片裡的文字（這張沒有讀到字）", #selector(menuPasteText), enabled: hasText)
+            add(hasText ? L("ctx.pasteImageText") : L("ctx.pasteImageTextNone"), #selector(menuPasteText), enabled: hasText)
         } else {
-            add("貼上", #selector(menuPaste))
+            add(L("ctx.paste"), #selector(menuPaste))
         }
         menu.addItem(.separator())
-        add("放大預覽", #selector(menuPreview))
-        add(item.pinned ? "取消釘選" : "釘選", #selector(menuPin))
-        add("刪除這一筆", #selector(menuDelete))
+        add(L("ctx.preview"), #selector(menuPreview))
+        add(item.pinned ? L("ctx.unpin") : L("ctx.pin"), #selector(menuPin))
+        add(L("ctx.delete"), #selector(menuDelete))
     }
 
     @objc private func menuPaste() { if let item = selectedItem { pick(item) } }
@@ -594,7 +597,7 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
         var meta: [String] = []
         if !item.sourceApp.isEmpty { meta.append(item.sourceApp) }
         let age = Date().timeIntervalSince1970 - item.lastUsed
-        meta.append(age < 60 ? "剛剛" : timeFormatter.localizedString(for: Date(timeIntervalSince1970: item.lastUsed), relativeTo: Date()))
+        meta.append(age < 60 ? L("row.justNow") : timeFormatter.localizedString(for: Date(timeIntervalSince1970: item.lastUsed), relativeTo: Date()))
 
         switch item.kind {
         case "image":
@@ -602,24 +605,24 @@ final class HistoryPanelController: NSObject, NSTableViewDataSource, NSTableView
             cell.icon.image = thumbnail(for: item)
             cell.icon.contentTintColor = nil
             let firstLine = item.ocr.split(separator: "\n").first.map(String.init) ?? ""
-            cell.title.stringValue = firstLine.isEmpty ? "圖片" : "圖片：" + oneLine(item.ocr)
+            cell.title.stringValue = firstLine.isEmpty ? L("row.image") : L("row.imageText", oneLine(item.ocr))
             meta.insert("\(item.width)×\(item.height)", at: 0)
-            meta.append(ByteCountFormatter.string(fromByteCount: Int64(item.bytes), countStyle: .file))
+            meta.append(sizeText(Int64(item.bytes)))
         case "file":
             cell.setIconSize(26)
             let paths = item.text.split(separator: "\n").map(String.init)
             cell.icon.image = paths.first.map { NSWorkspace.shared.icon(forFile: $0) }
             cell.icon.contentTintColor = nil
             let names = paths.map { ($0 as NSString).lastPathComponent }
-            cell.title.stringValue = names.count > 1 ? "\(names[0]) 等 \(names.count) 個檔案" : (names.first ?? "檔案")
-            meta.insert("檔案", at: 0)
+            cell.title.stringValue = names.count > 1 ? L("row.files", names[0], names.count) : (names.first ?? L("row.file"))
+            meta.insert(L("row.file"), at: 0)
         default:
             cell.setIconSize(20)
-            cell.icon.image = NSImage(systemSymbolName: "text.alignleft", accessibilityDescription: "文字")
+            cell.icon.image = NSImage(systemSymbolName: "text.alignleft", accessibilityDescription: L("row.text"))
             cell.icon.contentTintColor = .secondaryLabelColor
             cell.title.stringValue = oneLine(item.text)
             let count = item.text.count
-            if count > 80 { meta.append("\(count) 字") }
+            if count > 80 { meta.append(L("row.chars", count)) }
         }
         cell.sub.stringValue = meta.joined(separator: " · ")
         return cell

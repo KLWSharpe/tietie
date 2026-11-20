@@ -2,7 +2,7 @@ namespace Tietie;
 
 static class Program
 {
-    public const string Version = "0.4.0";
+    public const string Version = "0.5.0";
 
     [STAThread]
     static int Main(string[] args)
@@ -47,6 +47,6 @@ static class Program
     static void Report(Exception ex)
     {
         Log(ex);
-        try { Toast.Show("貼貼遇到一個小問題，已記錄下來。可以再試一次"); } catch { }
+        try { Toast.Show(L.T("win.toast.error")); } catch { }
     }
 }

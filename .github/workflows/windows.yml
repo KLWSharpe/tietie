@@ -5,6 +5,7 @@ on:
     branches: [main, windows]
     paths:
       - 'windows/**'
+      - 'i18n/**'
       - 'install.ps1'
       - '.github/workflows/windows.yml'
   workflow_dispatch:
@@ -77,28 +78,29 @@ jobs:
           $dlg = $null
           for ($i = 0; $i -lt 60 -and -not $dlg; $i++) {
             Start-Sleep 1
-            foreach ($w in $root.FindAll([Windows.Automation.TreeScope]::Children, $cond)) { if ($w.Current.Name -eq '貼貼') { $dlg = $w } }
+            foreach ($w in $root.FindAll([Windows.Automation.TreeScope]::Children, $cond)) { if ($w.Current.Name -like '*Tietie*') { $dlg = $w } }
           }
           if (-not $dlg) { Write-Host 'FAIL  沒有跳出新版提示'; Stop-Process $p -Force; exit 1 }
+          # 這台測試電腦是英文 Windows，貼貼要跟著系統語言用英文
           $text = ($dlg.FindAll([Windows.Automation.TreeScope]::Descendants, [Windows.Automation.Condition]::TrueCondition) | ForEach-Object { $_.Current.Name } | Where-Object { $_ }) -join ' | '
           Write-Host "提示內容：$text"
           $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
           $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
           [System.Drawing.Graphics]::FromImage($bmp).CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
           $bmp.Save("$env:RUNNER_TEMP\shots\e2e_6_新版提示.png")
-          if ($text -notmatch '9\.9\.9' -or $text -notmatch '立即更新') { Write-Host 'FAIL  提示內容不對'; Stop-Process $p -Force; exit 1 }
-          $btn = $dlg.FindFirst([Windows.Automation.TreeScope]::Descendants, (New-Object Windows.Automation.PropertyCondition([Windows.Automation.AutomationElement]::NameProperty, '立即更新')))
+          if ($text -notmatch '9\.9\.9' -or $text -notmatch 'Update Now') { Write-Host 'FAIL  提示內容不對（應該跟著系統顯示英文）'; Stop-Process $p -Force; exit 1 }
+          $btn = $dlg.FindFirst([Windows.Automation.TreeScope]::Descendants, (New-Object Windows.Automation.PropertyCondition([Windows.Automation.AutomationElement]::NameProperty, 'Update Now')))
           $pat = $null
           if ($btn.TryGetCurrentPattern([Windows.Automation.InvokePattern]::Pattern, [ref]$pat)) { $pat.Invoke() }
           else { $btn.SetFocus(); Start-Sleep -Milliseconds 300; [System.Windows.Forms.SendKeys]::SendWait(' ') }
           Start-Sleep 1
-          $still = $root.FindAll([Windows.Automation.TreeScope]::Children, $cond) | Where-Object { $_.Current.Name -eq '貼貼' }
+          $still = $root.FindAll([Windows.Automation.TreeScope]::Children, $cond) | Where-Object { $_.Current.Name -like '*Tietie*' }
           if ($still) { Write-Host 'FAIL  按了立即更新，提示沒有關掉'; Stop-Process $p -Force; exit 1 }
           Start-Sleep 2
           $alive = -not $p.HasExited
           Stop-Process $p -Force -ErrorAction SilentlyContinue
           if (-not $alive) { Write-Host 'FAIL  按了立即更新之後貼貼當掉'; exit 1 }
-          Write-Host 'PASS  新版提示跳出，按「立即更新」有反應'
+          Write-Host 'PASS  新版提示跳出（跟著系統用英文），按「Update Now」有反應'
 
       - name: 打包
         if: always()

@@ -184,7 +184,7 @@ sealed class ClipboardWatcher : NativeWindow, IDisposable
             var h = Native.GetForegroundWindow();
             Native.GetWindowThreadProcessId(h, out uint pid);
             if (pid == 0) return "";
-            if (pid == Environment.ProcessId) return "貼貼";
+            if (pid == Environment.ProcessId) return L.T("app.name");
             using var p = Process.GetProcessById((int)pid);
             var name = p.ProcessName;
             try
@@ -280,13 +280,13 @@ static class Paster
     {
         if (!Native.IsPasteTarget(target))
         {
-            Toast.Show("已複製，按 Ctrl+V 貼上");
+            Toast.Show(L.T("win.toast.copied"));
             return;
         }
         if (Native.BlocksKeys(target))
         {
             Native.Focus(target);
-            Toast.Show("已複製。這個視窗是用系統管理員權限開的，請自己按 Ctrl+V 貼上", 3.5);
+            Toast.Show(L.T("win.toast.copiedAdmin"), 3.5);
             return;
         }
         Native.Focus(target);
@@ -297,7 +297,7 @@ static class Paster
             timer.Dispose();
             var fg = Native.GetForegroundWindow();
             if (Native.ProcessOf(fg) == Native.ProcessOf(target)) SendCtrlV();
-            else Toast.Show("已複製，按 Ctrl+V 貼上");
+            else Toast.Show(L.T("win.toast.copied"));
         };
         timer.Start();
     }

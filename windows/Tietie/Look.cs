@@ -27,7 +27,7 @@ static class Theme
     public static readonly Color Accent = Color.FromArgb(64, 120, 230);
     public static readonly Color Pin = Color.FromArgb(232, 128, 30);
 
-    public const string FontName = "Microsoft JhengHei UI";
+    public static string FontName => Lang.FontName;
     public static Font UiFont(float size, FontStyle style = FontStyle.Regular) => new(FontName, size, style);
 }
 

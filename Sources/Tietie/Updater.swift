@@ -51,12 +51,12 @@ enum Updater {
 
     private static func handle(tag: String?, manual: Bool) {
         guard let tag else {
-            if manual { info("暫時查不到新版資訊", "可能是網路沒有連上，請稍後再試一次。") }
+            if manual { info(L("update.unreachableTitle"), L("update.unreachableText")) }
             return
         }
         let latest = tag.trimmingCharacters(in: CharacterSet(charactersIn: "vV"))
         guard isNewer(latest, than: appVersion) else {
-            if manual { info("已經是最新版", "你現在用的貼貼 \(appVersion) 就是最新版本。") }
+            if manual { info(L("update.latestTitle"), L("update.latestText", appVersion)) }
             return
         }
         if !manual && UserDefaults.standard.string(forKey: skippedKey) == latest { return }
@@ -66,11 +66,11 @@ enum Updater {
     private static func prompt(latest: String) {
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
-        alert.messageText = "貼貼有新版本 \(latest)"
-        alert.informativeText = "你現在用的是 \(appVersion)。按「立即更新」，幾秒鐘就裝好，原本的記錄都會留著。\n\n更新完成後，請從選單列的貼貼圖示按「開啟自動貼上權限」，重新打開一次。"
-        alert.addButton(withTitle: "立即更新")
-        alert.addButton(withTitle: "稍後再說")
-        alert.addButton(withTitle: "略過這一版")
+        alert.messageText = L("update.heading", latest)
+        alert.informativeText = L("mac.update.text", appVersion)
+        alert.addButton(withTitle: L("update.now"))
+        alert.addButton(withTitle: L("update.later"))
+        alert.addButton(withTitle: L("update.skip"))
         switch alert.runModal() {
         case .alertFirstButtonReturn: install()
         case .alertThirdButtonReturn: UserDefaults.standard.set(latest, forKey: skippedKey)
@@ -81,7 +81,7 @@ enum Updater {
     /// 執行跟安裝教學同一行的安裝指令。它會關掉目前的貼貼、換成新版，再自動打開。
     private static func install() {
         if ProcessInfo.processInfo.environment["TIETIE_UPDATE_DRYRUN"] != nil {
-            Toast.show("（測試）會執行更新指令", seconds: 2)
+            Toast.show(L("mac.update.dryRun"), seconds: 2)
             return
         }
         let process = Process()
@@ -93,9 +93,9 @@ enum Updater {
         process.environment = env
         do {
             try process.run()
-            Toast.show("正在下載新版，貼貼會自動重新打開", seconds: 4)
+            Toast.show(L("mac.update.downloading"), seconds: 4)
         } catch {
-            info("沒辦法自動更新", "請打開「終端機」，貼上下面這一行再按 Enter：\n\n\(installCommand)")
+            info(L("update.failTitle"), L("mac.update.failText", installCommand))
         }
     }
 
@@ -104,7 +104,7 @@ enum Updater {
         let alert = NSAlert()
         alert.messageText = title
         alert.informativeText = text
-        alert.addButton(withTitle: "好")
+        alert.addButton(withTitle: L("ok"))
         alert.runModal()
     }
 }

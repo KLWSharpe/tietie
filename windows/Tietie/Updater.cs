@@ -77,13 +77,13 @@ static class Updater
     {
         if (tag == null)
         {
-            if (manual) Info("暫時查不到新版資訊", "可能是網路沒有連上，請稍後再試一次。");
+            if (manual) Info(L.T("update.unreachableTitle"), L.T("update.unreachableText"));
             return;
         }
         var latest = tag.Trim().TrimStart('v', 'V');
         if (!IsNewer(latest, Program.Version))
         {
-            if (manual) Info("已經是最新版", $"你現在用的貼貼 {Program.Version} 就是最新版本。");
+            if (manual) Info(L.T("update.latestTitle"), L.T("update.latestText", Program.Version));
             return;
         }
         if (!manual && Settings.Data.SkippedUpdateVersion == latest) return;
@@ -92,14 +92,14 @@ static class Updater
 
     static void Prompt(string latest)
     {
-        var update = new TaskDialogButton("立即更新");
-        var later = new TaskDialogButton("稍後再說");
-        var skip = new TaskDialogButton("略過這一版");
+        var update = new TaskDialogButton(L.T("update.now"));
+        var later = new TaskDialogButton(L.T("update.later"));
+        var skip = new TaskDialogButton(L.T("update.skip"));
         var page = new TaskDialogPage
         {
-            Caption = "貼貼",
-            Heading = $"貼貼有新版本 {latest}",
-            Text = $"你現在用的是 {Program.Version}。按「立即更新」，幾秒鐘就裝好，原本的記錄都會留著。",
+            Caption = L.T("app.fullName"),
+            Heading = L.T("update.heading", latest),
+            Text = L.T("win.update.text", Program.Version),
             Buttons = { update, later, skip },
             DefaultButton = update,
             Icon = TaskDialogIcon.Information,
@@ -132,7 +132,7 @@ static class Updater
         }
         catch
         {
-            Info("沒辦法自動更新", "請按 Windows 鍵，打 PowerShell，按 Enter，貼上下面這一行再按 Enter：\n\n" + InstallCommand);
+            Info(L.T("update.failTitle"), L.T("win.update.failText", InstallCommand));
         }
     }
 

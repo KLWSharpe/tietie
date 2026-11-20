@@ -50,6 +50,7 @@ struct SettingsData: Codable {
     var paused = false
     var launchAtLogin = true
     var hotKey = "shift-cmd-v"
+    var language = "system"         // 介面語言：system 跟著系統，或 zh-Hant、en、ja…
 
     init() {}
     init(from decoder: Decoder) throws {
@@ -61,6 +62,7 @@ struct SettingsData: Codable {
         paused = (try? c.decode(Bool.self, forKey: .paused)) ?? false
         launchAtLogin = (try? c.decode(Bool.self, forKey: .launchAtLogin)) ?? true
         hotKey = (try? c.decode(String.self, forKey: .hotKey)) ?? "shift-cmd-v"
+        language = (try? c.decode(String.self, forKey: .language)) ?? "system"
     }
 }
 

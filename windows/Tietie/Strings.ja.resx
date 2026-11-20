@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 這個檔案由 scripts/i18n.py 從 i18n/*.json 產生，請改 json 再重新產生，不要直接改這裡。 -->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="_language" xml:space="preserve"><value>日本語</value></data>
+  <data name="app.name" xml:space="preserve"><value>Tietie</value></data>
+  <data name="app.fullName" xml:space="preserve"><value>貼貼 Tietie</value></data>
+  <data name="app.tooltipPaused" xml:space="preserve"><value>Tietie（記録を一時停止中）</value></data>
+  <data name="menu.open" xml:space="preserve"><value>Tietie のリストを開く</value></data>
+  <data name="win.menu.open" xml:space="preserve"><value>Tietie のリストを開く（{0}）</value></data>
+  <data name="menu.hotkeyTaken" xml:space="preserve"><value>ショートカット {0} は使用中です。設定で変更してください</value></data>
+  <data name="menu.pause" xml:space="preserve"><value>記録を一時停止</value></data>
+  <data name="menu.clearRecent" xml:space="preserve"><value>直近 10 分間の記録を消去</value></data>
+  <data name="menu.clearAll" xml:space="preserve"><value>すべての履歴を消去（ピン留めは残す）</value></data>
+  <data name="menu.settings" xml:space="preserve"><value>設定…</value></data>
+  <data name="menu.language" xml:space="preserve"><value>言語</value></data>
+  <data name="menu.languageSystem" xml:space="preserve"><value>システムと同じ（{0}）</value></data>
+  <data name="menu.about" xml:space="preserve"><value>Tietie について</value></data>
+  <data name="menu.checkUpdate" xml:space="preserve"><value>アップデートを確認…</value></data>
+  <data name="menu.stats" xml:space="preserve"><value>記録 {0} 件 · 画像 {1}</value></data>
+  <data name="menu.quit" xml:space="preserve"><value>Tietie を終了</value></data>
+  <data name="toast.hotkeyTaken" xml:space="preserve"><value>ショートカット {0} はほかのアプリが使っています。Tietie の設定で別の組み合わせを選んでください</value></data>
+  <data name="toast.noTextInImage" xml:space="preserve"><value>この画像から文字が見つかりませんでした</value></data>
+  <data name="toast.imageMissing" xml:space="preserve"><value>この画像のファイルが見つからないため、貼り付けできません</value></data>
+  <data name="win.toast.copied" xml:space="preserve"><value>コピーしました。Ctrl+V で貼り付けてください</value></data>
+  <data name="win.toast.copiedAdmin" xml:space="preserve"><value>コピーしました。このウィンドウは管理者として実行されているため、Ctrl+V で貼り付けてください</value></data>
+  <data name="win.toast.clipboardBusy" xml:space="preserve"><value>ほかのアプリがクリップボードを使用中です。もう一度お試しください</value></data>
+  <data name="win.toast.error" xml:space="preserve"><value>Tietie で小さな問題が起きたため、記録しました。もう一度お試しください</value></data>
+  <data name="toast.paused" xml:space="preserve"><value>記録を一時停止しました</value></data>
+  <data name="toast.resumed" xml:space="preserve"><value>記録を再開しました</value></data>
+  <data name="toast.clearedRecent" xml:space="preserve"><value>直近 10 分間の記録を消去しました</value></data>
+  <data name="toast.clearedAll" xml:space="preserve"><value>履歴を消去しました</value></data>
+  <data name="toast.languageChanged" xml:space="preserve"><value>表示言語：{0}</value></data>
+  <data name="panel.search" xml:space="preserve"><value>入力して検索（画像内の文字も探せます）</value></data>
+  <data name="win.panel.hint" xml:space="preserve"><value>1–0 で貼り付け　← → ページ移動　Enter 貼り付け　Alt+Enter 画像内の文字を貼り付け
+スペースでプレビュー　右クリックでその他</value></data>
+  <data name="panel.page" xml:space="preserve"><value>{0}／{1} ページ</value></data>
+  <data name="panel.pageMore" xml:space="preserve"><value>{0}／{1} ページ　ほかにもページがあります</value></data>
+  <data name="panel.empty" xml:space="preserve"><value>まだ記録がありません。
+文字や画像をコピーすると、ここに表示されます。</value></data>
+  <data name="panel.notFound" xml:space="preserve"><value>「{0}」は見つかりませんでした</value></data>
+  <data name="ctx.paste" xml:space="preserve"><value>貼り付け</value></data>
+  <data name="ctx.pasteImage" xml:space="preserve"><value>画像を貼り付け</value></data>
+  <data name="ctx.pasteImageText" xml:space="preserve"><value>画像内の文字を貼り付け</value></data>
+  <data name="ctx.pasteImageTextNone" xml:space="preserve"><value>画像内の文字を貼り付け（文字が見つかりません）</value></data>
+  <data name="ctx.preview" xml:space="preserve"><value>拡大プレビュー</value></data>
+  <data name="ctx.pin" xml:space="preserve"><value>ピン留め</value></data>
+  <data name="ctx.unpin" xml:space="preserve"><value>ピン留めを外す</value></data>
+  <data name="ctx.delete" xml:space="preserve"><value>この項目を削除</value></data>
+  <data name="row.justNow" xml:space="preserve"><value>たった今</value></data>
+  <data name="win.row.minutesAgo" xml:space="preserve"><value>{0} 分前</value></data>
+  <data name="win.row.hoursAgo" xml:space="preserve"><value>{0} 時間前</value></data>
+  <data name="win.row.daysAgo" xml:space="preserve"><value>{0} 日前</value></data>
+  <data name="row.image" xml:space="preserve"><value>画像</value></data>
+  <data name="row.imageText" xml:space="preserve"><value>画像：{0}</value></data>
+  <data name="row.files" xml:space="preserve"><value>{0} ほか（{1} 個のファイル）</value></data>
+  <data name="row.file" xml:space="preserve"><value>ファイル</value></data>
+  <data name="row.chars" xml:space="preserve"><value>{0} 文字</value></data>
+  <data name="row.text" xml:space="preserve"><value>テキスト</value></data>
+  <data name="row.pinned" xml:space="preserve"><value>ピン留め済み</value></data>
+  <data name="onb.title" xml:space="preserve"><value>貼貼 Tietie へようこそ</value></data>
+  <data name="onb.intro" xml:space="preserve"><value>Tietie はコピーした文字、画像、ファイルを覚えておきます。{0} でリストを開いて選ぶだけで貼り付けられ、文字は書式なしで貼り付けられます。
+記録はすべてこのコンピュータだけに保存され、どこにもアップロードされません。</value></data>
+  <data name="onb.passwordQuestion" xml:space="preserve"><value>1. パスワードを記録しますか？</value></data>
+  <data name="onb.recordAll" xml:space="preserve"><value>すべて記録する（パスワードマネージャーからコピーしたログイン情報も含む）</value></data>
+  <data name="onb.skipSecret" xml:space="preserve"><value>パスワードマネージャーからコピーした内容は記録しない</value></data>
+  <data name="win.onb.passwordNote" xml:space="preserve"><value>記録はこのコンピュータに残るため、このコンピュータを使える人なら誰でも見られます。人に貸したり共用したりする場合は、2 つ目をおすすめします。大事な内容を貼り付けたあとは、タスクバーの Tietie アイコンからすぐに消去することもできます。この設定はあとから「設定」で変更できます。</value></data>
+  <data name="win.onb.startupTitle" xml:space="preserve"><value>2. 自動起動</value></data>
+  <data name="win.onb.trayNote" xml:space="preserve"><value>Tietie は画面右下のタスクバーに常駐します。見当たらないときは、タスクバーの「^」をクリックしてください。</value></data>
+  <data name="onb.start" xml:space="preserve"><value>使ってみる</value></data>
+  <data name="launchAtLogin" xml:space="preserve"><value>ログイン時に Tietie を起動</value></data>
+  <data name="settings.title" xml:space="preserve"><value>Tietie の設定</value></data>
+  <data name="settings.hotkey" xml:space="preserve"><value>リストを開くショートカット</value></data>
+  <data name="settings.keep" xml:space="preserve"><value>保存する件数</value></data>
+  <data name="settings.items" xml:space="preserve"><value>{0} 件</value></data>
+  <data name="settings.imageCap" xml:space="preserve"><value>画像の最大容量</value></data>
+  <data name="settings.recordConcealed" xml:space="preserve"><value>パスワードマネージャーからコピーしたログイン情報を記録</value></data>
+  <data name="settings.limitNote" xml:space="preserve"><value>上限を超えると、古い記録から自動で削除されます。ピン留めした項目は削除されません。</value></data>
+  <data name="win.settings.passwords" xml:space="preserve"><value>パスワード</value></data>
+  <data name="win.settings.startup" xml:space="preserve"><value>起動</value></data>
+  <data name="win.settings.usageLabel" xml:space="preserve"><value>現在の使用量</value></data>
+  <data name="win.settings.usage" xml:space="preserve"><value>{0} 件 · 画像 {1}</value></data>
+  <data name="win.settings.lowerConfirm" xml:space="preserve"><value>上限を下げると、上限を超えた古い記録は次にコピーしたときに削除されます（ピン留めは残ります）。上限を下げますか？</value></data>
+  <data name="about.version" xml:space="preserve"><value>バージョン {0}</value></data>
+  <data name="win.about.tagline" xml:space="preserve"><value>無料・オープンソースのクリップボードツール</value></data>
+  <data name="about.detail" xml:space="preserve"><value>コピーした文字、画像、ファイルを覚えておきます。
+記録はすべてこのコンピュータだけに保存され、アップロードされません。</value></data>
+  <data name="about.author" xml:space="preserve"><value>作者：奎嵐 KueiLan</value></data>
+  <data name="about.site" xml:space="preserve"><value>奎嵐 KueiLan のウェブサイトへ（kueilan.com）</value></data>
+  <data name="about.repo" xml:space="preserve"><value>GitHub でソースコードを見る・フィードバックを送る</value></data>
+  <data name="about.feedback" xml:space="preserve"><value>ご意見・ご要望をお待ちしています。今後もアップデートしていきます。</value></data>
+  <data name="update.unreachableTitle" xml:space="preserve"><value>アップデート情報を確認できませんでした</value></data>
+  <data name="update.unreachableText" xml:space="preserve"><value>インターネットに接続されていない可能性があります。しばらくしてからもう一度お試しください。</value></data>
+  <data name="update.latestTitle" xml:space="preserve"><value>最新バージョンです</value></data>
+  <data name="update.latestText" xml:space="preserve"><value>お使いの Tietie {0} が最新バージョンです。</value></data>
+  <data name="update.heading" xml:space="preserve"><value>Tietie の新しいバージョン {0} があります</value></data>
+  <data name="win.update.text" xml:space="preserve"><value>現在のバージョンは {0} です。「今すぐアップデート」を押すと数秒でインストールでき、これまでの記録はそのまま残ります。</value></data>
+  <data name="update.now" xml:space="preserve"><value>今すぐアップデート</value></data>
+  <data name="update.later" xml:space="preserve"><value>あとで</value></data>
+  <data name="update.skip" xml:space="preserve"><value>このバージョンをスキップ</value></data>
+  <data name="update.failTitle" xml:space="preserve"><value>自動でアップデートできませんでした</value></data>
+  <data name="win.update.failText" xml:space="preserve"><value>Windows キーを押して PowerShell と入力し、Enter を押します。次の 1 行を貼り付けて Enter を押してください：
+
+{0}</value></data>
+  <data name="ok" xml:space="preserve"><value>OK</value></data>
+</root>

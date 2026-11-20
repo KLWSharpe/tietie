@@ -1,15 +1,15 @@
 import AppKit
 import Carbon.HIToolbox
 
-let appVersion = "0.4.0"
+let appVersion = "0.5.0"
 
 final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let store = Store()
     private lazy var monitor = ClipboardMonitor(store: store)
-    private lazy var panel = HistoryPanelController(store: store)
-    private lazy var settingsWindow = SettingsController(store: store)
+    private var panel: HistoryPanelController!
+    private var settingsWindow: SettingsController!
     private let onboarding = OnboardingController()
-    private let aboutWindow = AboutController()
+    private var aboutWindow = AboutController()
     private let hotKey = HotKey()
     private var statusItem: NSStatusItem!
     private var hotKeyOK = true
@@ -24,8 +24,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         monitor.onChange = { [weak self] in self?.panel.refreshIfVisible() }
         monitor.start()
 
-        panel.onPick = { [weak self] item, asText in self?.paste(item, asText: asText) }
-        settingsWindow.onHotKeyChange = { [weak self] in self?.registerHotKey() }
+        buildWindows()
         registerHotKey()
         installEditMenu()
         writeStatus()
@@ -52,6 +51,31 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 if let png = self.panel.debugSnapshot() {
                     try? png.write(to: dir.appendingPathComponent("panel.png"), options: .atomic)
                 }
+                // 選單列選單目前的樣子（含「語言」子選單和打勾的位置）
+                let menu = NSMenu()
+                self.menuNeedsUpdate(menu)
+                func titles(_ m: NSMenu) -> [Any] {
+                    m.items.map { item -> Any in
+                        if item.isSeparatorItem { return "---" }
+                        let mark = item.state == .on ? "✓ " : ""
+                        if let sub = item.submenu { return [mark + item.title: titles(sub)] }
+                        return mark + item.title
+                    }
+                }
+                let info: [String: Any] = ["language": Lang.current, "setting": Settings.shared.data.language, "menu": titles(menu)]
+                if let json = try? JSONSerialization.data(withJSONObject: info, options: [.prettyPrinted, .sortedKeys]) {
+                    try? json.write(to: dir.appendingPathComponent("menu.json"), options: .atomic)
+                }
+                if let png = self.settingsWindow.renderSnapshot() {
+                    try? png.write(to: dir.appendingPathComponent("settings.png"), options: .atomic)
+                }
+            }
+            // 測試用：模擬在「語言」子選單選了某一項（object 是語言代碼或 system）
+            DistributedNotificationCenter.default().addObserver(forName: Notification.Name("app.tietie.debug.language"), object: nil, queue: .main) { [weak self] note in
+                guard let code = note.object as? String else { return }
+                let entry = NSMenuItem()
+                entry.representedObject = code
+                self?.chooseLanguage(entry)
             }
         }
         if args.contains("--debug") {
@@ -77,17 +101,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             self?.panel.toggle()
         }
         if !hotKeyOK {
-            Toast.show("快捷鍵 \(choice.label) 被別的程式佔用了，請到貼貼的設定換一組", seconds: 4)
+            Toast.show(L("toast.hotkeyTaken", choice.label), seconds: 4)
         }
     }
 
     private func updateIcon() {
         let paused = Settings.shared.data.paused
         // 素色線條圖示，跟著系統深淺色自動變黑或白；暫停時換成暫停符號
-        let image = NSImage(systemSymbolName: paused ? "pause.circle" : "doc.on.clipboard", accessibilityDescription: "貼貼")
+        let image = NSImage(systemSymbolName: paused ? "pause.circle" : "doc.on.clipboard", accessibilityDescription: L("app.name"))
         image?.isTemplate = true
         statusItem.button?.image = image
-        statusItem.button?.toolTip = Settings.shared.data.paused ? "貼貼（已暫停記錄）" : "貼貼"
+        statusItem.button?.toolTip = Settings.shared.data.paused ? L("app.tooltipPaused") : L("app.name")
     }
 
     /// 新版 macOS 會管制程式讀取剪貼簿。沒有設成「允許」時要提醒使用者。
@@ -112,12 +136,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func installEditMenu() {
         let main = NSMenu()
         let editItem = NSMenuItem()
-        let edit = NSMenu(title: "編輯")
-        edit.addItem(withTitle: "還原", action: Selector(("undo:")), keyEquivalent: "z")
-        edit.addItem(withTitle: "剪下", action: #selector(NSText.cut(_:)), keyEquivalent: "x")
-        edit.addItem(withTitle: "拷貝", action: #selector(NSText.copy(_:)), keyEquivalent: "c")
-        edit.addItem(withTitle: "貼上", action: #selector(NSText.paste(_:)), keyEquivalent: "v")
-        edit.addItem(withTitle: "全選", action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
+        let edit = NSMenu(title: L("mac.edit.title"))
+        edit.addItem(withTitle: L("mac.edit.undo"), action: Selector(("undo:")), keyEquivalent: "z")
+        edit.addItem(withTitle: L("mac.edit.cut"), action: #selector(NSText.cut(_:)), keyEquivalent: "x")
+        edit.addItem(withTitle: L("mac.edit.copy"), action: #selector(NSText.copy(_:)), keyEquivalent: "c")
+        edit.addItem(withTitle: L("mac.edit.paste"), action: #selector(NSText.paste(_:)), keyEquivalent: "v")
+        edit.addItem(withTitle: L("mac.edit.selectAll"), action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
         editItem.submenu = edit
         main.addItem(editItem)
         NSApp.mainMenu = main
@@ -130,13 +154,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if asText {
             let text = item.ocr.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !text.isEmpty else {
-                Toast.show("這張圖片裡沒有讀到文字")
+                Toast.show(L("toast.noTextInImage"))
                 return
             }
             count = Paster.writeText(text)
         } else {
             guard let written = Paster.write(item) else {
-                Toast.show("這張圖片的檔案不見了，沒辦法貼上")
+                Toast.show(L("toast.imageMissing"))
                 return
             }
             count = written
@@ -156,7 +180,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 Paster.sendCommandV()
             }
         } else {
-            Toast.show("已複製，按 ⌘V 貼上。想要自動貼上，請到右上角貼貼選單開啟權限", seconds: 3.5)
+            Toast.show(L("mac.toast.copiedNoAX"), seconds: 3.5)
         }
     }
 
@@ -167,58 +191,111 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let data = Settings.shared.data
         let choice = HotKeyChoice.find(data.hotKey)
 
-        let open = NSMenuItem(title: "開啟貼貼清單", action: #selector(openPanel), keyEquivalent: "v")
+        let open = NSMenuItem(title: L("menu.open"), action: #selector(openPanel), keyEquivalent: "v")
         open.keyEquivalentModifierMask = modifierMask(for: choice)
         open.target = self
         menu.addItem(open)
         if !hotKeyOK {
-            let warn = NSMenuItem(title: "快捷鍵 \(choice.label) 被佔用，請到設定更換", action: nil, keyEquivalent: "")
+            let warn = NSMenuItem(title: L("menu.hotkeyTaken", choice.label), action: nil, keyEquivalent: "")
             warn.isEnabled = false
             menu.addItem(warn)
         }
 
         menu.addItem(.separator())
-        let pause = NSMenuItem(title: "暫停記錄", action: #selector(togglePause), keyEquivalent: "")
+        let pause = NSMenuItem(title: L("menu.pause"), action: #selector(togglePause), keyEquivalent: "")
         pause.state = data.paused ? .on : .off
         pause.target = self
         menu.addItem(pause)
 
-        let recent = NSMenuItem(title: "清除最近 10 分鐘的記錄", action: #selector(clearRecent), keyEquivalent: "")
+        let recent = NSMenuItem(title: L("menu.clearRecent"), action: #selector(clearRecent), keyEquivalent: "")
         recent.target = self
         menu.addItem(recent)
-        let all = NSMenuItem(title: "清除全部歷史記錄（保留釘選）", action: #selector(clearAll), keyEquivalent: "")
+        let all = NSMenuItem(title: L("menu.clearAll"), action: #selector(clearAll), keyEquivalent: "")
         all.target = self
         menu.addItem(all)
 
         menu.addItem(.separator())
         if !Paster.trusted {
-            let ax = NSMenuItem(title: "開啟自動貼上權限…", action: #selector(openAX), keyEquivalent: "")
+            let ax = NSMenuItem(title: L("mac.menu.enableAX"), action: #selector(openAX), keyEquivalent: "")
             ax.target = self
             menu.addItem(ax)
         }
         if AppDelegate.pasteboardBlocked {
-            let deny = NSMenuItem(title: "系統沒有允許貼貼讀取剪貼簿，點此到系統設定允許…", action: #selector(openPasteSettings), keyEquivalent: "")
+            let deny = NSMenuItem(title: L("mac.menu.pasteboardBlocked"), action: #selector(openPasteSettings), keyEquivalent: "")
             deny.target = self
             menu.addItem(deny)
         }
-        let settings = NSMenuItem(title: "設定…", action: #selector(openSettings), keyEquivalent: ",")
+        let settings = NSMenuItem(title: L("menu.settings"), action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
         menu.addItem(settings)
-        let about = NSMenuItem(title: "關於貼貼", action: #selector(showAbout), keyEquivalent: "")
+        menu.addItem(languageMenuItem())
+        let about = NSMenuItem(title: L("menu.about"), action: #selector(showAbout), keyEquivalent: "")
         about.target = self
         menu.addItem(about)
-        let update = NSMenuItem(title: "檢查更新…", action: #selector(checkUpdate), keyEquivalent: "")
+        let update = NSMenuItem(title: L("menu.checkUpdate"), action: #selector(checkUpdate), keyEquivalent: "")
         update.target = self
         menu.addItem(update)
 
         menu.addItem(.separator())
-        let size = ByteCountFormatter.string(fromByteCount: store.imageBytes(), countStyle: .file)
-        let info = NSMenuItem(title: "已記錄 \(store.count()) 筆 · 圖片 \(size)", action: nil, keyEquivalent: "")
+        let size = sizeText(store.imageBytes())
+        let info = NSMenuItem(title: L("menu.stats", store.count(), size), action: nil, keyEquivalent: "")
         info.isEnabled = false
         menu.addItem(info)
-        let quit = NSMenuItem(title: "結束貼貼", action: #selector(quit), keyEquivalent: "q")
+        let quit = NSMenuItem(title: L("menu.quit"), action: #selector(quit), keyEquivalent: "q")
         quit.target = self
         menu.addItem(quit)
+    }
+
+    /// 選單裡的「語言」：跟隨系統，或指定一種語言。改了馬上生效。
+    private func languageMenuItem() -> NSMenuItem {
+        let setting = Settings.shared.data.language
+        // 不是英文時在後面加上 Language，看不懂目前語言的人也找得到
+        let title = Lang.current == "en" ? L("menu.language") : "\(L("menu.language"))  Language"
+        let item = NSMenuItem(title: title, action: nil, keyEquivalent: "")
+        let sub = NSMenu()
+        let system = NSMenuItem(title: L("menu.languageSystem", Lang.names[Lang.systemLanguage()] ?? ""), action: #selector(chooseLanguage(_:)), keyEquivalent: "")
+        system.representedObject = "system"
+        system.state = Lang.supported.contains(setting) ? .off : .on
+        system.target = self
+        sub.addItem(system)
+        sub.addItem(.separator())
+        for code in Lang.supported {
+            let entry = NSMenuItem(title: Lang.names[code] ?? code, action: #selector(chooseLanguage(_:)), keyEquivalent: "")
+            entry.representedObject = code
+            entry.state = setting == code ? .on : .off
+            entry.target = self
+            sub.addItem(entry)
+        }
+        item.submenu = sub
+        return item
+    }
+
+    @objc private func chooseLanguage(_ sender: NSMenuItem) {
+        guard let code = sender.representedObject as? String else { return }
+        applyLanguage(code)
+        Toast.show(L("toast.languageChanged", Lang.names[Lang.current] ?? Lang.current))
+    }
+
+    /// 換語言：存起來，然後把清單、設定、關於視窗用新語言重新做一份。選單每次打開都會重畫，不用另外處理。
+    func applyLanguage(_ code: String) {
+        Settings.shared.update { $0.language = code }
+        Lang.reload()
+        let settingsWasOpen = settingsWindow.isVisible
+        panel.hide()
+        settingsWindow.close()
+        buildWindows()
+        aboutWindow.close()
+        aboutWindow = AboutController()
+        installEditMenu()
+        updateIcon()
+        if settingsWasOpen { settingsWindow.show() }
+    }
+
+    private func buildWindows() {
+        panel = HistoryPanelController(store: store)
+        panel.onPick = { [weak self] item, asText in self?.paste(item, asText: asText) }
+        settingsWindow = SettingsController(store: store)
+        settingsWindow.onHotKeyChange = { [weak self] in self?.registerHotKey() }
     }
 
     private func modifierMask(for choice: HotKeyChoice) -> NSEvent.ModifierFlags {
@@ -237,19 +314,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc private func togglePause() {
         Settings.shared.update { $0.paused.toggle() }
         updateIcon()
-        Toast.show(Settings.shared.data.paused ? "已暫停記錄" : "恢復記錄")
+        Toast.show(Settings.shared.data.paused ? L("toast.paused") : L("toast.resumed"))
     }
 
     @objc private func clearRecent() {
         store.clearRecent(seconds: 600)
         panel.refreshIfVisible()
-        Toast.show("已清除最近 10 分鐘的記錄")
+        Toast.show(L("toast.clearedRecent"))
     }
 
     @objc private func clearAll() {
         store.clearUnpinned()
         panel.refreshIfVisible()
-        Toast.show("已清除歷史記錄")
+        Toast.show(L("toast.clearedAll"))
     }
 
     @objc private func openAX() {

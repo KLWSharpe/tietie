@@ -38,7 +38,7 @@ static class SelfTest
         {
             g.Clear(Color.White);
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-            using var font = new Font(Theme.FontName, 40f);
+            using var font = new Font("Microsoft JhengHei UI", 40f);
             g.DrawString(text, font, Brushes.Black, 40, 70);
         }
         using var ms = new MemoryStream();
@@ -292,6 +292,29 @@ static class SelfTest
 
         Check("判斷單一網址", ClipboardWatcher.LooksLikeSingleUrl("https://example.com/a.png") && !ClipboardWatcher.LooksLikeSingleUrl("看這個 https://example.com"));
 
+        // 介面語言
+        var cases = new (string sys, string want)[] {
+            ("zh-TW", "zh-Hant"), ("zh-HK", "zh-Hant"), ("zh-Hant", "zh-Hant"), ("zh-CN", "zh-Hans"), ("zh-SG", "zh-Hans"),
+            ("ja-JP", "ja"), ("ko-KR", "ko"), ("pt-BR", "pt"), ("pt-PT", "pt"), ("es-MX", "es"), ("es-ES", "es"),
+            ("en-GB", "en"), ("fr-FR", "en"), ("de-DE", "en"), ("", "en") };
+        var wrong = cases.Where(c => Lang.Resolve("system", c.sys) != c.want).Select(c => c.sys).ToList();
+        Check("跟隨系統語言：對應正確，沒有支援的語言用英文", wrong.Count == 0, string.Join(",", wrong));
+        Check("手動指定語言會蓋過系統語言", Lang.Resolve("ja", "zh-TW") == "ja" && Lang.Resolve("不存在", "ko-KR") == "ko");
+        Note($"這台電腦的顯示語言：{Lang.SystemCulture.Name}，跟隨系統時用 {Lang.SystemLanguage()}");
+        var neutral = new System.Resources.ResourceManager("Tietie.Strings", typeof(Lang).Assembly)
+            .GetResourceSet(System.Globalization.CultureInfo.InvariantCulture, true, true)!
+            .Cast<System.Collections.DictionaryEntry>().Select(e => (string)e.Key).ToList();
+        Check("語言檔讀得到", neutral.Count > 100, $"{neutral.Count} 項");
+        foreach (var code in Lang.Supported)
+        {
+            var same = neutral.Count(k => code != "en" && Lang.Text(k, code) == Lang.Text(k, "en"));
+            var name = Lang.Text("_language", code);
+            Check($"語言檔完整：{Lang.Names[code]}", name == Lang.Names[code] && same < neutral.Count / 6, $"讀到「{name}」，跟英文一樣的有 {same} 項");
+        }
+        Check("取出的文字是對的語言", Lang.Text("update.now", "en") == "Update Now" && Lang.Text("update.now", "ja") == "今すぐアップデート"
+            && Lang.Text("update.latestText", "zh-Hant", "1.2.3") == "你現在用的貼貼 1.2.3 就是最新版本。",
+            $"{Lang.Text("update.now", "ja")} / {Lang.Text("update.latestText", "zh-Hant", "1.2.3")}");
+
         var hk = new HotKeyWindow();
         Check("全域快捷鍵註冊成功", hk.Register(HotKeyChoice.All[0]));
         hk.Dispose();
@@ -334,6 +357,45 @@ static class SelfTest
         Shoot(Native.VisibleBounds(form.Handle, form.Bounds), file);
     }
 
+    static void RenderLanguage(Store store, string sub)
+    {
+        var panel = new HistoryForm(store);
+        panel.ShowPanel();
+        Pump(600);
+        Shoot(Rectangle.Inflate(panel.Bounds, 12, 12), Path.Combine(sub, "1_清單.png"));
+        panel.GoToPage(1);
+        Pump(300);
+        Shoot(Rectangle.Inflate(panel.Bounds, 12, 12), Path.Combine(sub, "1b_第二頁.png"));
+        panel.GoToPage(0);
+        Pump(300);
+        // 右鍵選單（選到圖片那一列）
+        int imageRow = panel.Items.ToList().FindIndex(i => i.Kind == "image");
+        if (imageRow >= 0)
+        {
+            panel.ShowMenu(imageRow, new Point(160, 40 + imageRow * 46));
+            Pump(500);
+            Shoot(Rectangle.Inflate(panel.Bounds, 12, 12), Path.Combine(sub, "2_右鍵選單.png"));
+            SendKeys.SendWait("{ESC}");
+            Pump(300);
+        }
+        panel.ShowPanel();
+        SendKeys.SendWait("12345678");
+        Pump(500);
+        Shoot(Rectangle.Inflate(panel.Bounds, 12, 12), Path.Combine(sub, "3_搜尋發票.png"));
+        panel.HidePanel();
+
+        panel.Dispose();
+        // 一次只開一個視窗，拍完就關，避免下一張截到上一個視窗
+        foreach (var (form, name) in new (Form, string)[] {
+            (new OnboardingForm(), "4_首次設定.png"), (new SettingsForm(store), "5_設定.png"), (new AboutForm(), "6_關於.png") })
+        {
+            Shoot(form, Path.Combine(sub, name));
+            form.Close();
+            form.Dispose();
+            Pump(200);
+        }
+    }
+
     public static int RenderUi(string dir)
     {
         if (!Paths.TestMode) { Console.WriteLine("請先設定 TIETIE_HOME"); return 2; }
@@ -372,34 +434,18 @@ static class SelfTest
         Thread.Sleep(10);
         if (store.AddText("kueilan@example.com", "text", "Outlook") is long pinId) store.SetPinned(pinId, true);
 
-        var panel = new HistoryForm(store);
-        panel.ShowPanel();
-        Pump(600);
-        Shoot(Rectangle.Inflate(panel.Bounds, 12, 12), Path.Combine(dir, "1_清單.png"));
-        panel.GoToPage(1);
-        Pump(300);
-        Shoot(Rectangle.Inflate(panel.Bounds, 12, 12), Path.Combine(dir, "1b_第二頁.png"));
-        panel.GoToPage(0);
-        Pump(300);
-        // 右鍵選單（選到圖片那一列）
-        int imageRow = panel.Items.ToList().FindIndex(i => i.Kind == "image");
-        if (imageRow >= 0)
+        // 每個語言各出一組畫面到「資料夾\語言代碼」；最後一組 system 是「跟隨系統」（跟著這台 Windows 的顯示語言）
+        foreach (var code in Lang.Supported.Append("system"))
         {
-            panel.ShowMenu(imageRow, new Point(160, 40 + imageRow * 46));
-            Pump(500);
-            Shoot(Rectangle.Inflate(panel.Bounds, 12, 12), Path.Combine(dir, "2_右鍵選單.png"));
-            SendKeys.SendWait("{ESC}");
-            Pump(300);
+            Settings.Update(s => s.Language = code);
+            Lang.Reload();
+            var sub = Path.Combine(dir, code);
+            Directory.CreateDirectory(sub);
+            Note($"== {code}（實際使用 {Lang.Current}，字型 {Lang.FontName}）");
+            RenderLanguage(store, sub);
         }
-        panel.ShowPanel();
-        SendKeys.SendWait("12345678");
-        Pump(500);
-        Shoot(Rectangle.Inflate(panel.Bounds, 12, 12), Path.Combine(dir, "3_搜尋發票.png"));
-        panel.HidePanel();
-
-        Shoot(new OnboardingForm(), Path.Combine(dir, "4_首次設定.png"));
-        Shoot(new SettingsForm(store), Path.Combine(dir, "5_設定.png"));
-        Shoot(new AboutForm(), Path.Combine(dir, "6_關於.png"));
+        Settings.Update(s => s.Language = "system");
+        Lang.Reload();
         // 工作列小圖示：放大給人看，深色和淺色工作列各一張
         using (var sheet = new Bitmap(360, 140))
         {
@@ -649,6 +695,43 @@ static class EndToEnd
         SelfTestShoot(Path.Combine(shots, "e2e_5_工作列選單.png"));
         Press(0x1B);
         Pump(300);
+
+        // 介面語言：一開始跟著這台 Windows 的顯示語言，從選單換成日文後清單和選單馬上變日文，再換回跟隨系統
+        var sys = Lang.SystemLanguage();
+        var menuNow = app.MenuTexts();
+        Check($"跟隨系統：這台 Windows 是 {Lang.SystemCulture.Name}，介面用 {Lang.Names[sys]}",
+            Lang.Current == sys && menuNow.Contains(Lang.Text("menu.quit", sys)) && app.Panel.HintText == Lang.Text("win.panel.hint", sys),
+            string.Join(" | ", menuNow.Take(4)));
+        Check("選單有「語言」，跟隨系統打勾、七種語言都在", menuNow.Any(t => t.Contains("> ✓ " + Lang.Text("menu.languageSystem", sys, Lang.Names[sys])))
+            && Lang.Supported.All(c => menuNow.Any(t => t.EndsWith("> " + Lang.Names[c]))), string.Join(" | ", menuNow.Where(t => t.Contains(">"))));
+        app.ShowTrayMenu(new Point(area.Right - 320, area.Bottom - 340));
+        Pump(400);
+        app.OpenLanguageSubmenu();
+        Pump(500);
+        SelfTestShoot(Path.Combine(shots, "e2e_7_語言選單.png"));
+        Press(0x1B); Pump(150); Press(0x1B);
+        Pump(300);
+        app.ChooseLanguage("ja");
+        Pump(600);
+        var menuJa = app.MenuTexts();
+        Check("從選單換成日本語：選單、清單、設定檔馬上換", Lang.Current == "ja" && Settings.Data.Language == "ja"
+            && menuJa.Contains("Tietie を終了") && menuJa.Any(t => t.Contains("> ✓ 日本語"))
+            && app.Panel.SearchHint == Lang.Text("panel.search", "ja"), string.Join(" | ", menuJa.Take(4)));
+        app.ShowTrayMenu(new Point(area.Right - 320, area.Bottom - 340));
+        Pump(500);
+        SelfTestShoot(Path.Combine(shots, "e2e_8_換成日文的選單.png"));
+        Press(0x1B);
+        Pump(300);
+        FocusNotepad();
+        Press(0x11, 0x10, 0x56);
+        Pump(800);
+        Check("換語言之後快捷鍵還能叫出清單", app.Panel.Visible);
+        SelfTestShoot(Path.Combine(shots, "e2e_9_換成日文的清單.png"));
+        Press(0x1B);
+        Pump(300);
+        app.ChooseLanguage("system");
+        Pump(400);
+        Check("換回跟隨系統", Lang.Current == sys && Settings.Data.Language == "system" && app.MenuTexts().Contains(Lang.Text("menu.quit", sys)));
 
         try { notepadProcess?.Kill(); } catch { }
         foreach (var p in Process.GetProcessesByName("notepad")) { try { p.Kill(); } catch { } }

@@ -23,6 +23,9 @@ else
     echo "    Intel 版編譯失敗，只產出 Apple 晶片版（記錄在 $STAGE/x86.log）"
 fi
 
+echo "==> 檢查語言檔"
+python3 "$ROOT/scripts/i18n.py"
+
 echo "==> 圖示"
 swift scripts/make_icon.swift "$STAGE/icon_1024.png" >/dev/null
 ICONSET="$STAGE/Tietie.iconset"
@@ -40,12 +43,23 @@ NEW="$STAGE/Tietie.app"
 mkdir -p "$NEW/Contents/MacOS" "$NEW/Contents/Resources"
 cp "$BIN" "$NEW/Contents/MacOS/Tietie"
 cp "$STAGE/Tietie.icns" "$NEW/Contents/Resources/Tietie.icns"
+# 介面語言檔：程式從 Resources/i18n 讀文字；各語言的 .lproj 讓 macOS 知道貼貼支援哪些語言
+# （系統設定「語言與地區」裡可以替貼貼單獨指定語言）
+mkdir -p "$NEW/Contents/Resources/i18n"
+cp "$ROOT"/i18n/*.json "$NEW/Contents/Resources/i18n/"
+for lproj in en zh-Hant zh-Hans ja ko pt-BR es; do
+    mkdir -p "$NEW/Contents/Resources/$lproj.lproj"
+    printf '"CFBundleDisplayName" = "貼貼 Tietie";\n' > "$NEW/Contents/Resources/$lproj.lproj/InfoPlist.strings"
+done
 cat > "$NEW/Contents/Info.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
     <key>CFBundleIdentifier</key><string>app.tietie.Tietie</string>
+    <key>CFBundleDevelopmentRegion</key><string>en</string>
+    <key>CFBundleLocalizations</key>
+    <array><string>en</string><string>zh-Hant</string><string>zh-Hans</string><string>ja</string><string>ko</string><string>pt-BR</string><string>es</string></array>
     <key>CFBundleName</key><string>Tietie</string>
     <key>CFBundleDisplayName</key><string>貼貼 Tietie</string>
     <key>CFBundleExecutable</key><string>Tietie</string>

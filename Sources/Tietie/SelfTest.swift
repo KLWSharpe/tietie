@@ -181,6 +181,30 @@ enum SelfTest {
             print("SKIP  剪貼簿監看與貼上（沒有指定 TIETIE_PASTEBOARD）")
         }
 
+        // 介面語言
+        let cases: [([String], String)] = [
+            (["zh-Hant-TW"], "zh-Hant"), (["zh-HK"], "zh-Hant"), (["zh-Hans-CN"], "zh-Hans"), (["zh-CN"], "zh-Hans"),
+            (["ja-JP"], "ja"), (["ko-KR"], "ko"), (["pt-BR"], "pt"), (["pt-PT"], "pt"), (["es-MX"], "es"), (["es-ES"], "es"),
+            (["en-GB"], "en"), (["fr-FR"], "en"), (["fr-FR", "ja-JP"], "ja"), ([], "en"),
+        ]
+        let wrong = cases.filter { Lang.resolve(setting: "system", preferred: $0.0) != $0.1 }
+        check("跟隨系統語言：對應正確，沒有支援的語言用英文", wrong.isEmpty, wrong.map { "\($0.0)" }.joined(separator: ","))
+        check("手動指定語言會蓋過系統語言", Lang.resolve(setting: "ja", preferred: ["zh-Hant-TW"]) == "ja"
+              && Lang.resolve(setting: "不存在", preferred: ["ko-KR"]) == "ko")
+        let base = Lang.table("zh-Hant")
+        check("語言檔讀得到", base.count > 100, "\(Lang.directory.path) \(base.count) 項")
+        for code in Lang.supported {
+            let table = Lang.table(code)
+            let missing = base.keys.filter { (table[$0] ?? "").isEmpty }
+            let marks = { (t: String) in Set((0..<6).filter { t.contains("{\($0)}") }) }
+            let badMarks = base.keys.filter { table[$0] != nil && marks(table[$0]!) != marks(base[$0]!) }
+            check("語言檔完整：\(Lang.names[code] ?? code)", missing.isEmpty && badMarks.isEmpty && table["_language"] == Lang.names[code],
+                  (missing + badMarks).sorted().prefix(5).joined(separator: ","))
+        }
+        check("取出的文字是對的語言", Lang.text("update.now", language: "en") == "Update Now"
+              && Lang.text("update.now", language: "ja") == "今すぐアップデート"
+              && Lang.text("update.latestText", ["1.2.3"], language: "zh-Hant") == "你現在用的貼貼 1.2.3 就是最新版本。")
+
         // 單一網址判斷
         check("判斷單一網址", ClipboardMonitor.looksLikeSingleURL("https://example.com/a.png")
               && !ClipboardMonitor.looksLikeSingleURL("看這個 https://example.com"))
