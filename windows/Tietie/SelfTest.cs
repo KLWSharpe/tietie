@@ -315,6 +315,27 @@ static class SelfTest
             && Lang.Text("update.latestText", "zh-Hant", "1.2.3") == "你現在用的貼貼 1.2.3 就是最新版本。",
             $"{Lang.Text("update.now", "ja")} / {Lang.Text("update.latestText", "zh-Hant", "1.2.3")}");
 
+        // 立即更新的執行方式：結束碼要回得來，從 PowerShell 7 打開時也要能解壓縮（0.5.0 在這裡會失敗）
+        int RunInstall(string command)
+        {
+            int code = int.MinValue;
+            using var done = new ManualResetEventSlim();
+            Updater.StartInstall(command, null, c => { code = c; done.Set(); });
+            done.Wait(60_000);
+            return code;
+        }
+        Note($"這次自我檢查的 PSModulePath：{Environment.GetEnvironmentVariable("PSModulePath")}");
+        Check("更新失敗時拿得到結束碼", RunInstall("exit 3") == 3);
+        int okCode = RunInstall("Write-Host 'update-log-ok'");
+        string logText = File.Exists(Updater.LogFile) ? File.ReadAllText(Updater.LogFile) : "";
+        Check("更新成功時結束碼是 0，輸出記在 update.log", okCode == 0 && logText.Contains("update-log-ok"), $"結束碼 {okCode}");
+        int zipCode = RunInstall("$d = Join-Path $env:TEMP ('tt-zip-' + [guid]::NewGuid().ToString('N')); New-Item -ItemType Directory $d | Out-Null; " +
+            "Set-Content (Join-Path $d 'a.txt') 'x'; Compress-Archive (Join-Path $d 'a.txt') (Join-Path $d 'a.zip'); " +
+            "Expand-Archive (Join-Path $d 'a.zip') (Join-Path $d 'out') -Force; if (-not (Test-Path (Join-Path $d 'out\\a.txt'))) { exit 5 }; " +
+            "if ($env:PSModulePath -match 'PowerShell\\\\7') { exit 7 }");
+        Check("安裝程式能解壓縮，沒有帶到 PowerShell 7 的模組路徑", zipCode == 0,
+            $"結束碼 {zipCode}：{(File.Exists(Updater.LogFile) ? string.Join(" / ", File.ReadAllLines(Updater.LogFile).Take(4)) : "")}");
+
         var hk = new HotKeyWindow();
         Check("全域快捷鍵註冊成功", hk.Register(HotKeyChoice.All[0]));
         hk.Dispose();
@@ -379,7 +400,7 @@ static class SelfTest
             Pump(300);
         }
         panel.ShowPanel();
-        SendKeys.SendWait("12345678");
+        panel.SetSearchText("12345678");
         Pump(500);
         Shoot(Rectangle.Inflate(panel.Bounds, 12, 12), Path.Combine(sub, "3_搜尋發票.png"));
         panel.HidePanel();

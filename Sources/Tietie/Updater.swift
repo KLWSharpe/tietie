@@ -79,24 +79,48 @@ enum Updater {
     }
 
     /// 執行跟安裝教學同一行的安裝指令。它會關掉目前的貼貼、換成新版，再自動打開。
+    /// 成功時貼貼會被關掉，所以只要安裝指令結束時貼貼還在、而且結束碼不是 0，就是沒裝成，要告訴使用者。
     private static func install() {
         if ProcessInfo.processInfo.environment["TIETIE_UPDATE_DRYRUN"] != nil {
             Toast.show(L("mac.update.dryRun"), seconds: 2)
             return
         }
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/bin/bash")
-        process.arguments = ["-c", installCommand]
-        var env = ProcessInfo.processInfo.environment
         // 裝回原本的位置（應用程式資料夾或個人的應用程式資料夾）
-        env["TIETIE_INSTALL_DIR"] = Bundle.main.bundleURL.deletingLastPathComponent().path
-        process.environment = env
+        let dir = Bundle.main.bundleURL.deletingLastPathComponent().path
         do {
-            try process.run()
+            try runInstall(command: installCommand, installDir: dir) { status in
+                if status != 0 { info(L("update.failTitle"), L("mac.update.failText", installCommand)) }
+            }
             Toast.show(L("mac.update.downloading"), seconds: 4)
         } catch {
             info(L("update.failTitle"), L("mac.update.failText", installCommand))
         }
+    }
+
+    private static var installProcess: Process?
+    static var logFile: URL { Paths.home.appendingPathComponent("update.log") }
+
+    /// 用 bash 執行一段指令，輸出記到 update.log，結束時在主執行緒把結束碼交給 completion。
+    /// 加上 pipefail：curl 下載失敗時整行才會算失敗（不然 bash 收到空的內容也會回報成功）。
+    static func runInstall(command: String, installDir: String?, completion: @escaping (Int32) -> Void) throws {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/bin/bash")
+        process.arguments = ["-c", "set -o pipefail; " + command]
+        var env = ProcessInfo.processInfo.environment
+        if let installDir { env["TIETIE_INSTALL_DIR"] = installDir }
+        process.environment = env
+        // 輸出寫進檔案（不用管線），貼貼被安裝指令關掉之後它還能繼續寫
+        FileManager.default.createFile(atPath: logFile.path, contents: nil)
+        if let handle = try? FileHandle(forWritingTo: logFile) {
+            process.standardOutput = handle
+            process.standardError = handle
+        }
+        process.terminationHandler = { finished in
+            let status = finished.terminationStatus
+            DispatchQueue.main.async { completion(status) }
+        }
+        try process.run()
+        installProcess = process
     }
 
     private static func info(_ title: String, _ text: String) {

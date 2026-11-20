@@ -36,6 +36,8 @@ sealed class HistoryForm : Form
     public bool PreviewVisible => preview.Visible;
     public string HintText => hint.Text;
     public string SearchHint => search.Hint;
+    /// 測試用：直接把字放進搜尋框（模擬鍵盤有時打不進去）。
+    public void SetSearchText(string text) => search.Text = text;
 
     float Dpi => DeviceDpi / 96f;
 

@@ -205,6 +205,20 @@ enum SelfTest {
               && Lang.text("update.now", language: "ja") == "今すぐアップデート"
               && Lang.text("update.latestText", ["1.2.3"], language: "zh-Hant") == "你現在用的貼貼 1.2.3 就是最新版本。")
 
+        // 立即更新的執行方式：失敗要拿得到結束碼，下載失敗也要算失敗
+        func runInstall(_ command: String) -> Int32 {
+            var result: Int32 = -999
+            do { try Updater.runInstall(command: command, installDir: nil) { result = $0 } } catch { return -998 }
+            let deadline = Date().addingTimeInterval(20)
+            while result == -999 && Date() < deadline { RunLoop.main.run(until: Date().addingTimeInterval(0.05)) }
+            return result
+        }
+        check("更新失敗時拿得到結束碼", runInstall("exit 3") == 3)
+        let okStatus = runInstall("echo update-log-ok")
+        let log = (try? String(contentsOf: Updater.logFile, encoding: .utf8)) ?? ""
+        check("更新成功時結束碼是 0，輸出記在 update.log", okStatus == 0 && log.contains("update-log-ok"), "結束碼 \(okStatus)")
+        check("下載失敗時整行算失敗", runInstall("curl -fsSL file:///no/such/tietie/install.sh | bash") != 0)
+
         // 單一網址判斷
         check("判斷單一網址", ClipboardMonitor.looksLikeSingleURL("https://example.com/a.png")
               && !ClipboardMonitor.looksLikeSingleURL("看這個 https://example.com"))

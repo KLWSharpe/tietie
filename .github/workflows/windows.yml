@@ -107,6 +107,85 @@ jobs:
         shell: pwsh
         run: Compress-Archive -Path out\Tietie.exe -DestinationPath Tietie-Windows.zip -Force
 
+      - name: 從貼貼裡按立即更新（從 PowerShell 7 打開，裝這次組好的 zip）
+        shell: pwsh
+        run: |
+          # 0.5.0 在這個情況會默默失敗：貼貼帶著 PowerShell 7 的模組路徑呼叫 Windows PowerShell 5.1，解壓縮失敗
+          Get-Process -Name Tietie -ErrorAction SilentlyContinue | Stop-Process -Force
+          $app = Join-Path $env:RUNNER_TEMP 'upd-app'
+          New-Item -ItemType Directory -Force -Path $app | Out-Null
+          Copy-Item out\Tietie.exe $app -Force
+          $exe = Join-Path $app 'Tietie.exe'
+          $env:TIETIE_HOME = "$env:RUNNER_TEMP\tt-real-upd"
+          '{"tag_name":"v9.9.9"}' | Set-Content "$env:RUNNER_TEMP\fake-release.json" -Encoding UTF8
+          $env:TIETIE_UPDATE_URL = ([Uri]"$env:RUNNER_TEMP\fake-release.json").AbsoluteUri
+          $env:TIETIE_ZIP_PATH = "$PWD\Tietie-Windows.zip"
+          Write-Host "PSModulePath：$env:PSModulePath"
+          $p = Start-Process $exe -ArgumentList '--no-onboarding' -PassThru
+          Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes, System.Windows.Forms, System.Drawing
+          $root = [Windows.Automation.AutomationElement]::RootElement
+          $cond = New-Object Windows.Automation.PropertyCondition([Windows.Automation.AutomationElement]::ProcessIdProperty, $p.Id)
+          $dlg = $null
+          for ($i = 0; $i -lt 60 -and -not $dlg; $i++) {
+            Start-Sleep 1
+            foreach ($w in $root.FindAll([Windows.Automation.TreeScope]::Children, $cond)) { if ($w.Current.Name -like '*Tietie*') { $dlg = $w } }
+          }
+          if (-not $dlg) { Write-Host 'FAIL  沒有跳出新版提示'; Stop-Process $p -Force; exit 1 }
+          $btn = $dlg.FindFirst([Windows.Automation.TreeScope]::Descendants, (New-Object Windows.Automation.PropertyCondition([Windows.Automation.AutomationElement]::NameProperty, 'Update Now')))
+          $btn.GetCurrentPattern([Windows.Automation.InvokePattern]::Pattern).Invoke()
+          $new = $null
+          for ($i = 0; $i -lt 90 -and -not $new; $i++) {
+            Start-Sleep 1
+            $new = Get-Process -Name Tietie -ErrorAction SilentlyContinue | Where-Object { $_.Id -ne $p.Id -and $_.Path -eq $exe } | Select-Object -First 1
+          }
+          $oldAlive = -not $p.HasExited
+          Write-Host "舊的還在跑：$oldAlive　新的：$($new.Id)"
+          Get-Content "$env:TIETIE_HOME\update.log" -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "  $_" }
+          Get-Process -Name Tietie -ErrorAction SilentlyContinue | Stop-Process -Force
+          if ($oldAlive -or -not $new) { Write-Host 'FAIL  從 PowerShell 7 打開的貼貼按立即更新，沒有換成新版'; exit 1 }
+          Write-Host 'PASS  從 PowerShell 7 打開的貼貼按立即更新：舊版關閉、新版裝好並自動打開'
+
+      - name: 更新失敗時要告訴使用者
+        if: always()
+        shell: pwsh
+        run: |
+          Get-Process -Name Tietie -ErrorAction SilentlyContinue | Stop-Process -Force
+          $exe = Join-Path $env:RUNNER_TEMP 'upd-app\Tietie.exe'
+          if (-not (Test-Path $exe)) { New-Item -ItemType Directory -Force -Path (Split-Path $exe) | Out-Null; Copy-Item out\Tietie.exe $exe }
+          $env:TIETIE_HOME = "$env:RUNNER_TEMP\tt-fail-upd"
+          '{"tag_name":"v9.9.9"}' | Set-Content "$env:RUNNER_TEMP\fake-release.json" -Encoding UTF8
+          $env:TIETIE_UPDATE_URL = ([Uri]"$env:RUNNER_TEMP\fake-release.json").AbsoluteUri
+          $env:TIETIE_ZIP_PATH = "$env:RUNNER_TEMP\no-such-file.zip"
+          $p = Start-Process $exe -ArgumentList '--no-onboarding' -PassThru
+          Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes, System.Windows.Forms, System.Drawing
+          $root = [Windows.Automation.AutomationElement]::RootElement
+          $cond = New-Object Windows.Automation.PropertyCondition([Windows.Automation.AutomationElement]::ProcessIdProperty, $p.Id)
+          $dlg = $null
+          for ($i = 0; $i -lt 60 -and -not $dlg; $i++) {
+            Start-Sleep 1
+            foreach ($w in $root.FindAll([Windows.Automation.TreeScope]::Children, $cond)) { if ($w.Current.Name -like '*Tietie*') { $dlg = $w } }
+          }
+          if (-not $dlg) { Write-Host 'FAIL  沒有跳出新版提示'; Stop-Process $p -Force; exit 1 }
+          $btn = $dlg.FindFirst([Windows.Automation.TreeScope]::Descendants, (New-Object Windows.Automation.PropertyCondition([Windows.Automation.AutomationElement]::NameProperty, 'Update Now')))
+          $btn.GetCurrentPattern([Windows.Automation.InvokePattern]::Pattern).Invoke()
+          $msg = $null
+          for ($i = 0; $i -lt 60 -and -not $msg; $i++) {
+            Start-Sleep 1
+            foreach ($w in $root.FindAll([Windows.Automation.TreeScope]::Children, $cond)) { if ($w.Current.Name -eq "Couldn't update automatically") { $msg = $w } }
+          }
+          $text = if ($msg) { ($msg.FindAll([Windows.Automation.TreeScope]::Descendants, [Windows.Automation.Condition]::TrueCondition) | ForEach-Object { $_.Current.Name } | Where-Object { $_ }) -join ' | ' } else { '' }
+          Write-Host "提示內容：$text"
+          New-Item -ItemType Directory -Force -Path "$env:RUNNER_TEMP\shots" | Out-Null
+          $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+          $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
+          [System.Drawing.Graphics]::FromImage($bmp).CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
+          $bmp.Save("$env:RUNNER_TEMP\shots\e2e_10_更新失敗提示.png")
+          Get-Content "$env:TIETIE_HOME\update.log" -ErrorAction SilentlyContinue | Select-Object -First 8 | ForEach-Object { Write-Host "  $_" }
+          $alive = -not $p.HasExited
+          Get-Process -Name Tietie -ErrorAction SilentlyContinue | Stop-Process -Force
+          if (-not $msg -or $text -notmatch 'install\.ps1' -or -not $alive) { Write-Host 'FAIL  更新失敗時沒有跳出提示'; exit 1 }
+          Write-Host 'PASS  更新失敗時跳出「Couldn''t update automatically」並附上手動安裝指令'
+
       - name: 測試安裝指令（Windows PowerShell 5.1，跟一般人的電腦一樣）
         shell: powershell
         run: |

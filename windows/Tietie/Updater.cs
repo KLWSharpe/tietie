@@ -110,30 +110,58 @@ static class Updater
     }
 
     /// 執行跟安裝教學同一行的安裝指令。它會關掉目前的貼貼、換成新版，再自動打開。
+    /// 成功時貼貼會被關掉，所以只要安裝程式結束時貼貼還在、而且結束碼不是 0，就是沒裝成，要告訴使用者。
     static void Install()
     {
         if (Environment.GetEnvironmentVariable("TIETIE_UPDATE_DRYRUN") != null) return;
+        var ui = SynchronizationContext.Current;
+        void Failed() => Info(L.T("update.failTitle"), L.T("win.update.failText", InstallCommand));
         try
         {
-            var psi = new ProcessStartInfo("powershell.exe")
-            {
-                UseShellExecute = false,
-                CreateNoWindow = true,
-            };
-            psi.ArgumentList.Add("-NoProfile");
-            psi.ArgumentList.Add("-ExecutionPolicy");
-            psi.ArgumentList.Add("Bypass");
-            psi.ArgumentList.Add("-Command");
-            psi.ArgumentList.Add(InstallCommand);
             // 裝回原本的位置
             var dir = Path.GetDirectoryName(Environment.ProcessPath);
-            if (!string.IsNullOrEmpty(dir)) psi.Environment["TIETIE_INSTALL_DIR"] = dir;
-            Process.Start(psi);
+            StartInstall(InstallCommand, dir, code =>
+            {
+                if (code == 0) return;
+                if (ui != null) ui.Post(_ => Failed(), null); else Failed();
+            });
         }
         catch
         {
-            Info(L.T("update.failTitle"), L.T("win.update.failText", InstallCommand));
+            Failed();
         }
+    }
+
+    static Process? installProcess;
+    public static string LogFile => Path.Combine(Paths.Home, "update.log");
+
+    /// 用 Windows PowerShell 執行一段指令，輸出記到 update.log，結束時把結束碼交給 onExit（在背景執行緒呼叫）。
+    public static void StartInstall(string command, string? installDir, Action<int> onExit)
+    {
+        var psi = new ProcessStartInfo("powershell.exe")
+        {
+            UseShellExecute = false,
+            CreateNoWindow = true,
+        };
+        psi.ArgumentList.Add("-NoProfile");
+        psi.ArgumentList.Add("-ExecutionPolicy");
+        psi.ArgumentList.Add("Bypass");
+        psi.ArgumentList.Add("-Command");
+        // 輸出寫進檔案（不用管線），貼貼被安裝程式關掉之後它還能繼續寫
+        psi.ArgumentList.Add($"& {{ {command} }} *> '{LogFile.Replace("'", "''")}'");
+        // 貼貼如果是從 PowerShell 7 打開的，會帶著 PowerShell 7 的模組路徑；
+        // 傳給 Windows PowerShell 5.1 會載入錯的解壓縮模組，安裝失敗。拿掉後 5.1 會用自己的預設路徑。
+        psi.Environment.Remove("PSModulePath");
+        if (!string.IsNullOrEmpty(installDir)) psi.Environment["TIETIE_INSTALL_DIR"] = installDir;
+        var process = Process.Start(psi) ?? throw new InvalidOperationException("powershell.exe did not start");
+        process.EnableRaisingEvents = true;
+        process.Exited += (_, _) =>
+        {
+            int code;
+            try { code = process.ExitCode; } catch { code = -1; }
+            onExit(code);
+        };
+        installProcess = process;
     }
 
     static void Info(string title, string text) =>
