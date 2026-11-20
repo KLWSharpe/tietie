@@ -35,6 +35,17 @@ jobs:
           '{"tag_name":"v9.9.9"}' | Set-Content "$env:RUNNER_TEMP\fake-release.json" -Encoding UTF8
           $env:TIETIE_UPDATE_URL = ([Uri]"$env:RUNNER_TEMP\fake-release.json").AbsoluteUri
           $before = (Get-Item $exe).LastWriteTimeUtc
+          # 實驗 A：用跟貼貼一樣的方式跑安裝指令（繼承這個 PowerShell 7 的環境），把輸出記下來
+          $env:TIETIE_INSTALL_DIR = Join-Path $env:RUNNER_TEMP 'probe-install'
+          $env:TIETIE_NO_OPEN = '1'
+          $cmd = 'irm https://raw.githubusercontent.com/KLWSharpe/tietie/main/install.ps1 | iex'
+          $probe = Start-Process powershell.exe -ArgumentList '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', $cmd -Wait -PassThru -NoNewWindow -RedirectStandardOutput "$env:RUNNER_TEMP\probe-out.txt" -RedirectStandardError "$env:RUNNER_TEMP\probe-err.txt"
+          Write-Host "實驗 A（繼承 PowerShell 7 環境）結束碼：$($probe.ExitCode)　裝好了嗎：$(Test-Path (Join-Path $env:TIETIE_INSTALL_DIR 'Tietie.exe'))"
+          Get-Content "$env:RUNNER_TEMP\probe-out.txt", "$env:RUNNER_TEMP\probe-err.txt" -ErrorAction SilentlyContinue | Select-Object -First 20 | ForEach-Object { Write-Host "  $_" }
+          Remove-Item env:TIETIE_INSTALL_DIR, env:TIETIE_NO_OPEN
+          # 實驗 B：像一般使用者從開始功能表打開貼貼，用 Windows 預設的模組路徑
+          $env:PSModulePath = [Environment]::GetEnvironmentVariable('PSModulePath', 'Machine')
+          Write-Host "PSModulePath 改成 Windows 預設：$env:PSModulePath"
           $p = Start-Process $exe -ArgumentList '--no-onboarding' -PassThru
           Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes, System.Windows.Forms
           $root = [Windows.Automation.AutomationElement]::RootElement
