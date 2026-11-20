@@ -17,6 +17,8 @@ if let i = CommandLine.arguments.firstIndex(of: "--render-ui"), i + 1 < CommandL
     }
     let root = URL(fileURLWithPath: CommandLine.arguments[i + 1], isDirectory: true)
     _ = NSApplication.shared
+    // 加 --light 用淺色外觀出圖（深色模式下出的圖背景是透明的，不好看清楚）
+    if CommandLine.arguments.contains("--light") { NSApp.appearance = NSAppearance(named: .aqua) }
     let store = Store()
     // 每個語言各出一組畫面到「資料夾/語言代碼」；最後一組 system 是「跟隨系統」，
     // 可以加上 -AppleLanguages "(ja)" 這類參數模擬別的系統語言。

@@ -4,7 +4,7 @@
 
 <p align="center">For people who copy and paste all day. A free, open-source clipboard manager for Mac and Windows.<br>
 It remembers the text, images and files you copy. Press a shortcut to open your history, then press the number you see to paste it.<br>
-<sub>The app interface is in Traditional Chinese for now. All you need are the shortcuts below, and menu items are translated in this README.</sub></p>
+<sub>Available in English, 繁體中文, 简体中文, 日本語, 한국어, Português and Español. It follows your computer's language (from version 0.5.0).</sub></p>
 
 <p align="center"><b><a href="#install">Install for free (Mac / Windows)</a></b>　|　<a href="https://github.com/KLWSharpe/tietie/releases/latest">Downloads</a>　|　<a href="README.md">中文</a></p>
 
@@ -22,13 +22,14 @@ Feedback and ideas are very welcome, and I'll keep updating it. Open an [issue](
 - **Keeps a long history**: up to 1,000 items by default, 10 per page. Use ← → to flip pages.
 - **Text, images and files**: screenshots and copied images are kept too, not just text. For files it remembers the location, so a file you moved or deleted can't be pasted again.
 - **Search text inside images**: copy a screenshot that has words in it, and later you can find it by typing those words (on-device text recognition).
-- **Paste the text from an image**: select an image and press ⌥Enter, or right-click and choose 貼上圖片裡的文字 (paste text in image). You get the words, not the picture.
+- **Paste the text from an image**: select an image and press ⌥Enter, or right-click and choose Paste Text in Image. You get the words, not the picture.
 - **Clean pastes**: text pasted from Tietie comes without the original font, color or link formatting.
 - **Pin**: keep things you use often at the top. Pinned items survive "clear history".
 - **One-click clear**: after pasting something sensitive, clear the last 10 minutes or everything from the menu.
 - **Passwords: your choice**: on first launch it asks whether to keep items copied from password managers. You can change this later in settings.
 - **Your history stays on your computer**: Tietie only talks to GitHub to check for new versions. It never sends your history anywhere.
-- **Update reminders**: when a new version is out, you'll see a prompt. Click 立即更新 (Update now) and it installs in a few seconds, keeping your history. You can also choose 檢查更新… (Check for updates) from the menu.
+- **Your language**: the interface comes in English, Traditional Chinese, Simplified Chinese, Japanese, Korean, Portuguese and Spanish. It follows your computer's language automatically and falls back to English. You can also pick one under Language in the Tietie menu, and it switches right away (version 0.5.0 and later).
+- **Update reminders**: when a new version is out, you'll see a prompt. Click Update Now and it installs in a few seconds, keeping your history. You can also choose Check for Updates… from the menu.
 
 ## Install
 
@@ -78,13 +79,13 @@ On Windows, swap ⌘ for Ctrl and ⌥ for Alt. The list opens with Ctrl + Shift 
 | ⌘⌫ | Delete this item |
 | Esc | Close |
 
-The Tietie icon in the menu bar has: pause recording, clear the last 10 minutes, clear all history, and settings.
+The Tietie icon in the menu bar has: Pause Recording, Clear Last 10 Minutes, Clear All History, Settings and Language.
 
 ### Turn on auto-paste once (Mac)
 
 For Tietie to paste for you after you pick an item, turn it on in System Settings → Privacy & Security → Accessibility. Tietie takes you there the first time. Without it everything still works; you just press ⌘V yourself after picking.
 
-After each update, turn this permission on again: choose 開啟自動貼上權限 (enable auto-paste) from the Tietie menu and switch Tietie on in System Settings. The switch may already look on, but it belongs to the old version. Because Tietie isn't part of Apple's paid developer program, macOS treats each new version as a different app.
+After each update, turn this permission on again: choose Turn On Auto-Paste from the Tietie menu and switch Tietie on in System Settings. The switch may already look on, but it belongs to the old version. Because Tietie isn't part of Apple's paid developer program, macOS treats each new version as a different app.
 
 ## Good to know
 
@@ -94,14 +95,14 @@ After each update, turn this permission on again: choose 開啟自動貼上權�
 
 - Your history is stored on your own computer: `~/Library/Application Support/Tietie/` on Mac, `%APPDATA%\Tietie\` on Windows, readable only by your user account.
 - Tietie only connects to GitHub to check for new versions. It doesn't collect any data.
-- History isn't encrypted separately. If you share your computer, consider turning off 記錄密碼管理器複製的帳號密碼 (record passwords from password managers) in settings.
+- History isn't encrypted separately. If you share your computer, consider turning off "Keep logins copied from password managers" in settings.
 - By default it keeps up to 1,000 items and up to 2 GB of images, deleting the oldest when it's over. Pinned items are never deleted. You can change both in settings.
 
 ## Uninstall
 
 Mac:
 
-1. In Tietie's settings, uncheck 開機後自動啟動貼貼 (launch at login), then choose 結束貼貼 (Quit) from the menu bar icon.
+1. In Tietie's settings, uncheck "Start Tietie when I log in", then choose Quit Tietie from the menu bar icon.
 2. Move Tietie from Applications to the Trash.
 3. To remove your history too, move `~/Library/Application Support/Tietie` to the Trash.
 
@@ -126,6 +127,16 @@ The Windows version lives in `windows/` and needs the .NET 8 SDK:
 ```powershell
 dotnet publish windows/Tietie/Tietie.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
 ```
+
+### Translations
+
+All interface text lives in `i18n/`, one JSON file per language (`zh-Hant.json` is the original). The Mac app reads these files directly. The Windows app uses .NET resource files; after editing a JSON file, regenerate them with the line below, which also checks that no language is missing an entry:
+
+```bash
+python3 scripts/i18n.py
+```
+
+Want to fix a translation or add a language? Edit the JSON file and open a pull request.
 
 ## License
 
