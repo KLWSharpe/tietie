@@ -65,7 +65,7 @@
   <data name="onb.intro" xml:space="preserve"><value>Tietie はコピーした文字、画像、ファイルを覚えておきます。{0} でリストを開き、項目を選ぶとすぐに貼り付けられます。テキストは書式なしで貼り付けられます。
 記録はすべてこのコンピュータだけに保存され、どこにもアップロードされません。</value></data>
   <data name="onb.passwordQuestion" xml:space="preserve"><value>1. パスワードを記録しますか？</value></data>
-  <data name="onb.recordAll" xml:space="preserve"><value>すべて記録する（パスワードマネージャーからコピーしたログイン情報も含む）</value></data>
+  <data name="onb.recordAll" xml:space="preserve"><value>すべて記録する（パスワードマネージャーの内容も含む）</value></data>
   <data name="onb.skipSecret" xml:space="preserve"><value>パスワードマネージャーからコピーした内容は記録しない</value></data>
   <data name="win.onb.passwordNote" xml:space="preserve"><value>記録はこのコンピュータに残るため、このコンピュータを使える人なら誰でも見られます。人に貸したり共用したりする場合は、2 つ目をおすすめします。大事な内容を貼り付けたあとは、タスクバーの Tietie アイコンからすぐに消去することもできます。この設定はあとから「設定」で変更できます。</value></data>
   <data name="win.onb.startupTitle" xml:space="preserve"><value>2. 自動起動</value></data>
