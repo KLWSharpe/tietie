@@ -3,7 +3,6 @@
   "app.name": "贴贴",
   "app.fullName": "貼貼 Tietie",
   "app.tooltipPaused": "贴贴（已暂停记录）",
-
   "menu.open": "打开贴贴列表",
   "win.menu.open": "打开贴贴列表（{0}）",
   "menu.hotkeyTaken": "快捷键 {0} 已被占用，请到设置中更换",
@@ -19,20 +18,18 @@
   "menu.checkUpdate": "检查更新…",
   "menu.stats": "已记录 {0} 条 · 图片 {1}",
   "menu.quit": "退出贴贴",
-
   "mac.edit.title": "编辑",
   "mac.edit.undo": "撤销",
   "mac.edit.cut": "剪切",
   "mac.edit.copy": "拷贝",
   "mac.edit.paste": "粘贴",
   "mac.edit.selectAll": "全选",
-
   "toast.hotkeyTaken": "快捷键 {0} 被其他程序占用了，请到贴贴的设置中换一个",
   "toast.noTextInImage": "这张图片里没有识别到文字",
   "toast.imageMissing": "这张图片的文件不见了，无法粘贴",
   "mac.toast.copiedNoAX": "已复制，按 ⌘V 粘贴。想要自动粘贴，请在右上角的贴贴菜单中开启权限",
   "win.toast.copied": "已复制，按 Ctrl+V 粘贴",
-  "win.toast.copiedAdmin": "已复制。这个窗口是以管理员身份运行的，请自己按 Ctrl+V 粘贴",
+  "win.toast.copiedAdmin": "已复制。这个窗口是以管理员身份运行的，请手动按 Ctrl+V 粘贴",
   "win.toast.clipboardBusy": "剪贴板被其他程序占用，请再试一次",
   "win.toast.error": "贴贴遇到一个小问题，已记录下来。可以再试一次",
   "toast.paused": "已暂停记录",
@@ -40,10 +37,9 @@
   "toast.clearedRecent": "已清除最近 10 分钟的记录",
   "toast.clearedAll": "已清除历史记录",
   "toast.languageChanged": "界面语言：{0}",
-
   "panel.search": "输入文字搜索，图片里的字也能找到",
   "mac.panel.hint": "按数字 1–0 直接粘贴　← → 翻页　↩ 粘贴　⌥↩ 粘贴图片里的字　空格键预览　右键查看更多",
-  "win.panel.hint": "按数字 1–0 直接粘贴　← → 翻页　Enter 粘贴　Alt+Enter 粘贴图片里的字　空格键预览　右键查看更多",
+  "win.panel.hint": "按数字 1–0 直接粘贴　← → 翻页　Enter 粘贴　Alt+Enter 粘贴图片里的字\n空格键预览　右键查看更多",
   "panel.page": "第 {0}／{1} 页",
   "panel.pageMore": "第 {0}／{1} 页　还有更多页",
   "panel.empty": "还没有记录。\n复制任何文字或图片，就会出现在这里。",
@@ -67,7 +63,6 @@
   "row.chars": "{0} 字",
   "row.text": "文字",
   "row.pinned": "已置顶",
-
   "onb.title": "欢迎使用貼貼 Tietie",
   "onb.intro": "贴贴会记住你复制过的文字、图片和文件。按 {0} 打开列表，选一条就会粘贴，粘贴出来的文字不带格式。\n所有记录只保存在这台电脑上，不会上传到任何地方。",
   "onb.passwordQuestion": "1. 要不要记录密码？",
@@ -85,7 +80,6 @@
   "mac.ax.on": "已开启",
   "mac.ax.off": "尚未开启",
   "launchAtLogin": "开机后自动启动贴贴",
-
   "settings.title": "贴贴设置",
   "settings.hotkey": "打开列表的快捷键",
   "settings.keep": "最多保留",
@@ -105,7 +99,6 @@
   "win.settings.usageLabel": "当前用量",
   "win.settings.usage": "{0} 条 · 图片 {1}",
   "win.settings.lowerConfirm": "调低上限后，超出的旧记录会在下次复制时被删除（置顶的不会）。确定要调低吗？",
-
   "about.version": "版本 {0}",
   "mac.about.tagline": "免费、开源的 Mac 剪贴板小工具",
   "win.about.tagline": "免费、开源的剪贴板小工具",
@@ -114,7 +107,6 @@
   "about.site": "访问奎嵐的网站 kueilan.com",
   "about.repo": "到 GitHub 查看源代码、提交反馈",
   "about.feedback": "欢迎提出反馈与建议，之后会持续为大家更新。",
-
   "update.unreachableTitle": "暂时查不到新版本信息",
   "update.unreachableText": "可能是网络没有连接，请稍后再试一次。",
   "update.latestTitle": "已经是最新版本",

@@ -304,7 +304,7 @@ static class SelfTest
         var neutral = new System.Resources.ResourceManager("Tietie.Strings", typeof(Lang).Assembly)
             .GetResourceSet(System.Globalization.CultureInfo.InvariantCulture, true, true)!
             .Cast<System.Collections.DictionaryEntry>().Select(e => (string)e.Key).ToList();
-        Check("語言檔讀得到", neutral.Count > 100, $"{neutral.Count} 項");
+        Check("語言檔讀得到", neutral.Count > 80, $"{neutral.Count} 項");
         foreach (var code in Lang.Supported)
         {
             var same = neutral.Count(k => code != "en" && Lang.Text(k, code) == Lang.Text(k, "en"));

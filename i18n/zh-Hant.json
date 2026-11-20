@@ -3,7 +3,6 @@
   "app.name": "貼貼",
   "app.fullName": "貼貼 Tietie",
   "app.tooltipPaused": "貼貼（已暫停記錄）",
-
   "menu.open": "開啟貼貼清單",
   "win.menu.open": "開啟貼貼清單（{0}）",
   "menu.hotkeyTaken": "快捷鍵 {0} 被佔用，請到設定更換",
@@ -19,14 +18,12 @@
   "menu.checkUpdate": "檢查更新…",
   "menu.stats": "已記錄 {0} 筆 · 圖片 {1}",
   "menu.quit": "結束貼貼",
-
   "mac.edit.title": "編輯",
   "mac.edit.undo": "還原",
   "mac.edit.cut": "剪下",
   "mac.edit.copy": "拷貝",
   "mac.edit.paste": "貼上",
   "mac.edit.selectAll": "全選",
-
   "toast.hotkeyTaken": "快捷鍵 {0} 被別的程式佔用了，請到貼貼的設定換一組",
   "toast.noTextInImage": "這張圖片裡沒有讀到文字",
   "toast.imageMissing": "這張圖片的檔案不見了，沒辦法貼上",
@@ -40,10 +37,9 @@
   "toast.clearedRecent": "已清除最近 10 分鐘的記錄",
   "toast.clearedAll": "已清除歷史記錄",
   "toast.languageChanged": "介面語言：{0}",
-
   "panel.search": "打字搜尋，圖片裡的字也找得到",
   "mac.panel.hint": "按數字 1–0 直接貼　← → 換頁　↩ 貼上　⌥↩ 貼圖片裡的字　空白鍵預覽　右鍵看更多",
-  "win.panel.hint": "按數字 1–0 直接貼　← → 換頁　Enter 貼上　Alt+Enter 貼圖片裡的字　空白鍵預覽　右鍵看更多",
+  "win.panel.hint": "按數字 1–0 直接貼　← → 換頁　Enter 貼上　Alt+Enter 貼圖片裡的字\n空白鍵預覽　右鍵看更多",
   "panel.page": "第 {0}／{1} 頁",
   "panel.pageMore": "第 {0}／{1} 頁　還有更多頁",
   "panel.empty": "還沒有記錄。\n複製任何文字或圖片，就會出現在這裡。",
@@ -67,7 +63,6 @@
   "row.chars": "{0} 字",
   "row.text": "文字",
   "row.pinned": "已釘選",
-
   "onb.title": "歡迎使用貼貼 Tietie",
   "onb.intro": "貼貼會記住你複製過的文字、圖片和檔案。按 {0} 叫出清單，選一筆就貼上，貼出來的文字不帶格式。\n所有記錄只存在這台電腦，不會上傳到任何地方。",
   "onb.passwordQuestion": "1. 要不要記錄密碼？",
@@ -85,7 +80,6 @@
   "mac.ax.on": "已開啟",
   "mac.ax.off": "尚未開啟",
   "launchAtLogin": "開機後自動啟動貼貼",
-
   "settings.title": "貼貼設定",
   "settings.hotkey": "叫出清單的快捷鍵",
   "settings.keep": "最多保留",
@@ -105,7 +99,6 @@
   "win.settings.usageLabel": "目前用量",
   "win.settings.usage": "{0} 筆 · 圖片 {1}",
   "win.settings.lowerConfirm": "調低上限後，超過的舊記錄會在下次複製時被刪掉（釘選的不會）。確定要調低嗎？",
-
   "about.version": "版本 {0}",
   "mac.about.tagline": "免費、開源的 Mac 剪貼簿小工具",
   "win.about.tagline": "免費、開源的剪貼簿小工具",
@@ -114,7 +107,6 @@
   "about.site": "前往奎嵐的網站 kueilan.com",
   "about.repo": "到 GitHub 看原始碼、給回饋",
   "about.feedback": "歡迎給回饋與建議，之後會幫大家更新。",
-
   "update.unreachableTitle": "暫時查不到新版資訊",
   "update.unreachableText": "可能是網路沒有連上，請稍後再試一次。",
   "update.latestTitle": "已經是最新版",

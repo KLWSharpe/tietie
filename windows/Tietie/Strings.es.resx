@@ -8,11 +8,11 @@
   <data name="_language" xml:space="preserve"><value>Español</value></data>
   <data name="app.name" xml:space="preserve"><value>Tietie</value></data>
   <data name="app.fullName" xml:space="preserve"><value>貼貼 Tietie</value></data>
-  <data name="app.tooltipPaused" xml:space="preserve"><value>Tietie (grabación en pausa)</value></data>
+  <data name="app.tooltipPaused" xml:space="preserve"><value>Tietie (registro en pausa)</value></data>
   <data name="menu.open" xml:space="preserve"><value>Abrir lista de Tietie</value></data>
   <data name="win.menu.open" xml:space="preserve"><value>Abrir lista de Tietie ({0})</value></data>
   <data name="menu.hotkeyTaken" xml:space="preserve"><value>El atajo {0} está en uso. Cámbialo en Ajustes</value></data>
-  <data name="menu.pause" xml:space="preserve"><value>Pausar grabación</value></data>
+  <data name="menu.pause" xml:space="preserve"><value>Pausar registro</value></data>
   <data name="menu.clearRecent" xml:space="preserve"><value>Borrar los últimos 10 minutos</value></data>
   <data name="menu.clearAll" xml:space="preserve"><value>Borrar todo el historial (conservar fijados)</value></data>
   <data name="menu.settings" xml:space="preserve"><value>Ajustes…</value></data>
@@ -25,12 +25,12 @@
   <data name="toast.hotkeyTaken" xml:space="preserve"><value>Otra app está usando el atajo {0}. Elige otro en los ajustes de Tietie</value></data>
   <data name="toast.noTextInImage" xml:space="preserve"><value>No se encontró texto en esta imagen</value></data>
   <data name="toast.imageMissing" xml:space="preserve"><value>Falta el archivo de esta imagen, así que no se puede pegar</value></data>
-  <data name="win.toast.copied" xml:space="preserve"><value>Copiado. Pulsa Ctrl+V para pegar</value></data>
-  <data name="win.toast.copiedAdmin" xml:space="preserve"><value>Copiado. Esta ventana se ejecuta como administrador, así que pulsa Ctrl+V tú mismo</value></data>
+  <data name="win.toast.copied" xml:space="preserve"><value>Copiado. Presiona Ctrl+V para pegar</value></data>
+  <data name="win.toast.copiedAdmin" xml:space="preserve"><value>Copiado. Esta ventana se ejecuta como administrador, así que presiona Ctrl+V manualmente</value></data>
   <data name="win.toast.clipboardBusy" xml:space="preserve"><value>Otra app está usando el portapapeles. Inténtalo de nuevo</value></data>
   <data name="win.toast.error" xml:space="preserve"><value>Tietie tuvo un pequeño problema y lo registró. Inténtalo de nuevo</value></data>
-  <data name="toast.paused" xml:space="preserve"><value>Grabación en pausa</value></data>
-  <data name="toast.resumed" xml:space="preserve"><value>Grabación reanudada</value></data>
+  <data name="toast.paused" xml:space="preserve"><value>Registro en pausa</value></data>
+  <data name="toast.resumed" xml:space="preserve"><value>Registro reanudado</value></data>
   <data name="toast.clearedRecent" xml:space="preserve"><value>Se borraron los últimos 10 minutos</value></data>
   <data name="toast.clearedAll" xml:space="preserve"><value>Historial borrado</value></data>
   <data name="toast.languageChanged" xml:space="preserve"><value>Idioma: {0}</value></data>
@@ -41,7 +41,7 @@ Espacio vista previa　Clic derecho para más</value></data>
   <data name="panel.pageMore" xml:space="preserve"><value>Página {0} de {1}　Hay más páginas</value></data>
   <data name="panel.empty" xml:space="preserve"><value>Todavía no hay nada.
 Copia cualquier texto o imagen y aparecerá aquí.</value></data>
-  <data name="panel.notFound" xml:space="preserve"><value>No hay resultados para «{0}»</value></data>
+  <data name="panel.notFound" xml:space="preserve"><value>No hay resultados para “{0}”</value></data>
   <data name="ctx.paste" xml:space="preserve"><value>Pegar</value></data>
   <data name="ctx.pasteImage" xml:space="preserve"><value>Pegar imagen</value></data>
   <data name="ctx.pasteImageText" xml:space="preserve"><value>Pegar texto de la imagen</value></data>
@@ -62,14 +62,14 @@ Copia cualquier texto o imagen y aparecerá aquí.</value></data>
   <data name="row.text" xml:space="preserve"><value>Texto</value></data>
   <data name="row.pinned" xml:space="preserve"><value>Fijado</value></data>
   <data name="onb.title" xml:space="preserve"><value>Te damos la bienvenida a 貼貼 Tietie</value></data>
-  <data name="onb.intro" xml:space="preserve"><value>Tietie recuerda los textos, imágenes y archivos que copias. Pulsa {0} para abrir la lista, elige un elemento y se pega como texto sin formato.
+  <data name="onb.intro" xml:space="preserve"><value>Tietie recuerda los textos, imágenes y archivos que copias. Presiona {0} para abrir la lista y elige un elemento para pegarlo. El texto se pega sin formato.
 Todo se queda en este equipo y nunca se sube a ningún sitio.</value></data>
   <data name="onb.passwordQuestion" xml:space="preserve"><value>1. ¿Guardar contraseñas?</value></data>
   <data name="onb.recordAll" xml:space="preserve"><value>Guardar todo, incluso lo copiado de gestores de contraseñas</value></data>
   <data name="onb.skipSecret" xml:space="preserve"><value>No guardar lo que se copie de gestores de contraseñas</value></data>
   <data name="win.onb.passwordNote" xml:space="preserve"><value>El historial se queda en este equipo, así que cualquiera que lo use puede verlo. Si lo prestas o lo compartes, elige la segunda opción. Después de pegar algo delicado, también puedes borrarlo desde el icono de Tietie en la barra de tareas. Puedes cambiarlo más tarde en Ajustes.</value></data>
   <data name="win.onb.startupTitle" xml:space="preserve"><value>2. Abrir al iniciar</value></data>
-  <data name="win.onb.trayNote" xml:space="preserve"><value>Tietie vive en la barra de tareas, abajo a la derecha de la pantalla. Si no lo ves, haz clic en la flecha “^” de la barra de tareas.</value></data>
+  <data name="win.onb.trayNote" xml:space="preserve"><value>Tietie está en la barra de tareas, abajo a la derecha de la pantalla. Si no lo ves, haz clic en la flecha “^” de la barra de tareas.</value></data>
   <data name="onb.start" xml:space="preserve"><value>Empezar</value></data>
   <data name="launchAtLogin" xml:space="preserve"><value>Abrir Tietie al iniciar sesión</value></data>
   <data name="settings.title" xml:space="preserve"><value>Ajustes de Tietie</value></data>
@@ -89,20 +89,20 @@ Todo se queda en este equipo y nunca se sube a ningún sitio.</value></data>
   <data name="about.detail" xml:space="preserve"><value>Recuerda los textos, imágenes y archivos que copias.
 Todo se queda en este equipo y nunca se sube.</value></data>
   <data name="about.author" xml:space="preserve"><value>Hecho por 奎嵐 KueiLan</value></data>
-  <data name="about.site" xml:space="preserve"><value>Visitar la web de KueiLan: kueilan.com</value></data>
+  <data name="about.site" xml:space="preserve"><value>Visitar el sitio web de KueiLan: kueilan.com</value></data>
   <data name="about.repo" xml:space="preserve"><value>Código fuente y comentarios en GitHub</value></data>
   <data name="about.feedback" xml:space="preserve"><value>Tus comentarios e ideas son bienvenidos. Vendrán más actualizaciones.</value></data>
-  <data name="update.unreachableTitle" xml:space="preserve"><value>No se pudo buscar actualizaciones</value></data>
+  <data name="update.unreachableTitle" xml:space="preserve"><value>No se pudo comprobar si hay actualizaciones</value></data>
   <data name="update.unreachableText" xml:space="preserve"><value>Puede que no tengas conexión. Inténtalo de nuevo más tarde.</value></data>
   <data name="update.latestTitle" xml:space="preserve"><value>Tienes la versión más reciente</value></data>
   <data name="update.latestText" xml:space="preserve"><value>Tietie {0} es la versión más reciente.</value></data>
   <data name="update.heading" xml:space="preserve"><value>Ya está disponible Tietie {0}</value></data>
-  <data name="win.update.text" xml:space="preserve"><value>Tienes la versión {0}. Haz clic en «Actualizar ahora» y se instala en unos segundos. Tu historial se conserva.</value></data>
+  <data name="win.update.text" xml:space="preserve"><value>Tienes la versión {0}. Haz clic en “Actualizar ahora” y se instala en unos segundos. Tu historial se conserva.</value></data>
   <data name="update.now" xml:space="preserve"><value>Actualizar ahora</value></data>
   <data name="update.later" xml:space="preserve"><value>Más tarde</value></data>
   <data name="update.skip" xml:space="preserve"><value>Omitir esta versión</value></data>
   <data name="update.failTitle" xml:space="preserve"><value>No se pudo actualizar automáticamente</value></data>
-  <data name="win.update.failText" xml:space="preserve"><value>Pulsa la tecla Windows, escribe PowerShell y pulsa Enter. Luego pega la línea de abajo y pulsa Enter:
+  <data name="win.update.failText" xml:space="preserve"><value>Presiona la tecla Windows, escribe PowerShell y presiona Enter. Luego pega la línea de abajo y presiona Enter:
 
 {0}</value></data>
   <data name="ok" xml:space="preserve"><value>OK</value></data>

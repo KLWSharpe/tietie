@@ -35,7 +35,8 @@
   <data name="toast.clearedAll" xml:space="preserve"><value>已清除歷史記錄</value></data>
   <data name="toast.languageChanged" xml:space="preserve"><value>介面語言：{0}</value></data>
   <data name="panel.search" xml:space="preserve"><value>打字搜尋，圖片裡的字也找得到</value></data>
-  <data name="win.panel.hint" xml:space="preserve"><value>按數字 1–0 直接貼　← → 換頁　Enter 貼上　Alt+Enter 貼圖片裡的字　空白鍵預覽　右鍵看更多</value></data>
+  <data name="win.panel.hint" xml:space="preserve"><value>按數字 1–0 直接貼　← → 換頁　Enter 貼上　Alt+Enter 貼圖片裡的字
+空白鍵預覽　右鍵看更多</value></data>
   <data name="panel.page" xml:space="preserve"><value>第 {0}／{1} 頁</value></data>
   <data name="panel.pageMore" xml:space="preserve"><value>第 {0}／{1} 頁　還有更多頁</value></data>
   <data name="panel.empty" xml:space="preserve"><value>還沒有記錄。

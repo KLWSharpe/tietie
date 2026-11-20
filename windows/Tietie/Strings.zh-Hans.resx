@@ -26,7 +26,7 @@
   <data name="toast.noTextInImage" xml:space="preserve"><value>这张图片里没有识别到文字</value></data>
   <data name="toast.imageMissing" xml:space="preserve"><value>这张图片的文件不见了，无法粘贴</value></data>
   <data name="win.toast.copied" xml:space="preserve"><value>已复制，按 Ctrl+V 粘贴</value></data>
-  <data name="win.toast.copiedAdmin" xml:space="preserve"><value>已复制。这个窗口是以管理员身份运行的，请自己按 Ctrl+V 粘贴</value></data>
+  <data name="win.toast.copiedAdmin" xml:space="preserve"><value>已复制。这个窗口是以管理员身份运行的，请手动按 Ctrl+V 粘贴</value></data>
   <data name="win.toast.clipboardBusy" xml:space="preserve"><value>剪贴板被其他程序占用，请再试一次</value></data>
   <data name="win.toast.error" xml:space="preserve"><value>贴贴遇到一个小问题，已记录下来。可以再试一次</value></data>
   <data name="toast.paused" xml:space="preserve"><value>已暂停记录</value></data>
@@ -35,7 +35,8 @@
   <data name="toast.clearedAll" xml:space="preserve"><value>已清除历史记录</value></data>
   <data name="toast.languageChanged" xml:space="preserve"><value>界面语言：{0}</value></data>
   <data name="panel.search" xml:space="preserve"><value>输入文字搜索，图片里的字也能找到</value></data>
-  <data name="win.panel.hint" xml:space="preserve"><value>按数字 1–0 直接粘贴　← → 翻页　Enter 粘贴　Alt+Enter 粘贴图片里的字　空格键预览　右键查看更多</value></data>
+  <data name="win.panel.hint" xml:space="preserve"><value>按数字 1–0 直接粘贴　← → 翻页　Enter 粘贴　Alt+Enter 粘贴图片里的字
+空格键预览　右键查看更多</value></data>
   <data name="panel.page" xml:space="preserve"><value>第 {0}／{1} 页</value></data>
   <data name="panel.pageMore" xml:space="preserve"><value>第 {0}／{1} 页　还有更多页</value></data>
   <data name="panel.empty" xml:space="preserve"><value>还没有记录。

@@ -11,7 +11,7 @@
   <data name="app.tooltipPaused" xml:space="preserve"><value>Tietie (기록 일시 정지됨)</value></data>
   <data name="menu.open" xml:space="preserve"><value>Tietie 목록 열기</value></data>
   <data name="win.menu.open" xml:space="preserve"><value>Tietie 목록 열기 ({0})</value></data>
-  <data name="menu.hotkeyTaken" xml:space="preserve"><value>단축키 {0}을(를) 사용 중입니다. 설정에서 바꿔 주세요</value></data>
+  <data name="menu.hotkeyTaken" xml:space="preserve"><value>단축키 {0}이(가) 이미 사용 중이에요. 설정에서 바꿔 주세요</value></data>
   <data name="menu.pause" xml:space="preserve"><value>기록 일시 정지</value></data>
   <data name="menu.clearRecent" xml:space="preserve"><value>최근 10분 기록 지우기</value></data>
   <data name="menu.clearAll" xml:space="preserve"><value>모든 기록 지우기 (고정 항목은 유지)</value></data>
@@ -41,7 +41,7 @@
   <data name="panel.pageMore" xml:space="preserve"><value>{0}/{1} 페이지　페이지가 더 있어요</value></data>
   <data name="panel.empty" xml:space="preserve"><value>아직 기록이 없어요.
 글자나 이미지를 복사하면 여기에 나타나요.</value></data>
-  <data name="panel.notFound" xml:space="preserve"><value>“{0}” 검색 결과가 없어요</value></data>
+  <data name="panel.notFound" xml:space="preserve"><value>‘{0}’ 검색 결과가 없어요</value></data>
   <data name="ctx.paste" xml:space="preserve"><value>붙여넣기</value></data>
   <data name="ctx.pasteImage" xml:space="preserve"><value>이미지 붙여넣기</value></data>
   <data name="ctx.pasteImageText" xml:space="preserve"><value>이미지 속 글자 붙여넣기</value></data>
@@ -62,7 +62,7 @@
   <data name="row.text" xml:space="preserve"><value>텍스트</value></data>
   <data name="row.pinned" xml:space="preserve"><value>고정됨</value></data>
   <data name="onb.title" xml:space="preserve"><value>貼貼 Tietie에 오신 것을 환영해요</value></data>
-  <data name="onb.intro" xml:space="preserve"><value>Tietie는 복사한 글자, 이미지, 파일을 기억해요. {0}을(를) 눌러 목록을 열고 하나를 고르면 바로 붙여넣어지고, 글자는 서식 없이 붙여넣어져요.
+  <data name="onb.intro" xml:space="preserve"><value>Tietie는 복사한 글자, 이미지, 파일을 기억해요. {0}을(를) 눌러 목록을 열고 하나를 고르면 바로 붙여넣어요. 글자는 서식 없이 붙여넣어요.
 모든 기록은 이 컴퓨터에만 저장되고 어디에도 업로드되지 않아요.</value></data>
   <data name="onb.passwordQuestion" xml:space="preserve"><value>1. 비밀번호도 기록할까요?</value></data>
   <data name="onb.recordAll" xml:space="preserve"><value>모두 기록 (비밀번호 관리자에서 복사한 로그인 정보 포함)</value></data>
@@ -97,7 +97,7 @@
   <data name="update.latestTitle" xml:space="preserve"><value>최신 버전이에요</value></data>
   <data name="update.latestText" xml:space="preserve"><value>지금 쓰고 있는 Tietie {0}이(가) 최신 버전이에요.</value></data>
   <data name="update.heading" xml:space="preserve"><value>Tietie 새 버전 {0}이(가) 나왔어요</value></data>
-  <data name="win.update.text" xml:space="preserve"><value>지금 쓰고 있는 버전은 {0}이에요. ‘지금 업데이트’를 누르면 몇 초 만에 설치되고, 기존 기록은 그대로 남아요.</value></data>
+  <data name="win.update.text" xml:space="preserve"><value>현재 {0} 버전을 쓰고 있어요. ‘지금 업데이트’를 누르면 몇 초 만에 설치되고, 기존 기록은 그대로 남아요.</value></data>
   <data name="update.now" xml:space="preserve"><value>지금 업데이트</value></data>
   <data name="update.later" xml:space="preserve"><value>나중에</value></data>
   <data name="update.skip" xml:space="preserve"><value>이 버전 건너뛰기</value></data>

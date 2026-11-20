@@ -8,11 +8,11 @@
   <data name="_language" xml:space="preserve"><value>Português</value></data>
   <data name="app.name" xml:space="preserve"><value>Tietie</value></data>
   <data name="app.fullName" xml:space="preserve"><value>貼貼 Tietie</value></data>
-  <data name="app.tooltipPaused" xml:space="preserve"><value>Tietie (gravação pausada)</value></data>
+  <data name="app.tooltipPaused" xml:space="preserve"><value>Tietie (registro pausado)</value></data>
   <data name="menu.open" xml:space="preserve"><value>Abrir lista do Tietie</value></data>
   <data name="win.menu.open" xml:space="preserve"><value>Abrir lista do Tietie ({0})</value></data>
   <data name="menu.hotkeyTaken" xml:space="preserve"><value>O atalho {0} está em uso. Troque nos Ajustes</value></data>
-  <data name="menu.pause" xml:space="preserve"><value>Pausar gravação</value></data>
+  <data name="menu.pause" xml:space="preserve"><value>Pausar registro</value></data>
   <data name="menu.clearRecent" xml:space="preserve"><value>Limpar últimos 10 minutos</value></data>
   <data name="menu.clearAll" xml:space="preserve"><value>Limpar todo o histórico (manter fixados)</value></data>
   <data name="menu.settings" xml:space="preserve"><value>Ajustes…</value></data>
@@ -26,16 +26,16 @@
   <data name="toast.noTextInImage" xml:space="preserve"><value>Nenhum texto foi encontrado nesta imagem</value></data>
   <data name="toast.imageMissing" xml:space="preserve"><value>O arquivo desta imagem sumiu, então não dá para colar</value></data>
   <data name="win.toast.copied" xml:space="preserve"><value>Copiado. Pressione Ctrl+V para colar</value></data>
-  <data name="win.toast.copiedAdmin" xml:space="preserve"><value>Copiado. Esta janela está rodando como administrador, então pressione Ctrl+V você mesmo</value></data>
+  <data name="win.toast.copiedAdmin" xml:space="preserve"><value>Copiado. Esta janela está rodando como administrador, então pressione Ctrl+V manualmente</value></data>
   <data name="win.toast.clipboardBusy" xml:space="preserve"><value>Outro app está usando a área de transferência. Tente de novo</value></data>
   <data name="win.toast.error" xml:space="preserve"><value>O Tietie teve um pequeno problema e registrou o ocorrido. Tente de novo</value></data>
-  <data name="toast.paused" xml:space="preserve"><value>Gravação pausada</value></data>
-  <data name="toast.resumed" xml:space="preserve"><value>Gravação retomada</value></data>
+  <data name="toast.paused" xml:space="preserve"><value>Registro pausado</value></data>
+  <data name="toast.resumed" xml:space="preserve"><value>Registro retomado</value></data>
   <data name="toast.clearedRecent" xml:space="preserve"><value>Últimos 10 minutos apagados</value></data>
   <data name="toast.clearedAll" xml:space="preserve"><value>Histórico apagado</value></data>
   <data name="toast.languageChanged" xml:space="preserve"><value>Idioma: {0}</value></data>
   <data name="panel.search" xml:space="preserve"><value>Digite para buscar, até texto dentro de imagens</value></data>
-  <data name="win.panel.hint" xml:space="preserve"><value>1–0 cola o item　← → página　Enter colar　Alt+Enter colar texto da imagem
+  <data name="win.panel.hint" xml:space="preserve"><value>1–0 colar item　← → página　Enter colar　Alt+Enter colar texto da imagem
 Espaço prévia　Clique direito para mais</value></data>
   <data name="panel.page" xml:space="preserve"><value>Página {0} de {1}</value></data>
   <data name="panel.pageMore" xml:space="preserve"><value>Página {0} de {1}　Há mais páginas</value></data>
@@ -62,12 +62,12 @@ Copie qualquer texto ou imagem e ele aparece aqui.</value></data>
   <data name="row.text" xml:space="preserve"><value>Texto</value></data>
   <data name="row.pinned" xml:space="preserve"><value>Fixado</value></data>
   <data name="onb.title" xml:space="preserve"><value>Boas-vindas ao 貼貼 Tietie</value></data>
-  <data name="onb.intro" xml:space="preserve"><value>O Tietie guarda os textos, imagens e arquivos que você copia. Pressione {0} para abrir a lista, escolha um item e ele é colado como texto simples.
+  <data name="onb.intro" xml:space="preserve"><value>O Tietie guarda os textos, imagens e arquivos que você copia. Pressione {0} para abrir a lista e escolha um item para colá-lo. Textos são colados sem formatação.
 Tudo fica neste computador e nunca é enviado para lugar nenhum.</value></data>
   <data name="onb.passwordQuestion" xml:space="preserve"><value>1. Guardar senhas?</value></data>
   <data name="onb.recordAll" xml:space="preserve"><value>Guardar tudo, inclusive logins copiados de gerenciadores de senhas</value></data>
   <data name="onb.skipSecret" xml:space="preserve"><value>Não guardar o que for copiado de gerenciadores de senhas</value></data>
-  <data name="win.onb.passwordNote" xml:space="preserve"><value>O histórico fica neste computador, então qualquer pessoa que use este computador pode vê-lo. Se você empresta ou divide o computador, escolha a segunda opção. Depois de colar algo sensível, você também pode apagar tudo pelo ícone do Tietie na barra de tarefas. Dá para mudar isso depois nos Ajustes.</value></data>
+  <data name="win.onb.passwordNote" xml:space="preserve"><value>O histórico fica neste computador, então qualquer pessoa que use este computador pode vê-lo. Se você empresta ou divide o computador, escolha a segunda opção. Depois de colar algo sensível, você também pode apagá-lo com um clique pelo ícone do Tietie na barra de tarefas. Dá para mudar isso depois nos Ajustes.</value></data>
   <data name="win.onb.startupTitle" xml:space="preserve"><value>2. Abrir ao iniciar</value></data>
   <data name="win.onb.trayNote" xml:space="preserve"><value>O Tietie fica na barra de tarefas, no canto inferior direito da tela. Se não aparecer, clique na seta “^” da barra de tarefas.</value></data>
   <data name="onb.start" xml:space="preserve"><value>Começar</value></data>

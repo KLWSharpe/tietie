@@ -26,9 +26,9 @@
   <data name="toast.noTextInImage" xml:space="preserve"><value>この画像から文字が見つかりませんでした</value></data>
   <data name="toast.imageMissing" xml:space="preserve"><value>この画像のファイルが見つからないため、貼り付けできません</value></data>
   <data name="win.toast.copied" xml:space="preserve"><value>コピーしました。Ctrl+V で貼り付けてください</value></data>
-  <data name="win.toast.copiedAdmin" xml:space="preserve"><value>コピーしました。このウィンドウは管理者として実行されているため、Ctrl+V で貼り付けてください</value></data>
+  <data name="win.toast.copiedAdmin" xml:space="preserve"><value>コピーしました。このウィンドウは管理者として実行されているため、Ctrl+V で手動で貼り付けてください</value></data>
   <data name="win.toast.clipboardBusy" xml:space="preserve"><value>ほかのアプリがクリップボードを使用中です。もう一度お試しください</value></data>
-  <data name="win.toast.error" xml:space="preserve"><value>Tietie で小さな問題が起きたため、記録しました。もう一度お試しください</value></data>
+  <data name="win.toast.error" xml:space="preserve"><value>Tietie で小さな問題が発生しました（記録済み）。もう一度お試しください</value></data>
   <data name="toast.paused" xml:space="preserve"><value>記録を一時停止しました</value></data>
   <data name="toast.resumed" xml:space="preserve"><value>記録を再開しました</value></data>
   <data name="toast.clearedRecent" xml:space="preserve"><value>直近 10 分間の記録を消去しました</value></data>
@@ -62,7 +62,7 @@
   <data name="row.text" xml:space="preserve"><value>テキスト</value></data>
   <data name="row.pinned" xml:space="preserve"><value>ピン留め済み</value></data>
   <data name="onb.title" xml:space="preserve"><value>貼貼 Tietie へようこそ</value></data>
-  <data name="onb.intro" xml:space="preserve"><value>Tietie はコピーした文字、画像、ファイルを覚えておきます。{0} でリストを開いて選ぶだけで貼り付けられ、文字は書式なしで貼り付けられます。
+  <data name="onb.intro" xml:space="preserve"><value>Tietie はコピーした文字、画像、ファイルを覚えておきます。{0} でリストを開き、項目を選ぶとすぐに貼り付けられます。テキストは書式なしで貼り付けられます。
 記録はすべてこのコンピュータだけに保存され、どこにもアップロードされません。</value></data>
   <data name="onb.passwordQuestion" xml:space="preserve"><value>1. パスワードを記録しますか？</value></data>
   <data name="onb.recordAll" xml:space="preserve"><value>すべて記録する（パスワードマネージャーからコピーしたログイン情報も含む）</value></data>
@@ -87,7 +87,8 @@
   <data name="about.version" xml:space="preserve"><value>バージョン {0}</value></data>
   <data name="win.about.tagline" xml:space="preserve"><value>無料・オープンソースのクリップボードツール</value></data>
   <data name="about.detail" xml:space="preserve"><value>コピーした文字、画像、ファイルを覚えておきます。
-記録はすべてこのコンピュータだけに保存され、アップロードされません。</value></data>
+記録はこのコンピュータだけに保存され、
+アップロードされません。</value></data>
   <data name="about.author" xml:space="preserve"><value>作者：奎嵐 KueiLan</value></data>
   <data name="about.site" xml:space="preserve"><value>奎嵐 KueiLan のウェブサイトへ（kueilan.com）</value></data>
   <data name="about.repo" xml:space="preserve"><value>GitHub でソースコードを見る・フィードバックを送る</value></data>

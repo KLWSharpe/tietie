@@ -62,7 +62,7 @@ Copy any text or image and it will show up here.</value></data>
   <data name="row.text" xml:space="preserve"><value>Text</value></data>
   <data name="row.pinned" xml:space="preserve"><value>Pinned</value></data>
   <data name="onb.title" xml:space="preserve"><value>Welcome to 貼貼 Tietie</value></data>
-  <data name="onb.intro" xml:space="preserve"><value>Tietie remembers the text, images and files you copy. Press {0} to open the list, pick an item and it's pasted as plain text.
+  <data name="onb.intro" xml:space="preserve"><value>Tietie remembers the text, images and files you copy. Press {0} to open the list and pick an item to paste it. Text is pasted without formatting.
 Everything stays on this computer and is never uploaded.</value></data>
   <data name="onb.passwordQuestion" xml:space="preserve"><value>1. Keep passwords?</value></data>
   <data name="onb.recordAll" xml:space="preserve"><value>Keep everything, including logins copied from password managers</value></data>
