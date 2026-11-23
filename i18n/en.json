@@ -105,6 +105,7 @@
   "about.detail": "Remembers the text, images and files you copy.\nEverything stays on this computer and is never uploaded.",
   "about.author": "Made by 奎嵐 KueiLan",
   "about.site": "Visit KueiLan's website: kueilan.com",
+  "about.star": "★ Like Tietie? Give it a star on GitHub",
   "about.repo": "Source code and feedback on GitHub",
   "about.feedback": "Feedback and ideas are welcome. More updates are on the way.",
   "update.unreachableTitle": "Couldn't check for updates",

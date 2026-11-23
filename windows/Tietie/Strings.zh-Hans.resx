@@ -90,6 +90,7 @@
 所有记录只保存在这台电脑上，不会上传。</value></data>
   <data name="about.author" xml:space="preserve"><value>作者：奎嵐 KueiLan</value></data>
   <data name="about.site" xml:space="preserve"><value>访问奎嵐的网站 kueilan.com</value></data>
+  <data name="about.star" xml:space="preserve"><value>★ 觉得好用？到 GitHub 帮我点个星</value></data>
   <data name="about.repo" xml:space="preserve"><value>到 GitHub 查看源代码、提交反馈</value></data>
   <data name="about.feedback" xml:space="preserve"><value>欢迎提出反馈与建议，之后会持续为大家更新。</value></data>
   <data name="update.unreachableTitle" xml:space="preserve"><value>暂时查不到新版本信息</value></data>

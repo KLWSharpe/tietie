@@ -90,6 +90,7 @@
 모든 기록은 이 컴퓨터에만 저장되고 업로드되지 않아요.</value></data>
   <data name="about.author" xml:space="preserve"><value>만든 사람: 奎嵐 KueiLan</value></data>
   <data name="about.site" xml:space="preserve"><value>奎嵐 KueiLan 웹사이트 방문 (kueilan.com)</value></data>
+  <data name="about.star" xml:space="preserve"><value>★ 마음에 드시면 GitHub에서 별을 눌러 주세요</value></data>
   <data name="about.repo" xml:space="preserve"><value>GitHub에서 소스 코드 보기 · 의견 보내기</value></data>
   <data name="about.feedback" xml:space="preserve"><value>의견과 제안을 환영해요. 앞으로도 계속 업데이트할게요.</value></data>
   <data name="update.unreachableTitle" xml:space="preserve"><value>업데이트 정보를 확인할 수 없어요</value></data>

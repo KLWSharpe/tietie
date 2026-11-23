@@ -91,6 +91,7 @@
 アップロードされません。</value></data>
   <data name="about.author" xml:space="preserve"><value>作者：奎嵐 KueiLan</value></data>
   <data name="about.site" xml:space="preserve"><value>奎嵐 KueiLan のウェブサイトへ（kueilan.com）</value></data>
+  <data name="about.star" xml:space="preserve"><value>★ 気に入ったら GitHub でスターをお願いします</value></data>
   <data name="about.repo" xml:space="preserve"><value>GitHub でソースコードを見る・フィードバックを送る</value></data>
   <data name="about.feedback" xml:space="preserve"><value>ご意見・ご要望をお待ちしています。今後もアップデートしていきます。</value></data>
   <data name="update.unreachableTitle" xml:space="preserve"><value>アップデート情報を確認できませんでした</value></data>

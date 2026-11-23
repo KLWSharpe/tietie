@@ -197,6 +197,11 @@ sealed class AboutForm : Form
         Center(site, 0, 8);
         AcceptButton = site;
 
+        // 請大家到 GitHub 按星：星星夠多才能被更多推薦清單收錄
+        var star = new LinkLabel { Text = L.T("about.star"), AutoSize = true, Font = Theme.UiFont(9.5f), LinkColor = Theme.Accent };
+        star.LinkClicked += (_, _) => Open("https://github.com/KLWSharpe/tietie");
+        Center(star, 0, 6);
+
         var repo = new LinkLabel { Text = L.T("about.repo"), AutoSize = true, Font = Theme.UiFont(9.5f), LinkColor = Theme.Accent };
         repo.LinkClicked += (_, _) => Open("https://github.com/KLWSharpe/tietie");
         Center(repo, 0, 12);

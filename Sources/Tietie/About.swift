@@ -61,8 +61,10 @@ final class AboutController: NSObject {
         site.bezelStyle = .rounded
         site.controlSize = .large
         site.keyEquivalent = "\r"
+        // 請大家到 GitHub 按星：星星夠多才能被更多推薦清單收錄
+        let star = link(L("about.star"), action: #selector(openRepo))
         let repo = link(L("about.repo"), action: #selector(openRepo))
-        let links = NSStackView(views: [site, repo])
+        let links = NSStackView(views: [site, star, repo])
         links.orientation = .vertical
         links.spacing = 10
 

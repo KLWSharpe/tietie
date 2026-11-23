@@ -105,6 +105,7 @@
   "about.detail": "コピーした文字、画像、ファイルを覚えておきます。\n記録はこのコンピュータだけに保存され、\nアップロードされません。",
   "about.author": "作者：奎嵐 KueiLan",
   "about.site": "奎嵐 KueiLan のウェブサイトへ（kueilan.com）",
+  "about.star": "★ 気に入ったら GitHub でスターをお願いします",
   "about.repo": "GitHub でソースコードを見る・フィードバックを送る",
   "about.feedback": "ご意見・ご要望をお待ちしています。今後もアップデートしていきます。",
   "update.unreachableTitle": "アップデート情報を確認できませんでした",
