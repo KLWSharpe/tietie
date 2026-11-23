@@ -15,6 +15,8 @@
 
 歡迎給回饋與建議，之後會幫大家更新。有想法或安裝卡住，可以私訊 IG／Threads [@kueilanverse](https://www.instagram.com/kueilanverse)、寄信到 klwsharpe@gmail.com，或到 [Issues](https://github.com/KLWSharpe/tietie/issues) 留言。
 
+**覺得好用，請幫我按這一頁右上角的 ☆ Star。** 星星多了，貼貼才能被更多 Mac 軟體推薦清單收錄，讓更多人找到它。按 Star 要先登入 GitHub，註冊免費。
+
 **第一次安裝請看一步一步的安裝教學：[Mac 版](docs/安裝教學.md)｜[Windows 版](docs/Windows安裝教學.md)**
 
 ## 它能做什麼

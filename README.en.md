@@ -16,6 +16,8 @@ I used Clipy for years. When it stopped opening on newer versions of macOS, I wr
 
 Feedback and ideas are very welcome, and I'll keep updating it. Open an [issue](https://github.com/KLWSharpe/tietie/issues), or message me on Instagram / Threads [@kueilanverse](https://www.instagram.com/kueilanverse).
 
+**If Tietie is useful to you, please click ☆ Star at the top right of this page.** More stars help it get listed in more Mac app collections, so more people can find it.
+
 ## What it does
 
 - **See it, press its number**: every item has a number on its left. Open the list and press 1 to 9 or 0 to paste that item right away.
